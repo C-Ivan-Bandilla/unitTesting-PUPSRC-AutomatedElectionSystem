@@ -66,7 +66,7 @@ $phpDateTimeNow = new DateTimeUtils();
     <meta property="og:title" content="<?= $pageHead->getTitle(); ?>">
     <meta property="og:type" content="article">
     <meta property="og:url" content="<?= $pageHead->getUrl(); ?>">
-    <meta property="og:image" content="src/images/resc/ivote-logo.png">
+    <meta property="og:image" content="src/images/resc/ivote-logo.webp">
     <meta property="og:description" content="<?= $pageHead->getDescription(); ?>">
     <meta name="description" content="<?= $pageHead->getDescription(); ?>">
 
@@ -75,7 +75,7 @@ $phpDateTimeNow = new DateTimeUtils();
     <!-- Preloader -->
     <link rel="preload" href="src/styles/loader.css" as="style" />
     <link rel="stylesheet" href="src/styles/loader.css" />
-    <link rel="preload" href="src/images/resc/ivote-icon.png" as="image" />
+    <link rel="preload" href="src/images/resc/ivote-icon.webp" as="image" />
 
 
     <script>
