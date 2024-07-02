@@ -137,9 +137,9 @@ label{
   border-radius: 10px !important;
 }
 
-.save-button:hover {
-  background-color: var(--secondary-color) !important;
-}
+/* .save-button:hover {
+  background-color: var(--sub-color-accent) !important;
+} */
 
 .cancel-button#cancel-modal{
   padding: 3px 20px 3px 20px !important;
