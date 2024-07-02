@@ -76,8 +76,8 @@ $connection->close();
     <link rel="stylesheet" href="styles/orgs/<?php echo $org_name; ?>.css">
 
     <!-- Preloader Stylesheet and Image -->
+    <link rel="preload" href="images/resc/ivote-icon.webp" as="image">
     <link rel="stylesheet" href="styles/loader.css" />
-    <link rel="preload" href="images/resc/ivote-icon.png" as="image">
 
     <!-- Favicon -->
     <link rel="icon" href="images/resc/ivote-favicon.png" type="image/x-icon">
@@ -108,7 +108,7 @@ $connection->close();
         <div class="row">
             <div class="col-md-6 login-left-section">
                 <div class="organization-names">
-                    <img src="images/logos/<?php echo $org_name; ?>.png" class="login-logo pb-3" alt="<?php echo strtoupper($org_name) . ' '; ?>Logo">
+                    <img src="images/logos/<?php echo $org_name; ?>.webp" class="login-logo pb-3" alt="<?php echo strtoupper($org_name) . ' '; ?>Logo">
                     <div class="org-full-name px-5"><?php echo strtoupper($org_full_name); ?></div>
                     <div class="login-AES px-4">AUTOMATED ELECTION SYSTEM</div>
 

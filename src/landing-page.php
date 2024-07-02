@@ -35,8 +35,8 @@ $warning_message_json = json_encode($warning_message);
     <link rel="stylesheet" href="styles/dist/all-footer.css">
 
     <!-- Preloader Stylesheet and Image -->
+    <link rel="preload" href="images/resc/ivote-icon.webp" as="image">
     <link rel="stylesheet" href="styles/loader.css" />
-    <link rel="preload" href="images/resc/ivote-icon.png" as="image">
 
     <!-- Favicon -->
     <link rel="icon" href="images/resc/ivote-favicon.png" type="image/x-icon">
