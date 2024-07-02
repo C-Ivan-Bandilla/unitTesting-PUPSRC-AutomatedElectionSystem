@@ -151,7 +151,7 @@
     border: 1px solid whitesmoke;
     border-radius: 4px;
     background-color: whitesmoke;
-    color: grey;
+    color: rgb(26, 25, 25);
   }
   
   
@@ -260,6 +260,17 @@
   select option {
     padding: 5px !important;
   }
+
+  @media (max-width: 320px) {
+
+    .breadcrumbs-cont .col-md-11 {
+    padding-left: 0 !important;
+  }
+
+    .hide-text {
+    display: none;
+  }
+}
 
   
   
