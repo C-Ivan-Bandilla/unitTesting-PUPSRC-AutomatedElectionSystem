@@ -72,7 +72,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
             <div class="position-fixed toast-container top-0 end-0 p-3">           
                 <div id="profileUpdatedToast"  class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
-                        <img src="images/resc/ivote-icon.png" height="30px" width="30px" class="rounded me-2" alt="ivote-icon">
+                        <img src="images/resc/ivote-icon.webp" height="30px" width="30px" class="rounded me-2" alt="ivote-icon">
                         <strong class="me-auto">Success</strong>
                         <small class="text-body-secondary"> <!-- Seconds --> </small>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>

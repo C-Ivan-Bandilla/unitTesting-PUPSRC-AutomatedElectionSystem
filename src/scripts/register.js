@@ -2,6 +2,42 @@ $(document).ready(function () {
   let termsAndPolicyData = null;
   let dataLoaded = false;
 
+  let isDirty = false;
+  let targetUrl = "";
+
+  // top.window.onbeforeunload = null;
+
+  $("#register-form input, #register-form select").on("change", function () {
+    isDirty = true;
+  });
+
+  $("#confirmLeaveBtn").on("click", function () {
+    isDirty = false;
+    closeModal("pendingChangesModal");
+    if (targetUrl) {
+      window.location.href = targetUrl;
+    } else {
+      window.location.reload();
+    }
+  });
+
+  $(window).on("beforeunload", function (event) {
+    if (isDirty) {
+      const message = "Changes you made may not be saved.";
+
+      event.returnValue = message;
+      return message;
+    }
+  });
+
+  $(document).on("click", "a", function (e) {
+    if (isDirty) {
+      e.preventDefault();
+      targetUrl = $(this).attr("href");
+      showModal("pendingChangesModal");
+    }
+  });
+
   function loadTermsAndPrivacyPolicy() {
     $.getJSON("includes/misc/terms-and-privacy.json", function (data) {
       termsAndPolicyData = data;
@@ -46,7 +82,7 @@ $(document).ready(function () {
         showError(
           input,
           errorElement,
-          "Please enter a valid email address, such as johndoe@gmail.com."
+          "Please provide a valid email address, such as johndoe@gmail.com."
         );
       return false;
     } else if (isExistingEmail) {
@@ -61,7 +97,7 @@ $(document).ready(function () {
 
   // Email regex format validation
   function validateEmailFormat(email) {
-    return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email);
+    return /^[a-zA-Z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(email);
   }
 
   function validateOrg(select, showErrorMessages = false) {
@@ -211,6 +247,7 @@ $(document).ready(function () {
 
   // Terms and Conditions Modal
   $("#termsConditionsLink").click(function (event) {
+    isDirty = false;
     event.preventDefault();
     if (dataLoaded) {
       showContentModal(
@@ -226,6 +263,7 @@ $(document).ready(function () {
 
   // Privacy Policy Modal
   $("#privacyTermsLink").click(function (event) {
+    isDirty = false;
     event.preventDefault();
     if (dataLoaded) {
       showContentModal(
@@ -310,10 +348,11 @@ $(document).ready(function () {
   });
 
   $("form").on("submit", function () {
+    isDirty = false;
     setTimeout(function () {
       $("#sign-up").attr("disabled", true);
       $("#sign-up").html(
-        `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
+        `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Please wait...`
       );
     }, 50);
   });
