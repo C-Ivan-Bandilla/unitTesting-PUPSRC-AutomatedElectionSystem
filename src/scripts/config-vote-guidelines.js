@@ -72,7 +72,11 @@ ConfigPage = {
 
                 const errorCodes = ConfigPage.extractErrorCodes(data);
 
+                ConfigPage.setErrorDictionary(errorCodes);
+
                 const voteGuidelines = ConfigPage.removeErrorCodes(data);
+
+
 
                 const guidelineData = ConfigPage.processData(voteGuidelines);
 
@@ -143,7 +147,7 @@ ConfigPage = {
         },
         attributes: {
             required: true,
-            // pattern: /[a-zA-Z .\-]{1,50}/,
+            pattern: '^.{10,}$',
             max_length: 500,
         },
         customMsg: {
@@ -296,7 +300,7 @@ ConfigPage.postData = function (post_data, method) {
             console.log('POST request successful:', response.data);
             let data = [];
             data = response.data;
-            console.log(data)
+
             return { data, success: true };
         })
         .catch(function (error) {
@@ -327,6 +331,11 @@ try {
     ConfigPage.fetchVoteGuidelines({ csrf: ConfigPage.CSRF_TOKEN });
 } catch (error) {
     console.warn(error);
+}
+
+ConfigPage.setErrorDictionary = function (definitions) {
+    ConfigPage.errorDictionary = definitions;
+    console.log(ConfigPage.errorDictionary);
 }
 
 
@@ -459,7 +468,7 @@ ConfigPage.TableHandler = class {
                             const { data, success, error } = result;
 
                             if (success) {
-                                console.log(data)
+                                ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
                                 // let processedData = ConfigPage.processData(data);
                                 // console.log(processedData)
                                 // this.updateData(processedData);
@@ -556,7 +565,16 @@ ConfigPage.TableHandler = class {
                             console.log(data)
                             let processedData = ConfigPage.processData(data);
                             console.log(processedData)
-                            this.deleteEntry(processedData);
+                            this.deleteEntry(processedData)
+                                .then(() => {
+                                    // ConfigPage.handleSucessResponse();
+
+                                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline deleted successfuly.');
+                                })
+                                .catch((error) => {
+                                    console.error("Error inserting data:", error);
+                                });
+
                         } else if (error.data) {
                             // error.data.forEach(item => {
 
@@ -572,52 +590,31 @@ ConfigPage.TableHandler = class {
 
     }
 
-    // static deleteEntry(DATA) {
-
-    //     if (DATA && DATA.data && Array.isArray(DATA.data)) {
-
-    //         DATA.data.forEach(item => {
-    //             const { data_id, input_id } = item;
-
-    //             let INPUT_ELEMENT = document.getElementById(input_id);
-    //             let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
-    //             if (DATA_ROW) {
-    //                 ConfigPage.table.row(DATA_ROW).remove().draw();
-    //                 const SELECTED_COUNT = this.countSelectedRows();
-    //                 this.updateToolbarButton(SELECTED_COUNT);
-    //                 // this.deselectAll();
-
-    //             } else {
-
-    //                 console.error(`Input element with ID not found.`);
-    //             }
-    //         });
-    //     } else {
-    //         // console.error('Invalid or missing DATA structure.');
-    //     }
-    // }
-
     static deleteEntry(DATA, isdraw = false) {
 
-        try {
-            for (const item of DATA) {
+        return new Promise((resolve, reject) => {
+            try {
+                for (const item of DATA) {
 
 
-                let rowId = document.getElementById(`rule-${item[1].data_id}`);
+                    let rowId = document.getElementById(`rule-${item[1].data_id}`);
 
-                let DATA_ROW = rowId.closest(`tr`);
+                    let DATA_ROW = rowId.closest(`tr`);
 
-                if (DATA_ROW) {
-                    ConfigPage.table.row(DATA_ROW).remove().draw(isdraw);
-                } else {
+                    if (DATA_ROW) {
+                        ConfigPage.table.row(DATA_ROW).remove().draw(isdraw);
+                    } else {
 
-                    console.error(`Input element with ID not found.`);
+                        console.error(`Input element with ID not found.`);
+                    }
+                    resolve();
                 }
-
+            } catch (error) {
+                reject(error);
             }
-        } catch (error) {
-            console.log(error);
-        }
+        })
+
+
 
 
     }
@@ -633,42 +630,45 @@ ConfigPage.TableHandler = class {
 
 
     static insertData(DATA, isdraw = false) {
+        return new Promise((resolve, reject) => {
+            try {
+                for (const item of DATA) {
 
-        try {
-            for (const item of DATA) {
+                    ConfigPage.table.row.add(item).draw(isdraw);
 
-                ConfigPage.table.row.add(item).draw(isdraw);
-
+                }
+                resolve();
+            } catch (error) {
+                reject(error);
             }
-        } catch (error) {
-            console.log(error);
-        }
-
+        })
 
     }
 
     static updateData(DATA, isdraw = false) {
 
-        try {
-            for (const item of DATA) {
+        return new Promise((resolve, reject) => {
+            try {
+                for (const item of DATA) {
 
-                let rowId = document.getElementById(`rule-${item[1].data_id}`);
+                    let rowId = document.getElementById(`rule-${item[1].data_id}`);
 
-                let DATA_ROW = rowId.closest(`tr`);
+                    let DATA_ROW = rowId.closest(`tr`);
 
-                if (DATA_ROW) {
+                    if (DATA_ROW) {
 
-                    // ConfigPage.table.row(DATA_ROW).data(rowData).draw(false);
-                    ConfigPage.table.row(DATA_ROW).data(item).draw(isdraw);
-                } else {
+                        // ConfigPage.table.row(DATA_ROW).data(rowData).draw(false);
+                        ConfigPage.table.row(DATA_ROW).data(item).draw(isdraw);
+                    } else {
 
-                    console.error(`Input element with ID not found.`);
+                        console.error(`Input element with ID not found.`);
+                    }
+                    resolve();
                 }
-
+            } catch (error) {
+                reject(error);
             }
-        } catch (error) {
-            console.log(error);
-        }
+        })
 
 
     }
@@ -754,6 +754,29 @@ ConfigPage.table = new DataTable('#config-table', {
 ConfigPage.ConfirmDeleteModal = document.getElementById('delete-modal');
 ConfigPage.ConfirmModalInstance = { instance: null };
 
+ConfigPage.CurrentModal = { html: null };
+ConfigPage.CurrModalInstance = { instance: null };
+
+ConfigPage.showModal = function (modal) {
+    ConfigPage.CurrModalInstance.instance = new bootstrap.Modal(modal);
+    ConfigPage.CurrModalInstance.instance.show();
+
+    ConfigPage.CurrentModal.html.removeEventListener('hidden.bs.modal', ConfigPage.handleModalDispose)
+    ConfigPage.CurrentModal.html.addEventListener('hidden.bs.modal', ConfigPage.handleModalDispose)
+}
+
+ConfigPage.handleSucessResponse = function () {
+    ConfigPage.showModal(document.getElementById('success-modal'));
+}
+
+ConfigPage.updateSuccessSubtitle = function () {
+    // ConfigPage.showModal(document.getElementById('success-modal'));
+}
+
+ConfigPage.handleModalDispose = function () {
+    ConfigPage.modalInstance.instance.dispose();
+}
+
 ConfigPage.showConfirmModal = async function (modal, instanceRef, inputId = null, inputVal = null, isDisabled = false) {
     // https://stackoverflow.com/questions/65454144/javascript-await-bootstrap-modal-close-by-user
     instanceRef.instance = new bootstrap.Modal(modal);
@@ -809,6 +832,57 @@ ConfigPage.handleConfirmInput = function (modal, inputId, inputVal) {
 
     })
 
+}
+
+ConfigPage.toastContainer = document.querySelector('.toast-container');
+
+ConfigPage.handleResponseStatus = function (statusCode, data, message = '') {
+    if (statusCode >= 400) {
+        // if (statusCode == 401) {
+        ConfigPage.createToast(ConfigPage.errorDictionary[data.message] || data.message, 'danger');
+    }
+    else if (statusCode == 200) {
+        ConfigPage.createToast(message, 'success');
+    }
+}
+
+ConfigPage.createToast = function (message, type) {
+    const toast = document.createElement('div');
+    toast.classList.add('toast');
+
+    const toastBody = document.createElement('div');
+    toastBody.classList.add('toast-body', `text-bg-${type}`);
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('toast-content');
+    messageDiv.textContent = message;
+    toastBody.prepend(messageDiv);
+
+
+    const closeContainer = document.createElement('div');
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('btn-close');
+    closeButton.setAttribute('type', 'button');
+    closeButton.setAttribute('data-bs-dismiss', 'toast');
+    closeButton.setAttribute('aria-label', 'Close');
+
+    closeContainer.appendChild(closeButton);
+    toastBody.appendChild(closeContainer);
+    toast.appendChild(toastBody);
+
+    ConfigPage.toastContainer.appendChild(toast);
+
+    // toast.addEventListener('hidden.bs.toast', () => {
+    //     toast.remove();
+    // });
+
+    // let toastElList = [].slice.call(
+    //     document.querySelectorAll('.toast'))
+    // let toastList = toastElList.map(function (toastEl) {
+    //     return new bootstrap.Toast(toastEl)
+    // })
+
+    // toastList.forEach(toast => toast.hide())
+    new bootstrap.Toast(toast).show();
 }
 
 ConfigPage.FindLastSequence = function (table_id = 'config-table') {
@@ -963,6 +1037,7 @@ ConfigPage.EditorModal = class {
         prompTitle.textContent = this.data.sequence;
 
         let descriptionTextArea = document.createElement('textarea');
+        descriptionTextArea.maxLength = 500;
         descriptionTextArea.classList.add('form-control');
         descriptionTextArea.required = true;
         const trimmedDescription = this.data.description.trim();
@@ -1109,9 +1184,29 @@ ConfigPage.EditorModal = class {
                         let processedData = ConfigPage.processData(data);
                         if (this.isAdd) {
 
-                            ConfigPage.TableHandler.insertData(processedData);
+                            ConfigPage.TableHandler.insertData(processedData)
+                                .then(() => {
+                                    // ConfigPage.handleSucessResponse();
+
+                                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline added successfuly.');
+                                })
+                                .catch((error) => {
+                                    console.error("Error inserting data:", error);
+                                });
+
+
+
                         } else {
-                            ConfigPage.TableHandler.updateData(processedData);
+
+                            ConfigPage.TableHandler.updateData(processedData)
+                                .then(() => {
+                                    // ConfigPage.handleSucessResponse();
+
+                                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
+                                })
+                                .catch((error) => {
+                                    console.error("Error inserting data:", error);
+                                });
                         }
 
 

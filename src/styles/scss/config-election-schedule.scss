@@ -131,10 +131,12 @@ main.main {
 
     section .toast-container,
     section .toast-container-unstacked {
+
         // position: -webkit-sticky;
         // position: sticky;
-        flex-direction: column-reverse;
-        top: 50dvh;
+        .toast {
+            box-shadow: var(--bs-box-shadow-lg);
+        }
     }
 
     .sched-separator {

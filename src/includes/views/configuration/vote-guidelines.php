@@ -31,6 +31,15 @@ include_once 'modals.php';
             ?>
         </div>
 
+        <section>
+            <div class="toast-container pe-md-3 pe-lg-5 pe-sm-2">
+                <!-- <div class="toast-body text-bg-danger">
+                    <div class="toast-content">The end date cannot be before the start date.</div>
+                    <div><button class="btn-close" type="button" data-bs-dismiss="toast" aria-label="Close"></button></div>
+                </div> -->
+            </div>
+        </section>
+
         <div class="card-box ">
             <table id="config-table" class="table table-hover" style="width: 100%;">
                 <thead>
@@ -85,10 +94,9 @@ include_once 'modals.php';
     Modals::getDeleteModal($deleteAction);
     ?>
 
-    <!-- <script>
-        warningModal = new bootstrap.Modal(document.getElementById('delete-modal'));
-        warningModal.show();
-    </script> -->
+    <?php
+    Modals::getSuccessModal("New rule has been added successfully", '');
+    ?>
 
 
     <div class="modal fade" aria-modal="true" role="dialog">

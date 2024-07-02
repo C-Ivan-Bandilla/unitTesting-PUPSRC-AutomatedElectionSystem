@@ -231,15 +231,48 @@ section .toast-container,
 section .toast-container-unstacked {
     position: absolute;
     display: flex;
-    flex-direction: column;
-    right: 1%;
+    flex-direction: column-reverse;
+    gap: clamp(1rem, 0.25rem + 1dvh + 0.25dvw, 3rem) 0;
+    overflow-y: hidden;
+
+    @media only screen and (min-height: 601px) and (hover: none) {
+        max-height: 25.5dvh;
+
+    }
+
+    @media only screen and (min-width: 768px) and (max-width: 1199px) {
+        // quick fix to put footer to bottom
+
+        max-height: 25dvh;
+    }
+
+    @media only screen and (min-width: 1200px) {
+        max-height: calc(28dvh);
+    }
+
+
+
+
+    @media only screen and (max-width: 576px) {
+        right: 15px;
+    }
+
+    @media only screen and (min-width: 768px) and (max-width: 1399px) {
+        right: calc(2vh + 1vw);
+    }
+
+    @media only screen and (min-width: 1400px) {
+        right: calc(5vh + 1vw);
+    }
+
+    top: 50dvh;
 
     // bottom: 15%;
 
     .toast {
         border: none;
         border-radius: clamp(0.438rem, 0.2rem + 0.3vw, 1rem);
-        box-shadow: var(--bs-box-shadow-lg);
+
 
         .toast-body {
             display: flex;
@@ -274,7 +307,7 @@ section .toast-container-unstacked {
                 }
             }
 
-            &.text-bg-sucess {
+            &.text-bg-success {
                 border: clamp(1.5px, 0.5px + 0.1vw, 5px) solid !important;
                 background-color: color-mix(in srgb, var(--success), white) !important;
                 color: var(--success) !important;
@@ -308,9 +341,11 @@ section .toast-container-unstacked {
                 display: -webkit-box;
                 -webkit-line-clamp: 4;
                 -webkit-box-orient: vertical;
-                text-align: justify;
+                text-align: left;
                 width: 85%;
                 padding-left: clamp(2rem, 1rem + 1dvw, 4rem);
+                @extend %general-responsive-base-font-size;
+
             }
 
             div:has(button[type="button"].btn-close) {
