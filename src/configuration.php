@@ -221,16 +221,16 @@ $phpDateTimeNow = new DateTimeUtils();
     <?php
     global $configuration_pages;
     $configuration_pages = [
-        'vote-schedule',
+        'positions',
         'vote-guidelines',
-        'positions'
+        'vote-schedule'
     ];
 
     global $link_name;
     $link_name = [
-        'Schedule',
+        'Candidate Positions',
         'Voting Guidelines',
-        'Candidate Positions'
+        'Schedule'
     ];
 
     // Create an instance of PageRouter with the sub_pages array
