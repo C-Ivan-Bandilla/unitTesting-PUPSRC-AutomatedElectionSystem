@@ -4,6 +4,14 @@ require_once FileUtils::normalizeFilePath('../error-reporting.php');
 require_once FileUtils::normalizeFilePath('../classes/db-config.php');
 require_once FileUtils::normalizeFilePath('../classes/db-connector.php');
 
+class OrganizationNotSetException extends Exception
+{
+    public function __construct($message = "Organization information not found in session", $code = 0, Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+}
+
 
 class CandidatePosition
 {
@@ -175,16 +183,28 @@ class CandidatePosition
             $stmt->bind_param("i", $data['data_id']);
             $stmt->execute();
             $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $candidates = [
-                    'last_name' => $row['last_name'],
-                    'first_name' => $row['first_name'],
-                    'middle_name' => $row['middle_name'],
-                    'suffix' => $row['suffix'],
-                    'photo_url' => 'images/candidate-profile/' . $row['photo_url']
-                ];
-                $affected_candidates[] = $candidates;
+
+            try {
+
+                if (!isset($_SESSION['organization']) || empty($_SESSION['organization'])) {
+                    throw new OrganizationNotSetException("Organization not found in session.");
+                }
+
+                while ($row = $result->fetch_assoc()) {
+                    $candidates = [
+                        'last_name' => $row['last_name'],
+                        'first_name' => $row['first_name'],
+                        'middle_name' => $row['middle_name'],
+                        'suffix' => $row['suffix'],
+                        'photo_url' => "user_data/{$_SESSION['organization']}/candidate_imgs/" . $row['photo_url']
+                    ];
+                    $affected_candidates[] = $candidates;
+                }
+            } catch (OrganizationNotSetException $e) {
+                echo "Error: Organization information not found.";
             }
+
+
 
             $stmt->close();
         } else {
