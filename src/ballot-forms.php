@@ -261,7 +261,7 @@ if ($total_guidelines > 0) {
 
 <div class="row">
     <div class="col-lg-3 col-0 pb-sm-4 pb-1 d-none d-md-block">
-        <div class="reminder">
+        <div class="reminder sticky">
             <div class="title-2 main-bg-color">
                 Voting Guidelines
             </div>

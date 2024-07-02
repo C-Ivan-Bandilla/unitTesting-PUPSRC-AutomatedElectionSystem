@@ -201,6 +201,13 @@ color: #fff;
     opacity: 0.9; /* Adjust opacity if desired */
 }
 
+.sticky {
+  position: -webkit-sticky;
+  position: sticky !important;
+  top: 0 !important; /* Stick to the top */
+  z-index: 100 !important; /* Adjust z-index as needed */
+}
+
 .greetings-blue{
 color: #4870C4;
 font-size: 24px;
