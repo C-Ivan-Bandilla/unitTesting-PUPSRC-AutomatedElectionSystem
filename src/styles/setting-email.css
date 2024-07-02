@@ -118,7 +118,7 @@ body {
   }
   
   .form-control {
-    background-color: #fff;
+    background-color: #fff !important;
     border: #101010;
   }
   
@@ -403,6 +403,10 @@ body {
     font-weight: 600;
     font-size: 13px;
   }
+
+  input[type="email"] {
+    background-color: white !important;
+}
   
   .reset-pass{
     display: flex;
@@ -495,7 +499,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
-
+  
   .reset-password-title{
     font-weight: bold;
   }
