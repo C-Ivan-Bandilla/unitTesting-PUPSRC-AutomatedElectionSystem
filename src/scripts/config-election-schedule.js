@@ -314,19 +314,21 @@ ConfigPage.postData = function (post_data) {
             return Promise.all([response.clone(), response.json()]);
         })
         .then(async ([response, data]) => {
+            // sucess
             console.log('POST request successful:', response);
             console.log('Status:', response.status);
             console.log('Data:', data);
 
-
+            ConfigPage.handleSucessResponse();
 
             return { data, success: true };
         })
         .catch(function (error) {
-            console.error('PUT request error:', error.data);
-            console.error('Status:', error.response.status);
-            ConfigPage.handleResponseStatus(error.response.status, error.data);
-            return { data: error.data, success: false };
+            // console.error('PUT request error:', error.data);
+            // console.error('Status:', error.response.status);
+            // ConfigPage.handleResponseStatus(error.response.status, error.data);
+            // return { data: error.data, success: false };
+            console.error(error)
         });
 };
 
@@ -336,6 +338,26 @@ ConfigPage.handleResponseStatus = function (statusCode, data) {
         ConfigPage.createToast(ConfigPage.errorDictionary[data.message] || data.message, 'danger');
     }
 }
+
+ConfigPage.CurrentModal = { html: null };
+ConfigPage.CurrModalInstance = { instance: null };
+
+ConfigPage.showModal = function (modal) {
+    ConfigPage.CurrModalInstance.instance = new bootstrap.Modal(modal);
+    ConfigPage.CurrModalInstance.instance.show();
+
+    ConfigPage.CurrentModal.html.removeEventListener('hidden.bs.modal', ConfigPage.handleModalDispose)
+    ConfigPage.CurrentModal.html.addEventListener('hidden.bs.modal', ConfigPage.handleModalDispose)
+}
+
+ConfigPage.handleSucessResponse = function () {
+    ConfigPage.showModal(document.getElementById('success-modal'));
+}
+
+ConfigPage.handleModalDispose = function () {
+    ConfigPage.modalInstance.instance.dispose();
+}
+
 
 
 ConfigJS();

@@ -117,6 +117,10 @@ include_once 'modals.php';
     Modals::getWarningModal("You have</br>pending changes", 'Discard changes?');
     ?>
 
+    <?php
+    Modals::getSuccessModal("Schedule set successfully", 'The date and time for this election year have been successfully set.');
+    ?>
+
 
 
 
