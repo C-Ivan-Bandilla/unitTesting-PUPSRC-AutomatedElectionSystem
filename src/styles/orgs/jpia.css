@@ -13,7 +13,7 @@
 }
 
 .main-bg-color {
-  background-color: #f45b9b;
+  background-color: #f45b9b !important;
 }
 .item a.active,
 .submenu-item.active {
