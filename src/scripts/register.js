@@ -247,6 +247,7 @@ $(document).ready(function () {
 
   // Terms and Conditions Modal
   $("#termsConditionsLink").click(function (event) {
+    isDirty = false;
     event.preventDefault();
     if (dataLoaded) {
       showContentModal(
@@ -262,6 +263,7 @@ $(document).ready(function () {
 
   // Privacy Policy Modal
   $("#privacyTermsLink").click(function (event) {
+    isDirty = false;
     event.preventDefault();
     if (dataLoaded) {
       showContentModal(
