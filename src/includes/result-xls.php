@@ -30,6 +30,7 @@ if (isset($_GET['election_year'])) {
                           JOIN vote v ON c.candidate_id = v.candidate_id
                           JOIN position p ON c.position_id = p.position_id
                           WHERE c.election_year = ?
+                          AND c.candidacy_status = 'verified'
                           GROUP BY c.candidate_id, c.position_id
                           ORDER BY c.position_id, vote_count DESC";
 
