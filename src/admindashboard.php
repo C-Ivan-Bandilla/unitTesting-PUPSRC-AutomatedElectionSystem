@@ -160,7 +160,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                 <img src="images/resc/Dashboard/candidate-empty-state.jpg" style="height:220px; width:auto;">
                 <h5 class="fs-6 gray">No candidates found</h5>
                 <h5 class="fs-7 gray mb-3">Add your first candidate to view live voting!</h5>
-                <a href="add-candidate.php" class=" p-2 py-3 main-bg-color fw-bold px-4 hover-color"><i class="bi bi-plus-circle-fill text-center me-1"></i> Add Candidates</a>
+                <a href="add-candidate.php" class=" p-2  main-bg-color fw-bold px-4 hover-color"><i class="bi bi-plus-circle-fill text-center me-1"></i> Add Candidates</a>
             </div>
         </div>
     <?php } else { ?>
