@@ -54,7 +54,7 @@ SessionManager::checkUserRoleAndRedirect();
           <h5 id="index-PUPSRC" class="text-truncate mt-3">Polytechnic University of the Philippines - Santa Rosa Campus
           </h5>
           <h1 id="index-AES">AUTOMATED ELECTION SYSTEM</h1>
-          <a href="#organizations" type="button" class="btn btn-primary fw-bold index-button">Select Organization</a>
+          <a href="landing-page.php#organizations" type="button" class="btn btn-primary fw-bold index-button">Select Organization</a>
         </div>
       </div>
       <div class="index-wave-footer" id="organizations">
