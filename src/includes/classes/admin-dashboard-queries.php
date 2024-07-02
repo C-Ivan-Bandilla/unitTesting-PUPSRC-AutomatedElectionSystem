@@ -47,18 +47,26 @@ class Application {
     }
     public function getPositions() {
         $connection = $this->db->connect();
-
-        $positionsQuery = "SELECT DISTINCT title FROM position";
+    
+        // Update the query to join candidate and position tables
+        $positionsQuery = "
+            SELECT DISTINCT p.title 
+            FROM position p
+            JOIN candidate c ON p.position_id = c.position_id
+            WHERE c.candidacy_status = 'verified'
+        ";
         $result = $connection->query($positionsQuery);
         $positions = array();
-
+    
         // Process the fetched rows into an array of positions
         while ($row = $result->fetch_assoc()) {
             $positions[] = $row['title'];
         }
-
+    
         return $positions;
     }
+    
+
 
     public function getFirstPosition() {
         $connection = $this->db->connect();

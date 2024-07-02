@@ -52,6 +52,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/core.css">
     <link rel="stylesheet" href="styles/loader.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/screenfull.js/5.1.0/screenfull.min.js"></script>
@@ -119,54 +120,72 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                         <div class="col-12 col-sm-6 d-flex">
                     <h4 class="main-color main-text ms-2">LIVE RESULTS</h4>
                     </div>
-               <div class="col-12 col-sm-6 justify-content-start justify-content-sm-end d-flex mb-3 my-sm-0">
-                    <select id="positions" class="px-1  positions-dropdown main-bg-color<?php if (empty($positions)) echo ' no-positions'; ?>">
+             
+         
+         
+                
+                    <?php if ($electionPeriodStatus['inElectionPeriod']) { ?>
+    <div class="col-12 col-sm-6 justify-content-start justify-content-sm-end d-flex mb-3 my-sm-0">
+    <select id="positions" class="px-1 positions-dropdown main-bg-color<?php if (empty($positions)) echo ' no-positions'; ?>">
     <?php
+    // Function to truncate string
+    function truncate($text, $length) {
+        if (strlen($text) > $length) {
+            $text = substr($text, 0, $length) . '...';
+        }
+        return $text;
+    }
+
     // Check if there are positions available
     if (empty($positions)) {
-        echo "<option value='' disabled selected>No positions available</option>";
+        echo "<option value='' disabled selected>No candidate available</option>";
     } else {
         // Loop through positions array to generate options
         foreach ($positions as $position) {
-            echo "<option value=\"$position\">$position</option>";
+            // Truncate position name to a certain length (e.g., 20 characters)
+            $truncated_position = truncate($position, 20);
+            echo "<option value=\"$position\">$truncated_position</option>";
         }
     }
     ?>
 </select>
 
-                  
-</div>
-
-                  
-                  
-                    
-                   
-                    </div>
-              
-            </div>
-         
-         
-                
-            <?php if ($electionPeriodStatus['inElectionPeriod']) { ?>
-                        <div class="card">
-                            <div class="icon-container pt-2 pe-2 text-end">
-                                <a id="fullscreen-button">
-                                    <i data-feather="maximize" class="main-color"></i>
-                                </a>
-                            </div>
-                            <div class="chart-container pb-3 px-5">
-                                <canvas id="myChart"></canvas>
-                            </div>
-                  
-                    <?php } else { ?>
-                        <div class="card">
-                            <div class="card-body text-center py-5">
-                                <img src="images/resc/Dashboard/admin-empty-state.jpeg" style="height:200px; width:auto;">
-                                <h5 class="fs-6 gray">Election period has not yet started</h5>
-                            </div>
-                    
-                    <?php } ?>
+    </div>
     
+    </div>
+
+    <?php if (empty($positions)) { ?>
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <img src="images/resc/Dashboard/candidate-empty-state.jpg" style="height:220px; width:auto;">
+                <h5 class="fs-6 gray">No candidates found</h5>
+                <h5 class="fs-7 gray mb-3">Add your first candidate to view live voting!</h5>
+                <a href="add-candidate.php" class=" p-2 py-3 main-bg-color fw-bold px-4 hover-color"><i class="bi bi-plus-circle-fill text-center me-1"></i> Add Candidates</a>
+            </div>
+        </div>
+    <?php } else { ?>
+        <div class="card">
+            <div class="icon-container pt-2 pe-2 text-end">
+                <a id="fullscreen-button">
+                    <i data-feather="maximize" class="main-color"></i>
+                </a>
+            </div>
+            <div class="chart-container pb-3 px-5">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    <?php } ?>
+<?php } else { ?>
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <img src="images/resc/Dashboard/admin-empty-state.jpeg" style="height:200px; width:auto;">
+            <h5 class="fs-6 gray">Election period has not yet started</h5>
+        </div>
+    </div>
+<?php } ?>
+
+        
+
 </div>
 <div class="row">
 <div class="justify-content-end d-flex mt-2" >
