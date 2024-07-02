@@ -43,7 +43,7 @@ class Modals
                     <div class="modal-body">
                         <div class="prompt-content p-4">
                         <img src="src/images/resc/warning.png" class="main-icon" alt="warning icon">
-                        <p class="fw-bold fs-3 spacing-4">{$subtitle}</p>
+                        <p class="fw-bold fs-3 spacing-4 text-danger">{$subtitle}</p>
                         <p class="fw-medium spacing-5">
                             {$message}
                         </p>
@@ -85,7 +85,7 @@ class Modals
                                 <div class="modal-body">
                                     <div class="prompt-content p-4">
                                     <img src="src/images/resc/warning.png" class="main-icon" alt="warning icon">
-                                    <p class="fw-bold fs-3 spacing-4">{$subtitle}</p>
+                                    <p class="fw-bold fs-3 spacing-4 text-danger">{$subtitle}</p>
                                     <div>
                                         <p class="fw-medium spacing-5">
                                             {$message}
@@ -137,7 +137,7 @@ class Modals
                         <div class="success-icon">
                             <img src="src/images/resc/check-animation.gif" class="main-icon" alt="warning icon">
                         </div>
-                        <p class="fw-bold fs-3 spacing-4">{$subtitle}</p>
+                        <p class="fw-bold fs-3 spacing-4 text-success">{$subtitle}</p>
                         <p class="fw-medium spacing-5">
                             {$message}
                         </p>

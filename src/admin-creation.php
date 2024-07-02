@@ -60,7 +60,7 @@ if (isset($_SESSION['voter_id'])) {
         ?>
 
         <div class="main">
-            <div class="container mb-5 pl-5">
+            <div class="container mb-5 ps-5">
                 <div class="row justify-content-center">
                     <div class="col-md-13">
                         <div class="breadcrumbs d-flex">

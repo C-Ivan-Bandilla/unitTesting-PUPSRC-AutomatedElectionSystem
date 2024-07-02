@@ -39,6 +39,7 @@ class Registration {
             unset($_SESSION['registration_success']);
             unset($_SESSION['error_message']);
             $this->validateEmailAndPasswordLength();
+            $this->validateEmailFormat();
             $this->validateEmailNotExist();
             $this->validatePasswords();
             $this->validateFile();
@@ -48,13 +49,14 @@ class Registration {
             $this->insertIntoOrganizationDB();
             $this->insertIntoScoDB();
             $this->commitTransaction();
+            $this->sendEmailNotice();
             $_SESSION['registration_success'] = true;
             header("Location: ../register.php");
             exit();
         }
         catch (Exception $e) {
             $this->rollbackTransaction();
-            $error_message = "Error: " . $e->getMessage();
+            $error_message = $e->getMessage();
             $_SESSION['error_message'] = $error_message;
             header("Location: ../register.php");
             exit();
@@ -72,19 +74,26 @@ class Registration {
         }
     }
 
+    // Check for invalid email format
+    private function validateEmailFormat() {
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("Please provide a valid email address, such as johndoe@gmail.com.");
+        }
+    }
+
     // Additional to check if email address already exists
     private function validateEmailNotExist() {
         $config = DatabaseConfig::getOrganizationDBConfig($this->organization);
         $connection = new mysqli($config['host'], $config['username'], $config['password'], $config['database']);
         
-        $sql = "SELECT email FROM voter WHERE email = ?";
+        $sql = "SELECT email FROM voter WHERE BINARY email = ?";
         $stmt = $connection->prepare($sql);
         $stmt->bind_param("s", $this->email);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if($result->num_rows > 0) {
-            throw new Exception("Email address already exists.");
+            throw new Exception("This email is already taken.");
         }
 
         $stmt->close();
@@ -178,6 +187,14 @@ class Registration {
 
         $stmt->close();
         $sco_connection->close();
+    }
+
+    // Send an email notice to user
+    private function sendEmailNotice() {
+        include_once FileUtils::normalizeFilePath(__DIR__ . '/../mailer.php');
+        include_once FileUtils::normalizeFilePath(__DIR__ . '/email-sender.php');
+        $mailer = new EmailSender($mail);
+        $mailer->sendForVerificationStatus($this->email);
     }
 
     // Start transaction into db but no insertion until commit is made or call

@@ -314,11 +314,9 @@ ConfigPage.postData = function (post_data) {
             return Promise.all([response.clone(), response.json()]);
         })
         .then(async ([response, data]) => {
-            console.log('POST request successful:', response);
-            console.log('Status:', response.status);
-            console.log('Data:', data);
+            // sucess
 
-
+            ConfigPage.handleSucessResponse();
 
             return { data, success: true };
         })
@@ -335,6 +333,25 @@ ConfigPage.handleResponseStatus = function (statusCode, data) {
         // if (statusCode == 401) {
         ConfigPage.createToast(ConfigPage.errorDictionary[data.message] || data.message, 'danger');
     }
+}
+
+ConfigPage.CurrentModal = { html: null };
+ConfigPage.CurrModalInstance = { instance: null };
+
+ConfigPage.showModal = function (modal) {
+    ConfigPage.CurrModalInstance.instance = new bootstrap.Modal(modal);
+    ConfigPage.CurrModalInstance.instance.show();
+
+    ConfigPage.CurrentModal.html.removeEventListener('hidden.bs.modal', ConfigPage.handleModalDispose)
+    ConfigPage.CurrentModal.html.addEventListener('hidden.bs.modal', ConfigPage.handleModalDispose)
+}
+
+ConfigPage.handleSucessResponse = function () {
+    ConfigPage.showModal(document.getElementById('success-modal'));
+}
+
+ConfigPage.handleModalDispose = function () {
+    ConfigPage.modalInstance.instance.dispose();
 }
 
 
@@ -583,11 +600,16 @@ ConfigPage.handleDiscardSchedule = async function () {
 
         if (await ConfigPage.showDiscardModal() == 'true') {
             ConfigPage.resetDatetime();
-            console.log('true');
+            ConfigPage.isScheduleChanged = false;
+            ConfigPage.handleValidation(ConfigPage.datePickerStart, ConfigPage.startDateValidator, false);
+            ConfigPage.handleValidation(ConfigPage.datePickerEnd, ConfigPage.endDateValidator, false);
+            ConfigPage.handleValidation(ConfigPage.timePickerStart, ConfigPage.startTimeValidator, false);
+            ConfigPage.handleValidation(ConfigPage.timePickerEnd, ConfigPage.endTimeValidator, false);
+
         }
     }
     else {
-        console.log('false');
+
     }
 }
 

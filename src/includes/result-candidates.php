@@ -33,6 +33,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                            FROM candidate c
                                            JOIN vote v ON c.candidate_id = v.candidate_id
                                            WHERE c.position_id = ? AND c.election_year = ?
+                                            AND c.candidacy_status = 'verified'
                                            GROUP BY c.candidate_id
                                            ORDER BY vote_count DESC");
             if ($query) {

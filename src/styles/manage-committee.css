@@ -194,9 +194,24 @@
   cursor: default;
 }
 
+.truncate-name {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#adminTable td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* --- MEDIAS --- */
 
-@media (min-width: 541px) {
+@media (min-width: 360px) {
   .filters-sort {
     text-align: end;
     display: flex;
@@ -355,7 +370,8 @@
   white-space: nowrap;
 }
 
-@media (max-width: 575px) {
+
+@media (max-width: 700px) {
   .add-committee-button {
       width: 100%;
       margin-top: 0.5rem;
@@ -371,6 +387,13 @@
   }
 
   .btn-lvl-white, .btn-lvl-current {
+      font-size: 0.7rem;
+  }
+}
+
+
+@media (min-width: 360px) and (max-width: 576px) {
+  .button-text {
       font-size: 0.7rem;
   }
 }

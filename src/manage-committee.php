@@ -60,15 +60,15 @@ if (isset($_SESSION['voter_id'])) {
 				<div class="row justify-content-center">
 					<div class="col-md-11">
 						<div class="breadcrumbs d-flex flex-wrap align-items-center">
-						<div class="breadcrumbs d-flex">
-							<button type="button" class="btn btn-lvl-white d-flex align-items-center spacing-8 fs-8">
-								<i data-feather="users" class="white im-cust feather-2xl"></i> <span class="hide-text">MANAGE USERS</span>
-							</button>
-							<button type="button" class="btn btn-lvl-current rounded-pill spacing-8 fs-8">COMMITTEE MEMBERS</button>
-						</div>
+  							<div class="breadcrumbs-inner d-flex">
+    							<button type="button" class="btn btn-lvl-white d-flex align-items-center spacing-8 fs-8">
+      							<i data-feather="users" class="white im-cust feather-2xl"></i> <span class="hide-text">MANAGE USERS</span>
+    							</button>
+    							<button type="button" class="btn btn-lvl-current rounded-pill spacing-8 fs-8">COMMITTEE MEMBERS</button>
+  							</div>
 							<div class="add-committee-button ms-sm-auto">
 								<a href="admin-creation.php">
-									<button type="button" class="committee-add rounded-2 fs-7">
+									<button type="button" class="align-items-center committee-add rounded-2 fs-7">
 										<i class="bi bi-plus-circle me-1 me-sm-3"></i>
 										<span class="button-text">Add Committee Member</span>
 									</button>
@@ -109,8 +109,9 @@ if (isset($_SESSION['voter_id'])) {
 																			<i class="fa-solid fa-trash-can fa-sm"></i>
 																			Delete
 																		</button>
-																		<span
-																			class="light-gray-accent fw-bold ps-3">|</span>
+																	</div>
+																	<div class="d-inline-block">
+																	<span class="light-gray-accent fw-bold ps-2">|</span>
 																	</div>
 																	<!-- Filters -->
 																	<div class="d-inline-block ps-2">
@@ -250,6 +251,7 @@ if (isset($_SESSION['voter_id'])) {
 															</thead>
 															<tbody>
 																<?php while ($row = $verified_tbl->fetch_assoc()) { ?>
+																	
 																	<!-- Generated in manage-committee.js -->
 																<?php } ?>
 															</tbody>

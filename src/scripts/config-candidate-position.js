@@ -3,9 +3,6 @@ import ViewportDimensions from './viewport.js';
 import InputValidator from './input-validator.js';
 import setTextEditableWidth from './configuration-set-text-editable-width.js';
 
-import { Debugout } from '../../vendor/node_modules/debugout.js/dist/debugout.min.js';
-
-const logToFile = new Debugout({ realTimeLoggingOn: true, useTimestamps: true });
 
 /**
  * The ConfigPage object holds variables classes and function of the current page.
@@ -85,6 +82,7 @@ ConfigPage = {
             positionInput.setAttribute('placeholder', 'Enter a candidate position');
             positionInput.setAttribute('pattern', '[a-zA-Z .\\-]{1,50}');
             positionInput.setAttribute('required', '');
+            positionInput.setAttribute('maxlength', 50);
 
             let positionAlert = document.createElement('div');
             positionAlert.classList.add('input-alert', 'mb-2');
@@ -147,7 +145,7 @@ ConfigPage = {
 
             let posDescrptnLabel = document.createElement('label');
             posDescrptnLabel.setAttribute('for', 'posDescrptn');
-            posDescrptnLabel.textContent = 'Rules and Responsibilities';
+            posDescrptnLabel.textContent = 'Duties and Responsibilities';
             posDescrptnLabel.classList.add('mb-2');
 
 
@@ -247,9 +245,23 @@ ConfigPage = {
                     console.log(ConfigPage.mode);
                     if (success) {
                         if (ConfigPage.mode === 'add') {
-                            ConfigPage.insertPosition(data);
+                            ConfigPage.insertPosition(data)
+                                .then(() => {
+
+                                    ConfigPage.handleResponseStatus(200, data, 'Candidate Position added successfuly.');
+                                })
+                                .catch((error) => {
+                                    console.error("Error inserting data:", error);
+                                });
                         } else if (ConfigPage.mode === 'update') {
-                            ConfigPage.updatePostion(data);
+                            ConfigPage.updatePostion(data)
+                                .then(() => {
+
+                                    ConfigPage.handleResponseStatus(200, data, 'Candidate Position updated successfuly.');
+                                })
+                                .catch((error) => {
+                                    console.error("Error inserting data:", error);
+                                });
                         }
 
                         ConfigPage.edit_position_modal.hide();
@@ -456,6 +468,9 @@ ConfigPage = {
 
                     if (success) {
                         // ConfigPage.updatePostion(data);
+
+                        ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
+
                     } else {
                         console.error('POST request failed:', error);
                     }
@@ -524,7 +539,15 @@ ConfigPage = {
                 try {
                     const { data, success, error } = result;
                     if (success) {
-                        ConfigPage.deletePosition(data);
+                        ConfigPage.deletePosition(data)
+                            .then(() => {
+
+                                ConfigPage.handleResponseStatus(200, data, 'Vote guideline deleted successfuly.');
+                            })
+                            .catch((error) => {
+                                console.error("Error inserting data:", error);
+                            });
+
                     } else if (error.data) {
                         error.data.forEach(item => {
                             console.log('item');
@@ -534,10 +557,19 @@ ConfigPage = {
                             if (item.hasOwnProperty('affected_candidates')) {
                                 ConfigPage.NativeModal.show(item);
                             } else {
-                                ConfigPage.deletePosition({ data: [item] });
+                                ConfigPage.deletePosition({ data: [item] })
+                                    .then(() => {
+
+                                        ConfigPage.handleResponseStatus(200, data, 'Vote guideline deleted successfuly.');
+                                    })
+                                    .catch((error) => {
+                                        console.error("Error inserting data:", error);
+                                    });
                             }
                         });
                     }
+
+                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
                 }
                 catch (e) {
                     console.error('POST request failed:', e);
@@ -551,27 +583,37 @@ ConfigPage = {
         console.log(DATA.data);
         console.log(Array.isArray(DATA.data));
 
-        if (DATA && DATA.data && Array.isArray(DATA.data)) {
 
-            DATA.data.forEach(item => {
-                const { data_id, input_id } = item;
 
-                let INPUT_ELEMENT = document.getElementById(input_id);
-                let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
-                if (DATA_ROW) {
-                    ConfigPage.table.row(DATA_ROW).remove().draw();
-                    const SELECTED_COUNT = ConfigPage.countSelectedRows();
-                    ConfigPage.updateToolbarButton(SELECTED_COUNT);
-                    // ConfigPage.deselectAll();
+        return new Promise((resolve, reject) => {
+            try {
+                if (DATA && DATA.data && Array.isArray(DATA.data)) {
 
+                    DATA.data.forEach(item => {
+                        const { data_id, input_id } = item;
+
+                        let INPUT_ELEMENT = document.getElementById(input_id);
+                        let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
+                        if (DATA_ROW) {
+                            ConfigPage.table.row(DATA_ROW).remove().draw();
+                            const SELECTED_COUNT = ConfigPage.countSelectedRows();
+                            ConfigPage.updateToolbarButton(SELECTED_COUNT);
+                            // ConfigPage.deselectAll();
+
+                        } else {
+
+                            console.error(`Input element with ID not found.`);
+                        }
+                    });
                 } else {
-
-                    console.error(`Input element with ID not found.`);
+                    // console.error('Invalid or missing DATA structure.');
                 }
-            });
-        } else {
-            // console.error('Invalid or missing DATA structure.');
-        }
+
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        })
     },
 
     deselectAll: function () {
@@ -584,87 +626,103 @@ ConfigPage = {
     },
 
     updatePostion: function (DATA, draw = true) {
-        console.log('update table');
 
-        if (DATA && DATA.data && Array.isArray(DATA.data)) {
-            DATA.data.forEach(item => {
-                console.log("each pos update " + JSON.stringify(item));
-                let { sequence, data_id, input_id, value, max_votes, description } = item;
-                if (draw) {
-                    let rowData = {
-                        0: sequence,
-                        1: {
-                            data_id: data_id,
-                            sequence: sequence,
-                            value: value,
-                            max_votes: max_votes
-                        },
-                        2: description
-                    }
+        return new Promise((resolve, reject) => {
+            try {
+                if (DATA && DATA.data && Array.isArray(DATA.data)) {
+                    DATA.data.forEach(item => {
+                        console.log("each pos update " + JSON.stringify(item));
+                        let { sequence, data_id, input_id, value, max_votes, description } = item;
+                        if (draw) {
+                            let rowData = {
+                                0: sequence,
+                                1: {
+                                    data_id: data_id,
+                                    sequence: sequence,
+                                    value: value,
+                                    max_votes: max_votes
+                                },
+                                2: description
+                            }
 
-                    let INPUT_ELEMENT = document.getElementById(input_id);
-                    let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
-                    if (DATA_ROW) {
-                        console.log(DATA_ROW);
-                        ConfigPage.table.row(DATA_ROW).data(rowData).draw(false);
-                    } else {
+                            let INPUT_ELEMENT = document.getElementById(input_id);
+                            let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
+                            if (DATA_ROW) {
+                                console.log(DATA_ROW);
+                                ConfigPage.table.row(DATA_ROW).data(rowData).draw(false);
+                            } else {
 
-                        console.error(`Input element with ID not found.`);
-                    }
+                                console.error(`Input element with ID not found.`);
+                            }
+                        } else {
+
+
+                            // let INPUT_ELEMENT = document.getElementById(input_id);
+                            // if (INPUT_ELEMENT) {
+                            //     INPUT_ELEMENT.name = data_id;
+                            // } else {
+
+                            //     console.error(`Input element with ID not found.`);
+                            // }
+                        }
+                    });
                 } else {
-
-
-                    // let INPUT_ELEMENT = document.getElementById(input_id);
-                    // if (INPUT_ELEMENT) {
-                    //     INPUT_ELEMENT.name = data_id;
-                    // } else {
-
-                    //     console.error(`Input element with ID not found.`);
-                    // }
+                    // console.error('Invalid or missing DATA structure.');
                 }
-            });
-        } else {
-            // console.error('Invalid or missing DATA structure.');
-        }
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        })
+
+
 
     },
 
     insertPosition: function (DATA, draw = false) {
 
-        if (DATA && DATA.data && Array.isArray(DATA.data)) {
-            DATA.data.forEach(item => {
-                console.log("each pos update " + JSON.stringify(item));
-                let { sequence, data_id, input_id, value, max_votes, description } = item;
-                if (!draw) {
-                    let rowData = {
-                        0: sequence,
-                        1: {
-                            data_id: data_id,
-                            sequence: sequence,
-                            value: value,
-                            max_votes: (Number.isInteger(max_votes) && max_votes !== null) ? max_votes :
-                                (!isNaN(parseInt(max_votes)) ? parseInt(max_votes) : 1)
-                        },
-                        2: description
-                    }
+        return new Promise((resolve, reject) => {
+            try {
+                if (DATA && DATA.data && Array.isArray(DATA.data)) {
+                    DATA.data.forEach(item => {
+                        console.log("each pos update " + JSON.stringify(item));
+                        let { sequence, data_id, input_id, value, max_votes, description } = item;
+                        if (!draw) {
+                            let rowData = {
+                                0: sequence,
+                                1: {
+                                    data_id: data_id,
+                                    sequence: sequence,
+                                    value: value,
+                                    max_votes: (Number.isInteger(max_votes) && max_votes !== null) ? max_votes :
+                                        (!isNaN(parseInt(max_votes)) ? parseInt(max_votes) : 1)
+                                },
+                                2: description
+                            }
 
-                    ConfigPage.table.row.add(rowData).draw(false);
+                            ConfigPage.table.row.add(rowData).draw(false);
 
+                        } else {
+
+
+                            // let INPUT_ELEMENT = document.getElementById(input_id);
+                            // if (INPUT_ELEMENT) {
+                            //     INPUT_ELEMENT.name = data_id;
+                            // } else {
+
+                            //     console.error(`Input element with ID not found.`);
+                            // }
+                        }
+                    });
                 } else {
-
-
-                    // let INPUT_ELEMENT = document.getElementById(input_id);
-                    // if (INPUT_ELEMENT) {
-                    //     INPUT_ELEMENT.name = data_id;
-                    // } else {
-
-                    //     console.error(`Input element with ID not found.`);
-                    // }
+                    // console.error('Invalid or missing DATA structure.');
                 }
-            });
-        } else {
-            // console.error('Invalid or missing DATA structure.');
-        }
+
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        })
 
     },
 
@@ -757,15 +815,13 @@ ConfigPage = {
 
         if ('update_sequence' in post_data) {
             method = 'UPDATE';
-            logToFile.log('Update dta ', post_data, ' stringtified ', JSON.stringify(post_data));
-            // logToFile.downloadLog();
+
         } else if ('delete_position' in post_data) {
-            logToFile.log('Delete dta ', post_data, ' stringtified ', JSON.stringify(post_data));
-            // logToFile.downloadLog();
+
             method = 'DELETE';
         }
-        logToFile.log('PUT dta ', post_data, ' stringtified ', JSON.stringify(post_data));
-        // logToFile.downloadLog();
+
+
         return fetch(url, {
             method: method,
             body: json_data,
@@ -784,8 +840,7 @@ ConfigPage = {
             })
             .then(function (data) {
                 console.log('POST request successful:', data);
-                logToFile.log('Response dta ', data, ' stringtified ', JSON.stringify(data));
-                // logToFile.downloadLog();
+
                 return { data, success: true };
             })
             .catch(function (error) {
@@ -806,9 +861,7 @@ ConfigPage = {
             })
             .then(function (data) {
                 const TABLE_DATA = ConfigPage.processData(data);
-                logToFile.log('fetched dta ', data, ' stringtified ', JSON.stringify(data));
-                logToFile.log('fetched processed dta ', TABLE_DATA, ' stringtified ', JSON.stringify(TABLE_DATA));
-                // logToFile.downloadLog();
+
                 ConfigPage.insertData(TABLE_DATA, ConfigPage.table);
                 console.log('GET request successful:', data);
             })
@@ -1127,14 +1180,12 @@ ConfigPage.CandidatePosition = class CandidatePosition {
         try {
             if (quill) {
                 let description = (DATA[0].description !== undefined && DATA[0].description !== '') ? JSON.parse(DATA[0].description) : '';
-                logToFile.log(`is ADD ${isAdd} dta `, description, ' stringtified ', JSON.stringify(description));
-                // logToFile.downloadLog();
+
                 quill.setContents(description);
 
             }
         } catch (error) {
-            logToFile.log(`is ADD ${isAdd} error ${error} dta `, DATA[0].description, ' stringtified ', JSON.stringify(DATA[0].description));
-            // logToFile.downloadLog();
+
         }
     }
 
@@ -1309,6 +1360,50 @@ ConfigPage.typingTimeout;
 ConfigPage.fetchData();
 ConfigPage.startTableListener();
 
+ConfigPage.toastContainer = document.querySelector('.toast-container');
+
+ConfigPage.handleResponseStatus = function (statusCode, data, message = '') {
+    if (statusCode >= 400) {
+        // if (statusCode == 401) {
+        ConfigPage.createToast(ConfigPage.errorDictionary[data.message] || data.message, 'danger');
+    }
+    else if (statusCode == 200) {
+        ConfigPage.createToast(message, 'success');
+    }
+}
+
+ConfigPage.createToast = function (message, type) {
+    const toast = document.createElement('div');
+    toast.classList.add('toast');
+
+    const toastBody = document.createElement('div');
+    toastBody.classList.add('toast-body', `text-bg-${type}`);
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('toast-content');
+    messageDiv.textContent = message;
+    toastBody.prepend(messageDiv);
+
+
+    const closeContainer = document.createElement('div');
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('btn-close');
+    closeButton.setAttribute('type', 'button');
+    closeButton.setAttribute('data-bs-dismiss', 'toast');
+    closeButton.setAttribute('aria-label', 'Close');
+
+    closeContainer.appendChild(closeButton);
+    toastBody.appendChild(closeContainer);
+    toast.appendChild(toastBody);
+
+    ConfigPage.toastContainer.appendChild(toast);
+
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
+
+    new bootstrap.Toast(toast).show();
+}
+
 ConfigPage.NativeModal = class {
     static modalElement = document.getElementsByClassName('modal-native');
     static data;
@@ -1339,7 +1434,7 @@ ConfigPage.NativeModal = class {
         }
         const candidateCount = data.affected_candidates.length;
         promptMessage.innerHTML =
-            `You are about to remove the candidate${candidateCount > 1 ? 's' : ''} and votes associated with the position of <b>${data.value}</b>. `;
+            `You are about to <b class="text-danger">permanently remove</b> the candidate${candidateCount > 1 ? 's' : ''} and votes associated with the position of <b>${data.value}</b>. `;
 
         candidatesList.innerHTML = '';
         data.affected_candidates.forEach(candidate => {
