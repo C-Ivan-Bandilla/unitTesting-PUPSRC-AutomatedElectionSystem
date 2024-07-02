@@ -90,7 +90,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
           <!-- FOR VERIFICATION TABLE -->
           <div class="col-md-10 card-box">
             <div class="table-wrapper" id="profile">
-              <form class="needs-validation" action="includes/process-setting-email.php" novalidate enctype="multipart/form-data">
+              <form class="needs-validation" action="includes/process-setting-email.php" method="post">
                 <input type="hidden" id="token" name="token" value="<?= htmlspecialchars($token) ?>">
                 <div class="img-container">
                   <img src="images/Emails/<?php echo strtolower($org_name); ?>-email.png" alt="Email Icon" class="forgot-password-icon">

@@ -9,7 +9,7 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/default-time-zone.php');
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $token = $_POST['token'];
-    $email = trim($_POST['email']);
+   $email = trim($_POST['email']);
     $password_confirmation = trim($_POST['password_confirmation']);
     $token_hash = hash("sha256", $token);
 
@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 } else {
     $_SESSION['error_message'] = "Invalid request method.";
-    redirectToLoginPage();
+   // redirectToLoginPage();
 }
 
 function redirectToUpdatePageWithError($token) {
