@@ -105,7 +105,7 @@
                                                     <div class="col-md-3 col-sm-3 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="first_name" class="login-danger fs-7">First Name<span class="required"> * </span> </label>
-                                                            <input type="text" id="first_name" name="first_name[]" placeholder="E.g. Trizia Mae" required pattern="^[a-z ,.'-]+$/i" maxlength="50">
+                                                            <input type="text" id="first_name" name="first_name[]" placeholder="E.g. Trizia Mae" required pattern="^[a-z ,.'-]+$/i" maxlength="20">
                                                             <span class="error-message" id="first_name_error"></span>
                                                         </div>
                                                     </div>
