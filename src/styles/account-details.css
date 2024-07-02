@@ -185,6 +185,18 @@ select option {
   opacity: 25%;
 }
 
+.email-address {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .email-container {
+      padding-right: 15px;
+  }
+}
+
 @media screen and (max-width: 767px) {
   .divider {
     position: absolute;

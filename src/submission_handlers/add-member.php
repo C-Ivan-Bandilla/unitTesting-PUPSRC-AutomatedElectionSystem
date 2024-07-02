@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $sco_conn->close();
                     
                     if ($sco_count > 0) {
-                        $_SESSION['email_exists_error'] = 'This email address is already registered in SCO.';
+                        $_SESSION['email_exists_error'] = 'This email address is already registered.';
                         header("Location: admin-creation");
                         exit;
                     }
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     error_log("Error connecting to SCO database: " . $e->getMessage());
                     $emailError = 'Unable to verify email uniqueness across all databases.';
                     $_SESSION['email_error'] = $emailError;
-                    header("Location: admin-creation.php");
+                    header("Location: admin-creation");
                     exit;
                 }
             }

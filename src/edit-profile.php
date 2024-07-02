@@ -72,7 +72,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
             <div class="position-fixed toast-container top-0 end-0 p-3">           
                 <div id="profileUpdatedToast"  class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
-                        <img src="images/resc/ivote-icon.png" height="30px" width="30px" class="rounded me-2" alt="ivote-icon">
+                        <img src="images/resc/ivote-icon.webp" height="30px" width="30px" class="rounded me-2" alt="ivote-icon">
                         <strong class="me-auto">Success</strong>
                         <small class="text-body-secondary"> <!-- Seconds --> </small>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -171,10 +171,10 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                         <!-- Buttons -->
                                         <div class="btn-container">
                                             <div>
-                                                <button type="button" class="btn btn-primary main-bg-color" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><img src="images/resc/icons/change-pass.png" class="change-pass-icon">Change Password</button>
+                                                <button type="button" class="btn btn-primary main-bg-color btn-org-color" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><img src="images/resc/icons/change-pass.png" class="change-pass-icon">Change Password</button>
                                             </div>
                                             <div>
-                                                <button type="submit" id="saveChanges" name="save-changes" class="btn btn-primary main-bg-color save-button rounded-3">Save Changes</button>
+                                                <button type="submit" id="saveChanges" name="save-changes" class="btn btn-primary main-bg-color save-button rounded-3 btn-org-color">Save Changes</button>
                                                 <button type="button" id="cancelChanges" class="btn btn-secondary cancel-button rounded-3">Cancel</button>
                                             </div>
                                         </div>
