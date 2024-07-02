@@ -1,10 +1,11 @@
 <?php
 
-// Include necessary files using correct paths and ensure class availability
-include_once __DIR__ . '/classes/file-utils.php';
-require_once FileUtils::normalizeFilePath(__DIR__ . '/classes/db-connector.php');
-require_once FileUtils::normalizeFilePath(__DIR__ . '/session-handler.php');
-include_once __DIR__ . '/error-reporting.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'classes/file-utils.php');
+require_once FileUtils::normalizeFilePath('classes/db-connector.php');
+require_once FileUtils::normalizeFilePath('session-handler.php');
+include_once FileUtils::normalizeFilePath('error-reporting.php');
+
+   
 
 // Establish database connection
 $conn = DatabaseConnection::connect();
@@ -170,6 +171,12 @@ function countFeedbackRatings($feedback)
 // Function to run fetching operations and store data if needed
 function fetchAndStoreData()
 {
+     // ------ SESSION EXCHANGE
+     include FileUtils::normalizeFilePath('session-exchange.php');
+     // ------ END OF SESSION EXCHANGE
+     
+     // Fetch organization name
+     $org_name = $_SESSION['organization'] ?? '';
     // Establish database connection
     $conn = DatabaseConnection::connect();
 
@@ -219,7 +226,7 @@ function fetchAndStoreData()
     $json_data = json_encode($database_data, JSON_PRETTY_PRINT);
 
     // Specify the directory and file name
-    $directory = __DIR__ . '/../includes/data';
+    $directory = __DIR__ . '/../includes/data/' . $org_name; 
     if (!is_dir($directory)) {
         mkdir($directory, 0777, true);
     }

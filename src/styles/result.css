@@ -189,7 +189,16 @@
     background-color: white !important;
     }
 }
-
+.card-body4 {
+  height: 415px !important; 
+  border-radius: 10px !important;
+  padding-left: 50px !important;
+  padding-top: 10px !important;
+  @media (max-width: 480px) {
+    height: 420px !important;
+    padding-left: 10px !important;
+    }
+}
 .card-body3 {
   height: 115px !important; 
   border-radius: 10px !important;
@@ -221,6 +230,18 @@
     font-size: 10px;
 }
 }
+
+.custom-image-size {
+  width: 250px;
+  height: 250px;
+}
+.center-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 .btn-election, .btn-election1 {
   background-color: #ffffff;
   color: #ffffff;
