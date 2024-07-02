@@ -278,11 +278,21 @@
       left:50%;
       top:30%;
       bottom: 35%;
-      border-left: 0px !important;
+      border-left: 3px !important;
       overflow:hidden;
       opacity: 25%;
       }
   }
 
+@media (max-width: 320px) {
+
+    .breadcrumbs-cont .col-md-11 {
+    padding-left: 0 !important;
+  }
+
+    .hide-text {
+    display: none;
+  }
+}
   
   

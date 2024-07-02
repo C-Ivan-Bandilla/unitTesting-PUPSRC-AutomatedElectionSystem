@@ -59,6 +59,8 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     <link rel="stylesheet" href="styles/dist/register.css">
     <link rel="stylesheet" href="styles/core.css" />
     <link rel="stylesheet" href="styles/dist/all-footer.css">
+    <link rel="stylesheet" href="styles/dist/landing-animation.css">
+    <link rel="stylesheet" href="styles/dist/landing-animation.css">
 
     <!-- Bootstrap JavaScript -->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -81,9 +83,9 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/outside-header.php');  
     ?>
 
-    <div class="container-fluid mt-4 pt-3 main-reg-container" style="padding-top: 0.8rem">
-        <div class="row mt-5 pl-5">
-            <div class="col-md-6">
+    <div class="mt-4 pt-3 fade-in" style="padding-top: 0.8rem">
+        <div class="row mt-5 pl-5 pb-4 container-fluid">
+            <div class="col-md-6 main-reg-container slide-in">
                 <form id="register-form" action="includes/registration-inc.php" method="POST"
                     enctype="multipart/form-data">
 
@@ -243,7 +245,8 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
             </div>
         </div>
 
-        <div class="col-md-6 d-flex align-items-center">
+        <div class="col-md-6 d-flex align-items-center slide-in">
+        <div class="col-md-6 d-flex align-items-center slide-in">
             <div class="register-img-container">
                 <img src="images/resc/voting.webp" alt="ivote-register" class="register-img" style="margin-left: 50px">
             </div>
@@ -386,7 +389,8 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     </div>
 
     <?php include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/all-footer.php'); ?>
-
+    <script src="scripts/landing-animation.js"></script>
+    <script src="scripts/landing-animation.js"></script>
 </body>
 
 </html>
