@@ -1,4 +1,8 @@
 <?php
+include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/file-utils.php');
+require_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
+include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-time-zone.php');
+
 class EmailSender
 {
     private $mail;
@@ -20,6 +24,18 @@ class EmailSender
         error_log($recipientEmail);
         return $this->sendEmail($recipientEmail, 'iVOTE Account Approval', $mailBody);
     }
+
+
+    public function sendForVerificationStatus($recipientEmail) {
+        $mailBody = 'Good day, Iskolar!<br><br>
+            
+        We wanted to inform you that your account registration has been successfully submitted and is currently awaiting approval. We will review your information shortly and notify you via email once your account has been verified.<br><br>
+
+        If you have any questions or need assistance, please contact the support team at ivotepupsrc@gmail.com. ';
+
+        return $this->sendEmail($recipientEmail, 'iVOTE Account Registration', $mailBody);
+    }
+
 
     public function sendRejectionEmail($recipientEmail, $reason, $otherReason = '')
     {

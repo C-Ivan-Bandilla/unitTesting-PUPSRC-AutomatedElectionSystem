@@ -36,9 +36,11 @@ include_once FileUtils::normalizeFilePath('error-reporting.php');
                   JOIN vote v ON c.candidate_id = v.candidate_id 
                   JOIN position p ON c.position_id = p.position_id 
                   WHERE c.election_year = ? 
+                  AND c.candidacy_status = 'verified'
                   GROUP BY c.candidate_id 
                   ORDER BY c.position_id, vote_count DESC 
                   LIMIT ? OFFSET ?";
+
 
         $stmt = $connection->prepare($query);
 
