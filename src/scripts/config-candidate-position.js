@@ -248,7 +248,7 @@ ConfigPage = {
                             ConfigPage.insertPosition(data)
                                 .then(() => {
 
-                                    ConfigPage.handleResponseStatus(200, data, 'Candidate Position added successfuly.');
+                                    ConfigPage.handleResponseStatus(200, data, 'Position added successfully.');
                                 })
                                 .catch((error) => {
                                     console.error("Error inserting data:", error);
@@ -257,7 +257,7 @@ ConfigPage = {
                             ConfigPage.updatePostion(data)
                                 .then(() => {
 
-                                    ConfigPage.handleResponseStatus(200, data, 'Candidate Position updated successfuly.');
+                                    ConfigPage.handleResponseStatus(200, data, 'Position updated successfully.');
                                 })
                                 .catch((error) => {
                                     console.error("Error inserting data:", error);
@@ -469,7 +469,7 @@ ConfigPage = {
                     if (success) {
                         // ConfigPage.updatePostion(data);
 
-                        ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
+                        ConfigPage.handleResponseStatus(200, data, 'Position updated successfully.');
 
                     } else {
                         console.error('POST request failed:', error);
@@ -542,7 +542,7 @@ ConfigPage = {
                         ConfigPage.deletePosition(data)
                             .then(() => {
 
-                                ConfigPage.handleResponseStatus(200, data, 'Vote guideline deleted successfuly.');
+                                ConfigPage.handleResponseStatus(200, data, 'Position deleted successfully.');
                             })
                             .catch((error) => {
                                 console.error("Error inserting data:", error);
@@ -560,7 +560,7 @@ ConfigPage = {
                                 ConfigPage.deletePosition({ data: [item] })
                                     .then(() => {
 
-                                        ConfigPage.handleResponseStatus(200, data, 'Vote guideline deleted successfuly.');
+                                        ConfigPage.handleResponseStatus(200, data, 'Position deleted successfully.');
                                     })
                                     .catch((error) => {
                                         console.error("Error inserting data:", error);
@@ -569,7 +569,6 @@ ConfigPage = {
                         });
                     }
 
-                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
                 }
                 catch (e) {
                     console.error('POST request failed:', e);

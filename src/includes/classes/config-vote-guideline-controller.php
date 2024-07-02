@@ -15,6 +15,7 @@ class VoteGuidelineController extends VoteGuidelineModel
     private $client_error;
     private $maxInt = 16_777_214;
     private $maxTextBytes = 65_535;
+    private $maxTextLength = 500;
     private $client_error_dictionary = [
         'ERR_INCOMPLETE_DATA' => 'The request data is incomplete.',
         'ERR_INVALID_DATA' => 'The request data is invalid.',
@@ -152,7 +153,7 @@ class VoteGuidelineController extends VoteGuidelineModel
                 //     $item['value'] = $this->clearInvalidValue($item['value']);
                 // }
 
-                if (mb_strlen($item['description']) >= $this->maxTextBytes) {
+                if (strlen($item['description']) >= $this->maxTextLength) {
                     $this->client_error = 'ERR_MAX_RULE_LENGTH';
                     return false;
                 }
