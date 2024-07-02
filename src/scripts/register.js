@@ -43,11 +43,15 @@ $(document).ready(function () {
 
     if (!isValidFormat) {
       if (showErrorMessages && fields.email.touched)
-        showError(input, errorElement, "Please enter a valid email address.");
+        showError(
+          input,
+          errorElement,
+          "Please enter a valid email address, such as johndoe@gmail.com."
+        );
       return false;
     } else if (isExistingEmail) {
       if (showErrorMessages && fields.email.touched)
-        showError(input, errorElement, "Email address already exists.");
+        showError(input, errorElement, "This email address is already taken.");
       return false;
     } else {
       clearError(input, errorElement);
@@ -55,7 +59,7 @@ $(document).ready(function () {
     }
   }
 
-  // Email format validation
+  // Email regex format validation
   function validateEmailFormat(email) {
     return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email);
   }
@@ -305,19 +309,14 @@ $(document).ready(function () {
     checkFormValidity();
   });
 
-  // $("form").on("submit", function (event) {
-  //   $("#sign-up").attr("disabled", true);
-  //   $("#sign-up").html(
-  //     `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
-  //   );
-
-  //   checkFormValidity(true);
-  //   if ($(this).find(".error-border").length) {
-  //     event.preventDefault();
-  //     $("#sign-up").html("Sign Up");
-  //     $("#sign-up").removeAttr("disabled");
-  //   }
-  // });
+  $("form").on("submit", function () {
+    setTimeout(function () {
+      $("#sign-up").attr("disabled", true);
+      $("#sign-up").html(
+        `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
+      );
+    }, 50);
+  });
 
   // Show success modal if registration is successful
   if (registrationSuccess) {

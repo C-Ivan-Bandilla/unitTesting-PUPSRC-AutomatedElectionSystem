@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var initialYear = "2023-2024";
+  var initialYear = "2024-2025";
   var initialPage = 1;
 
   document.getElementById("selectedYear").innerHTML =
@@ -65,85 +65,102 @@ document.getElementById("btn-next").addEventListener("click", function () {
 
 // Initialize global selected year
 window.selectedYear = "<?php echo $selected_year; ?>";
-var ctx = document.getElementById("myChart").getContext("2d");
+var ctx = document.getElementById('myChart').getContext('2d');
 var myChart = new Chart(ctx, {
-  type: "bar",
-  data: {
-    labels: [], // Initially empty
-    datasets: [
-      {
-        label: "# of Votes",
-        data: [], // Initially empty
-        backgroundColor: [], // Initially empty
-        borderColor: "rgba(0, 0, 0, 0)", // Transparent border color
-        borderWidth: 1,
-        barThickness: 40,
-      },
-    ],
-  },
-  options: {
-    plugins: {
-      legend: {
-        display: false,
-      },
+    type: 'bar',
+    data: {
+        labels: [], // Initially empty
+        datasets: [{
+            label: '# of Votes',
+            data: [], // Initially empty
+            backgroundColor: [], // Initially empty
+            borderColor: 'rgba(0, 0, 0, 0)', // Transparent border color
+            borderWidth: 1,
+            barThickness: 40 // Initial thickness
+        }]
     },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          display: true, // Hide grid lines on y-axis (vertical grid lines)
+    options: {
+        plugins: {
+            legend: {
+                display: false
+            }
         },
-      },
-      x: {
-        grid: {
-          display: false, // Show grid lines on x-axis (horizontal grid lines)
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    display: true // Hide grid lines on y-axis (vertical grid lines)
+                }
+            },
+            x: {
+                grid: {
+                    display: false // Show grid lines on x-axis (horizontal grid lines)
+                }
+            }
         },
-      },
-    },
-  },
+        responsive: true,
+        maintainAspectRatio: true, // Maintain aspect ratio to adjust height dynamically
+        aspectRatio: 2, // Initial aspect ratio (arbitrary number for starting point)
+        layout: {
+            padding: {
+                top: 20,
+                bottom: 20
+            }
+        }
+    }
 });
 
 // Function to generate lighter shades of a base color
 function generateLighterShades(baseColor, steps) {
-  const RGB_COLOR = baseColor.match(/\d+/g); // Extract RGB values from the base color
+    const RGB_COLOR = baseColor.match(/\d+/g); // Extract RGB values from the base color
 
-  const R_STEP = (255 - RGB_COLOR[0]) / steps;
-  const G_STEP = (255 - RGB_COLOR[1]) / steps;
-  const B_STEP = (255 - RGB_COLOR[2]) / steps;
+    const R_STEP = (255 - RGB_COLOR[0]) / steps;
+    const G_STEP = (255 - RGB_COLOR[1]) / steps;
+    const B_STEP = (255 - RGB_COLOR[2]) / steps;
 
-  const LIGHTER_SHADES = [];
-  for (let i = 0; i < steps; i++) {
-    const R = Math.round(parseInt(RGB_COLOR[0]) + i * R_STEP);
-    const G = Math.round(parseInt(RGB_COLOR[1]) + i * G_STEP);
-    const B = Math.round(parseInt(RGB_COLOR[2]) + i * B_STEP);
-    LIGHTER_SHADES.push(`rgba(${R},${G},${B},0.7)`); // Adjust alpha value as needed
-  }
+    const LIGHTER_SHADES = [];
+    for (let i = 0; i < steps; i++) {
+        const R = Math.round(parseInt(RGB_COLOR[0]) + i * R_STEP);
+        const G = Math.round(parseInt(RGB_COLOR[1]) + i * G_STEP);
+        const B = Math.round(parseInt(RGB_COLOR[2]) + i * B_STEP);
+        LIGHTER_SHADES.push(`rgba(${R},${G},${B},0.7)`); // Adjust alpha value as needed
+    }
 
-  return LIGHTER_SHADES;
+    return LIGHTER_SHADES;
 }
 
 // Update chart function using computed color for shades
 function updateChart(labels, votes) {
-  // Get the computed background color of .main-bg-color
-  const COMPUTED_COLOR = getComputedStyle(
-    document.querySelector(".main-bg-color")
-  ).backgroundColor;
+    // Get the computed background color of .main-bg-color
+    const COMPUTED_COLOR = getComputedStyle(document.querySelector('.main-bg-color')).backgroundColor;
 
-  // Generate lighter shades based on the computed color
-  const LIGHTER_SHADES = generateLighterShades(COMPUTED_COLOR, 3); // Change 5 to the number of shades you want
+    // Generate lighter shades based on the computed color
+    const LIGHTER_SHADES = generateLighterShades(COMPUTED_COLOR, 3); // Change 3 to the number of shades you want
 
-  // Set different colors for the candidates and abstained bar
-  var backgroundColors = labels.map((label, index) =>
-    label === "Abstained"
-      ? LIGHTER_SHADES[0]
-      : LIGHTER_SHADES[index % LIGHTER_SHADES.length]
-  );
+    // Set different colors for the candidates and abstained bar
+    var backgroundColors = labels.map((label, index) => label === 'Abstained' ? LIGHTER_SHADES[0] : LIGHTER_SHADES[index % LIGHTER_SHADES.length]);
 
-  myChart.data.labels = labels;
-  myChart.data.datasets[0].data = votes;
-  myChart.data.datasets[0].backgroundColor = backgroundColors;
-  myChart.update();
+    myChart.data.labels = labels;
+    myChart.data.datasets[0].data = votes;
+    myChart.data.datasets[0].backgroundColor = backgroundColors;
+    myChart.update();
 }
+
+// Function to update chart aspect ratio based on window size
+function updateChartSize() {
+    if (window.innerWidth < 480) {
+        myChart.options.aspectRatio = 0.8; // Adjust aspect ratio for smaller screens
+    } else {
+        myChart.options.aspectRatio = 2; // Default aspect ratio for larger screens
+    }
+    myChart.update();
+}
+
+// Event listener to handle window resize
+window.addEventListener('resize', updateChartSize);
+
+// Initial call to set the correct aspect ratio
+updateChartSize();
 
 document
   .getElementById("positionSelect")

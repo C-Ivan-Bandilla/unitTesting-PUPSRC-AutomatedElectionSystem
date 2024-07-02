@@ -33,6 +33,10 @@ $(document).ready(function () {
 
     if (!isValid) {
       event.preventDefault();
+    } else {
+      setTimeout(function () {
+        $("#loginSubmitBtn").prop("disabled", true);
+      }, 50);
     }
   });
 
@@ -108,8 +112,9 @@ $(document).ready(function () {
       $("#password-toggle").addClass("is-invalid border border-danger");
     } else {
       $("#password-login-error").text("");
-      $("#Password").removeClass("is-invalid border border-danger");
-      $("#password-toggle").removeClass("is-invalid border border-danger");
+      $("#Password, #password-toggle").removeClass(
+        "is-invalid border border-danger"
+      );
       $("#Password, #password-toggle").addClass(
         "is-valid border border-success"
       );
@@ -136,11 +141,11 @@ $(document).ready(function () {
       emailValidElement.text("");
     } else if (!isLogin && !user) {
       email.removeClass("is-valid was-validated").addClass("is-invalid");
-      emailErrorElement.text("User with this email does not exist.");
+      emailErrorElement.text("Your email couldn't be found.");
       emailValidElement.text("");
     } else if (!isLogin && user === "invalid") {
       email.removeClass("is-valid was-validated").addClass("is-invalid");
-      emailErrorElement.text("This account was rejected.");
+      emailErrorElement.text("We couldn't find your account.");
       emailValidElement.text("");
     } else {
       email
