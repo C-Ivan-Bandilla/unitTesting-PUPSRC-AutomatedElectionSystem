@@ -5,7 +5,7 @@
 						<div class="row">
 							<!-- First row content -->
 							<div class="col-md-12">
-								<img src="images/resc/iVOTE4.png" alt="" class="iVote-logo"
+								<img src="images/resc/iVOTE4.webp" alt="" class="iVote-logo"
 									style="width: 100%; height: 3rem;">
 							</div>
 						</div>
