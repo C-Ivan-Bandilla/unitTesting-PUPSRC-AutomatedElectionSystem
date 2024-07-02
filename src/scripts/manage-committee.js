@@ -83,34 +83,31 @@ function loadPage(tableId, paginationId, ajaxUrl, page, searchTerm = "", sortBy 
         voters.forEach((voter) => {
           const formattedDate = formatDate(voter.acc_created);
           const isChecked = selectedAdminIds.includes(voter.voter_id) ? "checked" : "";
-
+          const fullName = `${voter.first_name} ${voter.middle_name} ${voter.last_name} ${voter.suffix}`;
+      
           const row = `
-            <tr>
-              <td class="col-md-1 text-center checkbox-delete-admin ${
-                deleteAdminState ? "" : "d-none"
-              }">
-                <input type="checkbox" class="adminCheckbox" data-id="${
-                  voter.voter_id
-                }" ${isChecked}>
-              </td>
-              <td class="col-md-4 text-center text-truncate"><a href="account-details?voter_id=${
-                voter.voter_id
-              }">${voter.first_name} ${voter.middle_name} ${voter.last_name} ${
-            voter.suffix
-          }</a></td>
-              <td class="col-md-3 text-center">
-                <span class="role-background ${voter.role.toLowerCase()} ${
-            voter.role === "head_admin" ? "head-admin" : ""
-          }">${formatRoleString(voter.role)}</span>
-              </td>
-              <td class="col-md-3 text-center">
-                <span>${formattedDate}</span>
-              </td>
-            </tr>
+              <tr>
+                  <td class="col-md-3 text-center checkbox-delete-admin ${deleteAdminState ? "" : "d-none"}">
+                      <input type="checkbox" class="adminCheckbox" data-id="${voter.voter_id}" ${isChecked}>
+                  </td>
+                  <td class="col-md-4 text-center">
+                      <a href="account-details?voter_id=${voter.voter_id}" 
+                         class="truncate-name" 
+                         title="${fullName}">
+                          ${fullName}
+                      </a>
+                  </td>
+                  <td class="col-md-3 text-center">
+                      <span class="role-background ${voter.role.toLowerCase()} ${voter.role === 'head_admin' ? 'head-admin' : ''}">${formatRoleString(voter.role)}</span>
+                  </td>
+                  <td class="col-md-3 text-center">
+                      <span>${formattedDate}</span>
+                  </td>
+              </tr>
           `;
-
+      
           tbody.append(row);
-        });
+      });
       }
 
       if (tableId === "adminTable") {

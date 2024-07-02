@@ -250,6 +250,7 @@ if (isset($_SESSION['voter_id'])) {
 															</thead>
 															<tbody>
 																<?php while ($row = $verified_tbl->fetch_assoc()) { ?>
+																	
 																	<!-- Generated in manage-committee.js -->
 																<?php } ?>
 															</tbody>
