@@ -12,9 +12,15 @@
 	<div class="d-flex align-items-center">
 		<img src="images/logos/<?php echo $org_name ?>.png" alt="" class="org-logo">
 	</div>
-	<div class="org-sub-name text-center">
-		<div class="d-inline-block align-middle main-color"><?php echo strtoupper($org_full_name) ?></div>
-	</div>
+	<div class="d-inline-block align-middle main-color">
+        <?php 
+        if ($org_name == 'sco') {
+            echo strtoupper($org_full_name) . ' OF THE POLYTECHNIC UNIVERSITY OF THE PHILIPPINES SANTA ROSA';
+        } else {
+            echo strtoupper($org_full_name);
+        }
+        ?>
+    </div>
 
 	<div class="menu-content">
 		<ul class="menu-items ms-xl-1">
