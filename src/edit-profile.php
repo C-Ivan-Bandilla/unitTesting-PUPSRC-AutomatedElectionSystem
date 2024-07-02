@@ -171,10 +171,10 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                         <!-- Buttons -->
                                         <div class="btn-container">
                                             <div>
-                                                <button type="button" class="btn btn-primary main-bg-color" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><img src="images/resc/icons/change-pass.png" class="change-pass-icon">Change Password</button>
+                                                <button type="button" class="btn btn-primary main-bg-color btn-org-color" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><img src="images/resc/icons/change-pass.png" class="change-pass-icon">Change Password</button>
                                             </div>
                                             <div>
-                                                <button type="submit" id="saveChanges" name="save-changes" class="btn btn-primary main-bg-color save-button rounded-3">Save Changes</button>
+                                                <button type="submit" id="saveChanges" name="save-changes" class="btn btn-primary main-bg-color save-button rounded-3 btn-org-color">Save Changes</button>
                                                 <button type="button" id="cancelChanges" class="btn btn-secondary cancel-button rounded-3">Cancel</button>
                                             </div>
                                         </div>
