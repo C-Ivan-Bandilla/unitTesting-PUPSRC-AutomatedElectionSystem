@@ -76,7 +76,7 @@ input[type='password'] {
   width: 100%;
   overflow: hidden;
   line-height: 0;
-  margin-bottom: -10px;
+  /* margin-bottom: -10px; */
 
    /* @media only screen and (hover: none) {
     margin-bottom: calc(-5vh + -6vw);
