@@ -89,7 +89,7 @@ include_once 'modals.php';
     <?php
     $deleteAction = <<<HTML
                 <button type="button" class="btn btn-secondary secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" id="" class="btn btn-secondary primary" value="true" disabled>Delete</button>
+                <button type="button" id="" class="btn btn-danger primary" value="true" disabled>Delete</button>
     HTML;
     Modals::getDeleteModal($deleteAction);
     ?>

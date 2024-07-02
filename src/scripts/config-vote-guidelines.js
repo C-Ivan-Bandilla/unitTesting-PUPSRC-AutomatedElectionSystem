@@ -800,7 +800,7 @@ ConfigPage.showConfirmModal = async function (modal, instanceRef, inputId = null
                 let inputElement = modal.querySelector(`#${inputId}`);
                 inputElement.classList.remove('is-invalid');
                 inputElement.value = '';
-                $(modal).find('.prompt-action .btn-secondary.primary').prop('disabled', true)
+                $(modal).find('.prompt-action .btn.primary').prop('disabled', true)
                     .val('false')
             }
 
@@ -820,12 +820,12 @@ ConfigPage.handleConfirmInput = function (modal, inputId, inputVal) {
     ConfigPage.delEventListener(inputElement, 'blur');
     ConfigPage.addEventListenerAndStore(inputElement, 'blur', function () {
         if (inputElement.value == inputVal) {
-            $(modal).find('.prompt-action .btn-secondary.primary').prop('disabled', false)
+            $(modal).find('.prompt-action .btn.primary').prop('disabled', false)
                 .val('true');
             inputElement.classList.remove('is-invalid');
         }
         else {
-            $(modal).find('.prompt-action .btn-secondary.primary').prop('disabled', true)
+            $(modal).find('.prompt-action .btn.primary').prop('disabled', true)
                 .val('false');
             inputElement.classList.add('is-invalid')
         }
