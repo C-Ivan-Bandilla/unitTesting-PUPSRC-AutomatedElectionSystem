@@ -64,6 +64,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                   JOIN vote v ON c.candidate_id = v.candidate_id
                                   JOIN position p ON c.position_id = p.position_id
                                   WHERE c.election_year = ?
+                                  AND c.candidacy_status = 'verified'
                                   GROUP BY c.candidate_id, c.position_id
                                   ORDER BY c.position_id, vote_count DESC";
 
@@ -92,6 +93,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                    FROM candidate c
                                    JOIN vote v ON c.candidate_id = v.candidate_id
                                    WHERE c.election_year = ?
+                                   AND c.candidacy_status = 'verified'
                                    GROUP BY c.position_id";
 
                                 $stmtTotalVotes = $connection->prepare($totalVotesQuery);
@@ -149,40 +151,56 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                         while ($row = $result->fetch_assoc()) {
                             $position_id = $row['position_id'];
                             $title = $row['title'];
-
+                        
                             // Query to fetch data related to each position (candidates)
                             $data_query = "SELECT c.last_name, c.first_name, COUNT(v.vote_id) as num_votes
-                           FROM `candidate` c
-                           LEFT JOIN `vote` v ON c.candidate_id = v.candidate_id
-                           WHERE c.position_id = $position_id AND c.election_year = ?
-                           GROUP BY c.candidate_id";
+                                           FROM `candidate` c
+                                           LEFT JOIN `vote` v ON c.candidate_id = v.candidate_id
+                                           WHERE c.position_id = ? AND c.election_year = ?
+                                           AND c.candidacy_status = 'verified'
+                                           GROUP BY c.candidate_id";
                             $stmtData = $connection->prepare($data_query);
-                            $stmtData->bind_param("i", $election_year);
+                            $stmtData->bind_param("ii", $position_id, $election_year);
                             $stmtData->execute();
                             $data_result = $stmtData->get_result();
-
+                        
+                            // Check if there are no data rows
+                            if ($data_result->num_rows == 0) {
+                                // Close the statement
+                                $stmtData->close(); ?>
+                                <div class="pop-up container">
+                                    <?php
+                               echo "<table>";
+                                echo "<td>No Candidates in  $title </td>";
+                                echo"</table>";
+                                ?>
+                                </div>
+                                <?php
+                                continue; // Move to the next iteration of the outer loop
+                            }
+                        
                             // Query to fetch total votes for the position
                             $vote_query = "SELECT COUNT(*) as total_votes FROM `vote` v
-                           JOIN `candidate` c ON v.candidate_id = c.candidate_id
-                           WHERE c.position_id = $position_id AND c.election_year = ?";
+                                           JOIN `candidate` c ON v.candidate_id = c.candidate_id
+                                           WHERE c.position_id = ? AND c.election_year = ?";
                             $stmtVote = $connection->prepare($vote_query);
-                            $stmtVote->bind_param("i", $election_year);
+                            $stmtVote->bind_param("ii", $position_id, $election_year);
                             $stmtVote->execute();
                             $vote_result = $stmtVote->get_result();
                             $vote_row = $vote_result->fetch_assoc();
                             $total_votes = isset($vote_row['total_votes']) ? $vote_row['total_votes'] : 0;
-
+                        
                             // Query to fetch count of null votes (abstentions)
                             $abstain_query = "SELECT COUNT(*) as abstain_count FROM `vote` v
-                              JOIN `candidate` c ON v.candidate_id = c.candidate_id
-                              WHERE c.position_id = $position_id AND c.election_year = ? AND v.candidate_id IS NULL";
+                                              JOIN `candidate` c ON v.candidate_id = c.candidate_id
+                                              WHERE c.position_id = ? AND c.election_year = ? AND v.candidate_id IS NULL";
                             $stmtAbstain = $connection->prepare($abstain_query);
-                            $stmtAbstain->bind_param("i", $election_year);
+                            $stmtAbstain->bind_param("ii", $position_id, $election_year);
                             $stmtAbstain->execute();
                             $abstain_result = $stmtAbstain->get_result();
                             $abstain_row = $abstain_result->fetch_assoc();
                             $abstain_count = isset($abstain_row['abstain_count']) ? $abstain_row['abstain_count'] : 0;
-
+                        
                             // Display table with headers dynamically set to position title and total votes
                             echo "<table border='1'>";
                             echo "<br>";
@@ -190,33 +208,34 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                             echo "<th>{$title} Candidates</th>";
                             echo "<th colspan='2'>Total of {$total_votes} Votes</th>"; // Column header with total votes and percentage
                             echo "<tbody>";
-
+                        
                             // Output candidate data rows with percentage
                             while ($data_row = $data_result->fetch_assoc()) {
                                 $candidate_votes = $data_row['num_votes'];
                                 $percentage = round(($candidate_votes / $total_votes) * 100); // Calculate percentage without decimals
-
+                        
                                 echo "<tr>";
                                 echo "<td>{$data_row['last_name']}, {$data_row['first_name']}</td>"; // Last Name
                                 echo "<td>{$candidate_votes} ({$percentage}%)</td>"; // Votes and percentage
                                 echo "</tr>";
                             }
-
+                        
                             // Display abstain row with percentage
                             $abstain_percentage = round(($abstain_count / $total_votes) * 100); // Calculate abstain percentage
                             echo "<tr>";
                             echo "<td>Abstain</td>";
                             echo "<td>{$abstain_count} ({$abstain_percentage}%)</td>"; // Abstain count and percentage
                             echo "</tr>";
-
+                        
                             echo "</tbody>";
                             echo "</table>";
-
+                        
                             // Close result sets
                             $stmtData->close();
                             $stmtVote->close();
                             $stmtAbstain->close();
                         }
+                        
                     } else {
                         echo "No positions found";
                     }
@@ -234,7 +253,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 
                 <?php
                 // Path to the JSON file
-                $jsonFile = 'data/voters-turnout.json';
+                $jsonFile = 'data/' . $org_name. '/voters-turnout.json';
 
                 // Check if the file exists
                 if (file_exists($jsonFile)) {
@@ -278,7 +297,23 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                 }
                 ?>
             </div>
-
+            <div class="popup-container">
+            <div style="width: 100%; padding-left: 20px;">
+                <div style="text-align: start;">
+                    <br>
+                    <h6>This document is generated by <b>iVote</b></h6>
+                </div>
+                <br>
+                <div>
+                    <h6><b>Verified by: </b></h6>
+                </div>
+                <br><br>
+                <div style="text-align: start;">
+                    <hr style="width: 34%;">
+                    <p>Signature over Printed Name</p>
+                </div>
+            </div>
+            </div>
         </body>
 
         </html>
