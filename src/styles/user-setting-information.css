@@ -26,33 +26,25 @@ input[type="password"]::-ms-clear {
   font-size: 10px !important;
   color: black;
   text-decoration: none !important;
-  margin-left: 400px !important;
   @media (max-width: 480px) {
     margin-top: -18px !important;
-    margin-left: -10px !important;
   }
 }
+
 .tools{
   margin-top: -35px !important;
 }
 .download {
   font-size: 10px !important;
-  margin-left: 600px;
-  margin-right: 20px;
   @media (max-width: 480px) {
     margin-right: 10px;
     margin-left: 170px;
   }
 }
-.fullscreen-icon {
-  margin-left: 20px;
-  @media (max-width: 480px) {
-    margin-left: 10px;
-  }
-}
+
 
 .right-aligned-iframe {
-  width: 400px;
+  width: 410px;
   height: 200px;
   border-radius: 10px;
   border: none;
@@ -97,14 +89,11 @@ input[type="password"]::-ms-clear {
   overflow: hidden;
   height: 40px;
   width: 40px;
-  padding-left: 8px;
   padding-top: 8px;
   color: white;
-  margin-left: 140px;
   margin-top: 40px;
 
   @media (max-width: 480px) {
-    margin-left: 20px;
     margin-top: 40px;
   }
 }
@@ -113,19 +102,16 @@ input[type="password"]::-ms-clear {
 }
 .email-border {
   border-bottom: 1px solid #3a3a3a;
-  margin-left: 50px !important;
   margin-top: 10px !important;
   width: 230px !important;
   display: grid !important;
 }
 .user-email-1 {
   font-size: smaller;
-  margin-left: 80px;
 }
 .email-add {
   font-size: 15px;
   font-weight: bold;
-  margin-left: 105px;
   margin-top: 15px;
 }
 .modal-content {
@@ -155,11 +141,8 @@ input[type="password"]::-ms-clear {
   padding-left: 6%;
 }
 .transparent-btn {
-  margin-left: 37px;
   background-color: transparent;
-  width: 250px;
   font-weight: bold;
-  padding: 10px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -167,6 +150,8 @@ input[type="password"]::-ms-clear {
   cursor: pointer;
   transition-duration: 0.4s;
   border-style: none;
+  width: 225px;
+  align-items: center;
 }
 @media (max-width: 480px) {
   .transparent-btn {
@@ -213,8 +198,17 @@ a {
   text-decoration: underline;
 }
 
+a .custom-link{
+  text-decoration: none !important;
+}
+
 .asterisk {
   color: red;
+}
+
+.side-nav {
+  font-size: 18px; 
+  font-weight:600
 }
 
 .des {
@@ -360,6 +354,10 @@ a {
 
 .spacing {
   letter-spacing: 2px;
+}
+
+.container-data{
+  text-align: center;
 }
 
 
@@ -535,12 +533,12 @@ a {
 
 .im-cust-2 {
   margin-bottom: 0.188rem !important;
-  margin-right: 0.1rem !important;
+ 
 }
 
 .im-cust {
   margin-bottom: 0.188rem !important;
-  margin-right: 0.5rem !important;
+
 }
 
 .feather-2xs {

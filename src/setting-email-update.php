@@ -5,14 +5,49 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['role'] == 'student_voter')) {
-  // ------ SESSION EXCHANGE
-  include FileUtils::normalizeFilePath('includes/session-exchange.php');
-  // ------ END OF SESSION EXCHANGE
 
+
+  $token = $_GET['token'];
+  $token_hash = hash('sha256', $token);
+  
+  // Get the org name from the URL
+  $url_org_name = $_GET['orgName'];
+  $org_name = $url_org_name;
+  $_SESSION['organization'] = $org_name;
+  
+  include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/session-exchange.php');
+  
   $connection = DatabaseConnection::connect();
-  $voter_id = $_SESSION['voter_id']; // Get voter id to update the vote status
-  $vote_status = $_SESSION['vote_status']; // Get voter id to update the vote status
-?>
+  
+  $sql = "SELECT reset_token_hash, reset_token_expires_at FROM voter WHERE reset_token_hash = ?";
+  $stmt = $connection->prepare($sql);
+  $stmt->bind_param("s", $token_hash);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $row = $result->fetch_assoc();
+  
+  if (!$row) {
+      $_SESSION['error_message'] = 'Reset link was not found.';
+      header("Location: voter-login.php");
+      exit();
+  }
+  
+  $expiry_time = strtotime($row["reset_token_expires_at"]);
+  $current_time = time();
+  
+  if ($expiry_time <= $current_time) {
+      $_SESSION['error_message'] = 'Reset link has expired.';
+      header("Location: voter-login.php");
+      exit();
+  }
+  
+  if (isset($_SESSION['error_message'])) {
+      $error_message = $_SESSION['error_message'];
+      unset($_SESSION['error_message']); 
+  }
+  
+  ?>
+  
 
   <!DOCTYPE html>
   <html lang="en">
@@ -55,7 +90,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
           <!-- FOR VERIFICATION TABLE -->
           <div class="col-md-10 card-box">
             <div class="table-wrapper" id="profile">
-              <form class="needs-validation" id="reset-password-form" novalidate enctype="multipart/form-data">
+              <form class="needs-validation" action="includes/process-setting-email.php" method="post">
                 <input type="hidden" id="token" name="token" value="<?= htmlspecialchars($token) ?>">
                 <div class="img-container">
                   <img src="images/Emails/<?php echo strtolower($org_name); ?>-email.png" alt="Email Icon" class="forgot-password-icon">
@@ -65,6 +100,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                   <h4 class="reset-password-title text-center main-color <?php echo strtoupper($org_name); ?>-text-color" id="">Update your email address</h4>
                   <p class="reset-password-subtitle text-center"><b>Please enter your new email address below to update your <br> account information.</>
                   </p>
+
 
                   <!-- Displays error message -->
                   <?php if (isset($error_message)) : ?>
@@ -85,10 +121,9 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                   <div class="row mt-5 mb-3 reset-pass">
                     <div class="col-md-8 mb-2 position-relative">
                       <div class="input-group mb-3" id="reset-password">
-                        <input type="email" class="form-control reset-password-password" name="email" onkeypress="return avoidSpace(event)" placeholder="Enter a new email address" id="password" required>
+                        <input type="email" class="form-control reset-password-password" name="email" onkeypress="return avoidSpace(event)" placeholder="Enter a new email address" id="email" required>
                         <label for="email" class="new-password translate-middle-y main-color <?php echo strtoupper($org_name); ?>-text-color" id="">NEW EMAIL ADDRESS</label>
                         <button class="btn btn-secondary reset-password-password" type="button" id="reset-password-toggle-1">
-
                         </button>
                       </div>
                     </div>
@@ -102,13 +137,9 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                         </button>
                       </div>
                     </div>
-                    <div id="password-mismatch-error" class="text-danger" style="display: none;">Incorrect password. Please try again.</div>
-
                   </div>
                   <div class="col-md-12 reset-pass">
-                    <!-- <button class="btn login-sign-in-button mt-4" id="<?php echo strtoupper($org_name); ?>-login-button" type="submit" name="reset-password-submit" id="reset-password-submit">Set Password</button> -->
-                    <button class="btn login-sign-in-button mt-3 mb-3" id="<?php echo strtoupper($org_name); ?>-login-button" type="submit" name="new-password-submit">Update Email</button>
-
+                  <button class="btn login-sign-in-button mt-3 mb-3" id="<?php echo strtoupper($org_name); ?>-login-button" type="submit" name="new-password-submit">Update Email</button>
                   </div>
                 </div>
 
@@ -157,38 +188,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="scripts/loader.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="scripts/reset-password.js"></script>
+    <script src="scripts/setting-email-update.js"></script>
 
-
-    <!-- Updated script for password toggle -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        const togglePassword1 = document.querySelector("#password-toggle-1");
-        const passwordInput1 = document.querySelector("#change-password");
-        const eyeIcon1 = togglePassword1.querySelector("i");
-
-        togglePassword1.addEventListener("click", function() {
-          const type =
-            passwordInput1.getAttribute("type") === "password" ?
-            "text" :
-            "password";
-          passwordInput1.setAttribute("type", type);
-
-          // Toggle eye icon classes
-          eyeIcon1.classList.toggle("fa-eye-slash");
-          eyeIcon1.classList.toggle("fa-eye");
-        });
-
-        // Show or hide eye toggle based on input value
-        passwordInput1.addEventListener("input", function() {
-          if (passwordInput1.value === "") {
-            togglePassword1.style.display = "none";
-          } else {
-            togglePassword1.style.display = "block";
-          }
-        });
-      });
-    </script>
   </body>
 
   </html>

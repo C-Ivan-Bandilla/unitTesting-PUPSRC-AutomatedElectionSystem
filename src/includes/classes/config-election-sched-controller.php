@@ -14,9 +14,9 @@ class ElectionYearController extends ElectionYearModel
     private $data;
     private $client_error;
     private $client_error_dictionary = [
-        'ERR_INVALID_START_DATE_FORMAT' => 'The date format is invalid. Please use YYYY-MM-DD.',
-        'ERR_INVALID_END_DATE_FORMAT' => 'The date format is invalid. Please use YYYY-MM-DD.',
-        'ERR_INVALID_DATE_FORMAT' => 'The date format is invalid. Please use YYYY-MM-DD.',
+        'ERR_INVALID_START_DATE_FORMAT' => 'The date format is invalid. Please use MM-DD-YYYY.',
+        'ERR_INVALID_END_DATE_FORMAT' => 'The date format is invalid. Please use MM-DD-YYYY.',
+        'ERR_INVALID_DATE_FORMAT' => 'The date format is invalid. Please use MM-DD-YYYY.',
         'ERR_INVALID_START_TIME_FORMAT' => 'The time format is invalid. Please use HH:MM.',
         'ERR_INVALID_END_TIME_FORMAT' => 'The time format is invalid. Please use HH:MM.',
         'ERR_INVALID_TIME_FORMAT' => 'The time format is invalid. Please use HH:MM.',

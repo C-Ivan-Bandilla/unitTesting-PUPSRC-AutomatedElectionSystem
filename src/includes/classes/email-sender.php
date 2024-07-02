@@ -104,6 +104,37 @@ class EmailSender
         return $this->sendEmail($recipientEmail, $subject, $mailBody);
     }
     
+    public function sendResetEmail($recipientEmail, $token, $orgName) {
+        $subject = 'iVOTE Change Email Request';
+        $updateEmailLink = "http://localhost/PUPSRC-AutomatedElectionSystem/src/setting-email-update.php?token=$token&orgName=$orgName";
+        $mailBody = <<<EOT
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>iVOTE Password Change Email Request</title>
+        </head>
+        <body">
+            <p>Dear Iskolar,</p>
+            <p>We have received a request to change your email associated with your account. To complete the process, 
+            please follow the instructions below:</p>
+            <ul style="padding-left: 20px;">
+                <li>Click on the following link to change your email: <a href="$updateEmailLink">Change Email Link</a></li>
+                <li>The change email link is only available for 30 minutes.</li>
+                <li>If you are unable to click the link above, please copy and paste it into your browser's address bar.</li>
+                <li>Once the link opens, you will be prompted to enter a new email for your account.</li>
+            </ul>
+            <p>If you did not initiate this change email request, please disregard this email.</p>
+            <p>Thank you for your attention to this matter.</p>
+            <p>Best regards,<br>iVOTE Team</p>
+        </body>
+        </html>
+        EOT;
+    
+        return $this->sendEmail($recipientEmail, $subject, $mailBody);
+    }
+    
 
     private function sendEmail($recipientEmail, $subject, $body)
     {

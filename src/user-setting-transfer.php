@@ -170,6 +170,7 @@ $voter_id = $_SESSION['voter_id'];
           </label>
           <input class="form-control form-control-sm pl-2" style="background-color:#EDEDED" type="file" name="cor" id="cor" accept=".pdf" max="25MB" onchange="displayFileName(this)">
           <small class="form-text text-muted">Only PDF files up to 25MB are allowed.</small>
+            <div id="fileError" class="text-danger"></div>
         </div>
         <input type="hidden" id="corFileName">
       </div>
