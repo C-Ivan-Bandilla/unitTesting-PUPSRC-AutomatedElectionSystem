@@ -96,7 +96,7 @@ input[type='password'] {
 }
 
 .parallax {
-  background-image: url("../../images/resc/landing-background.png");
+  background-image: url("../../images/resc/landing-background.webp");
   height: 100vh;
   background-color: #f8f8f8;
   /* Create the parallax scrolling effect */
