@@ -932,9 +932,9 @@ span {
 }
 
 @media (max-width: 1000px) {
-  .index-wave-footer {
+  /* .index-wave-footer {
     margin-bottom: -10px;
-  }
+  } */
 
   .login-right-section {
     background-color: transparent;
@@ -1350,7 +1350,7 @@ span {
 
 
 /* --- MEDIAS IDK IF MAAYOS BA DITO YUNG SA WAVE--- */
-@media (max-width: 1280px) {
+/* @media (max-width: 1280px) {
   .index-wave-footer {
     margin-bottom: -10px;
   }
@@ -1378,5 +1378,5 @@ span {
   .index-wave-footer {
     margin-bottom: -50px;
   }
-}
+} */
 /* --- END OF MEDIAS --- */
