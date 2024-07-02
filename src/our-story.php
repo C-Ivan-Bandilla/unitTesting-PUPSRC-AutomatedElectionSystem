@@ -19,12 +19,14 @@ SessionManager::checkUserRoleAndRedirect();
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/dist/landing.css">
-  <link rel="stylesheet" href="styles/loader.css">
   <link rel="stylesheet" href="styles/dist/all-footer.css">
   <link rel="stylesheet" href="styles/our-story.css">
   <link rel="icon" href="images/resc/ivote-favicon.png" type="image/x-icon">
   <title>iVote</title>
-  <title>iVote</title>
+
+  <!-- Preloader Stylesheet and Image -->
+  <link rel="preload" href="images/resc/ivote-icon.webp" as="image">
+  <link rel="stylesheet" href="styles/loader.css" />
 
   <!-- Montserrat Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,37 +37,17 @@ SessionManager::checkUserRoleAndRedirect();
 
 <body id="index-body">
 
-  <?php include_once FileUtils::normalizeFilePath('includes/components/loader.html'); ?>
-
-  <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
-    <div class="container">
-      <!-- <a class="navbar-brand" href="#">Your Brand</a> -->
-      <img src="images/resc/ivote-icon-2.png" id="ivote-logo-landing-header" alt="ivote-logo">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item fw-medium">
-            <a class="nav-link" href="landing-page.php">Home</a>
-          </li>
-          <li class="nav-item fw-medium">
-            <a class="nav-link" href="about-us.php">About Us</a>
-          </li>
-          <li class=" nav-item">
-            <a class="nav-link active" href="register.php">Register</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <?php 
+  include_once FileUtils::normalizeFilePath('includes/components/loader.html');
+  include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/outside-header.php');  
+  ?>
 
   <!-- Parallax section -->
   <section class="parallax">
     <div class="container">
       <div class="row">
         <div class="col text-center text-white justify-content-center">
-          <img src="images/resc/iVOTE4.png" class="img-fluid ivote-main-logo" alt="iVote Logo">
+          <img src="images/resc/iVOTE4.webp" class="img-fluid ivote-main-logo" alt="iVote Logo">
           <h5 id="index-PUPSRC" class="text-truncate mt-3">Polytechnic University of the Philippines -
             Santa Rosa Campus</h5>
           <h1 class="" id="index-AES">AUTOMATED ELECTION SYSTEM</h1>
@@ -186,7 +168,7 @@ SessionManager::checkUserRoleAndRedirect();
                 </div>
               </div>
               <div class="department-icon mt-0">
-                <img src="images/resc/ivote-favicon.png" class="img-fluid ivote-our-story" alt="iVote Logo">
+                <img src="images/resc/ivote-favicon.webp" class="img-fluid ivote-our-story" alt="iVote Logo">
               </div>
             </div>
 

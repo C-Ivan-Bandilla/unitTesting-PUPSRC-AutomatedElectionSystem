@@ -52,13 +52,13 @@
 							<!-- Third row content -->
 							<div class="col-md-12 d-flex justify-content-between pt-xl-1">
 								<a href="<?php echo ($twitter) ?>">
-									<img src="images/resc/icons/twitter.png" alt="" class="soc-med-icons">
+									<img src="images/resc/icons/twitter.webp" alt="" class="soc-med-icons">
 								</a>
 								<a href="<?php echo ($facebook) ?>">
-									<img src="images/resc/icons/facebook.png" alt="" class="soc-med-icons">
+									<img src="images/resc/icons/facebook.webp" alt="" class="soc-med-icons">
 								</a>
 								<a href="<?php echo ($instagram) ?>">
-									<img src="images/resc/icons/instagram.png" alt="" class="soc-med-icons">
+									<img src="images/resc/icons/instagram.webp" alt="" class="soc-med-icons">
 								</a>
 							</div>
 						</div>
