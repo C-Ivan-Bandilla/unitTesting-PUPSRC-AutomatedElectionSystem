@@ -315,20 +315,16 @@ ConfigPage.postData = function (post_data) {
         })
         .then(async ([response, data]) => {
             // sucess
-            console.log('POST request successful:', response);
-            console.log('Status:', response.status);
-            console.log('Data:', data);
 
             ConfigPage.handleSucessResponse();
 
             return { data, success: true };
         })
         .catch(function (error) {
-            // console.error('PUT request error:', error.data);
-            // console.error('Status:', error.response.status);
-            // ConfigPage.handleResponseStatus(error.response.status, error.data);
-            // return { data: error.data, success: false };
-            console.error(error)
+            console.error('PUT request error:', error.data);
+            console.error('Status:', error.response.status);
+            ConfigPage.handleResponseStatus(error.response.status, error.data);
+            return { data: error.data, success: false };
         });
 };
 
@@ -357,7 +353,6 @@ ConfigPage.handleSucessResponse = function () {
 ConfigPage.handleModalDispose = function () {
     ConfigPage.modalInstance.instance.dispose();
 }
-
 
 
 ConfigJS();
