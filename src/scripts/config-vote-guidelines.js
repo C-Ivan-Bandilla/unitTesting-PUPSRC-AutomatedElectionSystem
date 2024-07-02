@@ -607,8 +607,10 @@ ConfigPage.TableHandler = class {
 
                         console.error(`Input element with ID not found.`);
                     }
-                    resolve();
+
                 }
+
+                resolve();
             } catch (error) {
                 reject(error);
             }
@@ -871,17 +873,10 @@ ConfigPage.createToast = function (message, type) {
 
     ConfigPage.toastContainer.appendChild(toast);
 
-    // toast.addEventListener('hidden.bs.toast', () => {
-    //     toast.remove();
-    // });
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
 
-    // let toastElList = [].slice.call(
-    //     document.querySelectorAll('.toast'))
-    // let toastList = toastElList.map(function (toastEl) {
-    //     return new bootstrap.Toast(toastEl)
-    // })
-
-    // toastList.forEach(toast => toast.hide())
     new bootstrap.Toast(toast).show();
 }
 

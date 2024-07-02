@@ -82,6 +82,7 @@ ConfigPage = {
             positionInput.setAttribute('placeholder', 'Enter a candidate position');
             positionInput.setAttribute('pattern', '[a-zA-Z .\\-]{1,50}');
             positionInput.setAttribute('required', '');
+            positionInput.setAttribute('maxlength', 50);
 
             let positionAlert = document.createElement('div');
             positionAlert.classList.add('input-alert', 'mb-2');
@@ -244,9 +245,23 @@ ConfigPage = {
                     console.log(ConfigPage.mode);
                     if (success) {
                         if (ConfigPage.mode === 'add') {
-                            ConfigPage.insertPosition(data);
+                            ConfigPage.insertPosition(data)
+                                .then(() => {
+
+                                    ConfigPage.handleResponseStatus(200, data, 'Candidate Position added successfuly.');
+                                })
+                                .catch((error) => {
+                                    console.error("Error inserting data:", error);
+                                });
                         } else if (ConfigPage.mode === 'update') {
-                            ConfigPage.updatePostion(data);
+                            ConfigPage.updatePostion(data)
+                                .then(() => {
+
+                                    ConfigPage.handleResponseStatus(200, data, 'Candidate Position updated successfuly.');
+                                })
+                                .catch((error) => {
+                                    console.error("Error inserting data:", error);
+                                });
                         }
 
                         ConfigPage.edit_position_modal.hide();
@@ -453,6 +468,9 @@ ConfigPage = {
 
                     if (success) {
                         // ConfigPage.updatePostion(data);
+
+                        ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
+
                     } else {
                         console.error('POST request failed:', error);
                     }
@@ -521,7 +539,15 @@ ConfigPage = {
                 try {
                     const { data, success, error } = result;
                     if (success) {
-                        ConfigPage.deletePosition(data);
+                        ConfigPage.deletePosition(data)
+                            .then(() => {
+
+                                ConfigPage.handleResponseStatus(200, data, 'Vote guideline deleted successfuly.');
+                            })
+                            .catch((error) => {
+                                console.error("Error inserting data:", error);
+                            });
+
                     } else if (error.data) {
                         error.data.forEach(item => {
                             console.log('item');
@@ -531,10 +557,19 @@ ConfigPage = {
                             if (item.hasOwnProperty('affected_candidates')) {
                                 ConfigPage.NativeModal.show(item);
                             } else {
-                                ConfigPage.deletePosition({ data: [item] });
+                                ConfigPage.deletePosition({ data: [item] })
+                                    .then(() => {
+
+                                        ConfigPage.handleResponseStatus(200, data, 'Vote guideline deleted successfuly.');
+                                    })
+                                    .catch((error) => {
+                                        console.error("Error inserting data:", error);
+                                    });
                             }
                         });
                     }
+
+                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
                 }
                 catch (e) {
                     console.error('POST request failed:', e);
@@ -548,27 +583,37 @@ ConfigPage = {
         console.log(DATA.data);
         console.log(Array.isArray(DATA.data));
 
-        if (DATA && DATA.data && Array.isArray(DATA.data)) {
 
-            DATA.data.forEach(item => {
-                const { data_id, input_id } = item;
 
-                let INPUT_ELEMENT = document.getElementById(input_id);
-                let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
-                if (DATA_ROW) {
-                    ConfigPage.table.row(DATA_ROW).remove().draw();
-                    const SELECTED_COUNT = ConfigPage.countSelectedRows();
-                    ConfigPage.updateToolbarButton(SELECTED_COUNT);
-                    // ConfigPage.deselectAll();
+        return new Promise((resolve, reject) => {
+            try {
+                if (DATA && DATA.data && Array.isArray(DATA.data)) {
 
+                    DATA.data.forEach(item => {
+                        const { data_id, input_id } = item;
+
+                        let INPUT_ELEMENT = document.getElementById(input_id);
+                        let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
+                        if (DATA_ROW) {
+                            ConfigPage.table.row(DATA_ROW).remove().draw();
+                            const SELECTED_COUNT = ConfigPage.countSelectedRows();
+                            ConfigPage.updateToolbarButton(SELECTED_COUNT);
+                            // ConfigPage.deselectAll();
+
+                        } else {
+
+                            console.error(`Input element with ID not found.`);
+                        }
+                    });
                 } else {
-
-                    console.error(`Input element with ID not found.`);
+                    // console.error('Invalid or missing DATA structure.');
                 }
-            });
-        } else {
-            // console.error('Invalid or missing DATA structure.');
-        }
+
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        })
     },
 
     deselectAll: function () {
@@ -581,87 +626,103 @@ ConfigPage = {
     },
 
     updatePostion: function (DATA, draw = true) {
-        console.log('update table');
 
-        if (DATA && DATA.data && Array.isArray(DATA.data)) {
-            DATA.data.forEach(item => {
-                console.log("each pos update " + JSON.stringify(item));
-                let { sequence, data_id, input_id, value, max_votes, description } = item;
-                if (draw) {
-                    let rowData = {
-                        0: sequence,
-                        1: {
-                            data_id: data_id,
-                            sequence: sequence,
-                            value: value,
-                            max_votes: max_votes
-                        },
-                        2: description
-                    }
+        return new Promise((resolve, reject) => {
+            try {
+                if (DATA && DATA.data && Array.isArray(DATA.data)) {
+                    DATA.data.forEach(item => {
+                        console.log("each pos update " + JSON.stringify(item));
+                        let { sequence, data_id, input_id, value, max_votes, description } = item;
+                        if (draw) {
+                            let rowData = {
+                                0: sequence,
+                                1: {
+                                    data_id: data_id,
+                                    sequence: sequence,
+                                    value: value,
+                                    max_votes: max_votes
+                                },
+                                2: description
+                            }
 
-                    let INPUT_ELEMENT = document.getElementById(input_id);
-                    let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
-                    if (DATA_ROW) {
-                        console.log(DATA_ROW);
-                        ConfigPage.table.row(DATA_ROW).data(rowData).draw(false);
-                    } else {
+                            let INPUT_ELEMENT = document.getElementById(input_id);
+                            let DATA_ROW = INPUT_ELEMENT.closest(`tr`);
+                            if (DATA_ROW) {
+                                console.log(DATA_ROW);
+                                ConfigPage.table.row(DATA_ROW).data(rowData).draw(false);
+                            } else {
 
-                        console.error(`Input element with ID not found.`);
-                    }
+                                console.error(`Input element with ID not found.`);
+                            }
+                        } else {
+
+
+                            // let INPUT_ELEMENT = document.getElementById(input_id);
+                            // if (INPUT_ELEMENT) {
+                            //     INPUT_ELEMENT.name = data_id;
+                            // } else {
+
+                            //     console.error(`Input element with ID not found.`);
+                            // }
+                        }
+                    });
                 } else {
-
-
-                    // let INPUT_ELEMENT = document.getElementById(input_id);
-                    // if (INPUT_ELEMENT) {
-                    //     INPUT_ELEMENT.name = data_id;
-                    // } else {
-
-                    //     console.error(`Input element with ID not found.`);
-                    // }
+                    // console.error('Invalid or missing DATA structure.');
                 }
-            });
-        } else {
-            // console.error('Invalid or missing DATA structure.');
-        }
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        })
+
+
 
     },
 
     insertPosition: function (DATA, draw = false) {
 
-        if (DATA && DATA.data && Array.isArray(DATA.data)) {
-            DATA.data.forEach(item => {
-                console.log("each pos update " + JSON.stringify(item));
-                let { sequence, data_id, input_id, value, max_votes, description } = item;
-                if (!draw) {
-                    let rowData = {
-                        0: sequence,
-                        1: {
-                            data_id: data_id,
-                            sequence: sequence,
-                            value: value,
-                            max_votes: (Number.isInteger(max_votes) && max_votes !== null) ? max_votes :
-                                (!isNaN(parseInt(max_votes)) ? parseInt(max_votes) : 1)
-                        },
-                        2: description
-                    }
+        return new Promise((resolve, reject) => {
+            try {
+                if (DATA && DATA.data && Array.isArray(DATA.data)) {
+                    DATA.data.forEach(item => {
+                        console.log("each pos update " + JSON.stringify(item));
+                        let { sequence, data_id, input_id, value, max_votes, description } = item;
+                        if (!draw) {
+                            let rowData = {
+                                0: sequence,
+                                1: {
+                                    data_id: data_id,
+                                    sequence: sequence,
+                                    value: value,
+                                    max_votes: (Number.isInteger(max_votes) && max_votes !== null) ? max_votes :
+                                        (!isNaN(parseInt(max_votes)) ? parseInt(max_votes) : 1)
+                                },
+                                2: description
+                            }
 
-                    ConfigPage.table.row.add(rowData).draw(false);
+                            ConfigPage.table.row.add(rowData).draw(false);
 
+                        } else {
+
+
+                            // let INPUT_ELEMENT = document.getElementById(input_id);
+                            // if (INPUT_ELEMENT) {
+                            //     INPUT_ELEMENT.name = data_id;
+                            // } else {
+
+                            //     console.error(`Input element with ID not found.`);
+                            // }
+                        }
+                    });
                 } else {
-
-
-                    // let INPUT_ELEMENT = document.getElementById(input_id);
-                    // if (INPUT_ELEMENT) {
-                    //     INPUT_ELEMENT.name = data_id;
-                    // } else {
-
-                    //     console.error(`Input element with ID not found.`);
-                    // }
+                    // console.error('Invalid or missing DATA structure.');
                 }
-            });
-        } else {
-            // console.error('Invalid or missing DATA structure.');
-        }
+
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        })
 
     },
 
@@ -1298,6 +1359,50 @@ ConfigPage.typingTimeout;
 
 ConfigPage.fetchData();
 ConfigPage.startTableListener();
+
+ConfigPage.toastContainer = document.querySelector('.toast-container');
+
+ConfigPage.handleResponseStatus = function (statusCode, data, message = '') {
+    if (statusCode >= 400) {
+        // if (statusCode == 401) {
+        ConfigPage.createToast(ConfigPage.errorDictionary[data.message] || data.message, 'danger');
+    }
+    else if (statusCode == 200) {
+        ConfigPage.createToast(message, 'success');
+    }
+}
+
+ConfigPage.createToast = function (message, type) {
+    const toast = document.createElement('div');
+    toast.classList.add('toast');
+
+    const toastBody = document.createElement('div');
+    toastBody.classList.add('toast-body', `text-bg-${type}`);
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('toast-content');
+    messageDiv.textContent = message;
+    toastBody.prepend(messageDiv);
+
+
+    const closeContainer = document.createElement('div');
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('btn-close');
+    closeButton.setAttribute('type', 'button');
+    closeButton.setAttribute('data-bs-dismiss', 'toast');
+    closeButton.setAttribute('aria-label', 'Close');
+
+    closeContainer.appendChild(closeButton);
+    toastBody.appendChild(closeContainer);
+    toast.appendChild(toastBody);
+
+    ConfigPage.toastContainer.appendChild(toast);
+
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
+
+    new bootstrap.Toast(toast).show();
+}
 
 ConfigPage.NativeModal = class {
     static modalElement = document.getElementsByClassName('modal-native');

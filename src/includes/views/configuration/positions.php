@@ -24,52 +24,64 @@
             $secondary_nav->getNavLink();
             ?>
         </div>
-        <div class="card-box ">
-            <table id="example" class="table table-hover" style="width:100%; display: none;">
-                <thead>
-                    <tr class="d-none">
-                        <th>Seq</th>
-                        <th>Name</th>
-                        <th>Duties and Responsibilities</th>
-                    </tr>
-                </thead>
-                <tbody>
 
-
-
-
-                </tbody>
-
-            </table>
-
-
-        </div>
-
-
-
-
-        <div class="toolbar" style="display : none;">
-            <div class="tools">
-                <label for="deleteButton" id="delete-label" data-bs-toggle="tooltip" data-bs-title="No items selected." data-bs-placement="right">
-                    <button type="button" id="delete" class="btn btn-primary del me-2 me-md-3" data-selected="" disabled>
-                        <span class="">Delete</span>
-                    </button>
-                </label>
-                <button type="button" class="btn btn-primary del me-2 me-md-3 d-none" data-selected="">
-                    <span class="icon trash ">
-                        <i data-feather="trash"></i>
-                    </span>
-                    <span class="d-none d-sm-inline">Edit</span>
-                </button>
-                <b class="item-count d-none"><span class="count"></span> items selected</b>
-
+        <section>
+            <div class="toast-container pe-md-3 pe-lg-5 pe-sm-2">
+                <!-- <div class="toast-body text-bg-danger">
+                    <div class="toast-content">The end date cannot be before the start date.</div>
+                    <div><button class="btn-close" type="button" data-bs-dismiss="toast" aria-label="Close"></button></div>
+                </div> -->
             </div>
-            <span class="save-status d-none">
-                <span class="text-uppercase weight-700 save-icon d-none d-md-inline">Note: </span>
-                <span class="save-msg text-truncate d-none d-md-inline">Your changes are saved automatically.</span>
-            </span>
-        </div>
+        </section>
+
+        <section>
+            <div class="card-box ">
+                <table id="example" class="table table-hover" style="width:100%; display: none;">
+                    <thead>
+                        <tr class="d-none">
+                            <th>Seq</th>
+                            <th>Name</th>
+                            <th>Duties and Responsibilities</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+
+
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="toolbar" style="display : none;">
+                <div class="tools">
+                    <label for="deleteButton" id="delete-label" data-bs-toggle="tooltip" data-bs-title="No items selected." data-bs-placement="right">
+                        <button type="button" id="delete" class="btn btn-primary del me-2 me-md-3" data-selected="" disabled>
+                            <span class="">Delete</span>
+                        </button>
+                    </label>
+                    <button type="button" class="btn btn-primary del me-2 me-md-3 d-none" data-selected="">
+                        <span class="icon trash ">
+                            <i data-feather="trash"></i>
+                        </span>
+                        <span class="d-none d-sm-inline">Edit</span>
+                    </button>
+                    <b class="item-count d-none"><span class="count"></span> items selected</b>
+
+                </div>
+                <span class="save-status d-none">
+                    <span class="text-uppercase weight-700 save-icon d-none d-md-inline">Note: </span>
+                    <span class="save-msg text-truncate d-none d-md-inline">Your changes are saved automatically.</span>
+                </span>
+            </div>
     </div>
+    </section>
+
+
+
+
+
 
     <dialog class="modal-native" aria-modal="true" role="dialog">
         <div class="modal-dialog modal-lg modal-dialog-centered">
