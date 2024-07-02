@@ -80,7 +80,11 @@ class Application {
         $connection = $this->db->connect();
     
         // Fetch total count of voters
-        $totalVotersQuery = "SELECT COUNT(*) AS total_count FROM voter WHERE role = 'student_voter'";
+        $totalVotersQuery = "SELECT COUNT(*) AS total_count 
+FROM voter 
+WHERE role = 'student_voter' 
+  AND account_status = 'verified';
+";
         $totalVotersResult = $connection->query($totalVotersQuery);
         $totalVotersCount = $totalVotersResult->fetch_assoc()['total_count'];
     
