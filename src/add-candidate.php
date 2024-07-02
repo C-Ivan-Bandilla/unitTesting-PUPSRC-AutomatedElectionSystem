@@ -53,16 +53,16 @@
                 ?>
 
                 <div class="main">
-                    <div class="container mb-5 ps-5">
+                    <div class="container mb-5 ps-5 breadcrumbs-cont">
                         <div class="row justify-content-center">
                             <div class="col-md-11">
-                                <div class="breadcrumbs d-flex">
+                                <div class="breadcrumbs d-flex flex-wrap justify-content-center justify-content-md-start">
                                     <button type="button" class="btn btn-lvl-white d-flex align-items-center spacing-8 fs-8">
-                                        <i data-feather="users" class="white im-cust feather-2xl"></i> CANDIDATES
+                                        <i data-feather="users" class="white im-cust feather-2xl"></i> <span class="hide-text">CANDIDATES</span>
                                     </button>
                                     <button type="button" class="btn btn-lvl-current rounded-pill spacing-8 fs-8">ADD
                                         CANDIDATE</button>
-                                    <div class="align-items-end ms-auto me-4 mx-auto">
+                                    <div class="align-items-end ms-auto me-4 mx-auto mt-3 mt-md-0">
                                         <button type="button" class="button-add rounded-2 fs-7" onclick="duplicateForm()">
                                             <i class="bi bi-plus-circle me-3"></i>Add Another Candidate
                                         </button>
@@ -74,9 +74,17 @@
 
                     <form action="../src/submission_handlers/insert-candidates.php" method="post" id="candidate-form" enctype="multipart/form-data">
                         <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+
                         <div class="container">
                             <div class="row justify-content-center">
                                 <div class="col-md-10 card-box mt-md-10" id="form-container">
+                                    <?php
+                                    $currentYear = date("Y");
+                                    $nextYear = $currentYear + 1;
+                                    $election_year = $currentYear . '-' . $nextYear;
+                                    ?>
+                                    <input type="hidden" name="election_year" value="<?php echo htmlspecialchars($election_year); ?>">
+
                                     <div class="container">
                                         <div class="card-box">
                                             <div class="row">
@@ -85,8 +93,8 @@
                                                 </div>
                                             </div>
                                             <br>
-                                            <div class="row">
-                                                <div class="row">
+                                            <div class="row d-flex justify-content-around">
+                                                <div class="row ">
                                                     <div class="col-md-3 col-sm-3 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="last_name" class="login-dange fs-7">Last Name <span class="required"> * </span> </label>
@@ -97,7 +105,7 @@
                                                     <div class="col-md-3 col-sm-3 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="first_name" class="login-danger fs-7">First Name<span class="required"> * </span> </label>
-                                                            <input type="text" id="first_name" name="first_name[]" placeholder="E.g. Trizia Mae" required pattern="^[a-z ,.'-]+$/i" maxlength="50">
+                                                            <input type="text" id="first_name" name="first_name[]" placeholder="E.g. Trizia Mae" required pattern="^[a-z ,.'-]+$/i" maxlength="20">
                                                             <span class="error-message" id="first_name_error"></span>
                                                         </div>
                                                     </div>
@@ -111,7 +119,7 @@
                                                     <div class="col-md-2 col-sm-3 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="suffix" class="login-danger fs-7">Suffix</label>
-                                                            <select id="suffix" name="suffix[]" required style="opacity: 0.5">
+                                                            <select id="suffix" name="suffix[]" style="opacity: 0.5">
                                                                 <option value="suffix" class="disabled-option" disabled selected>E.g. Jr</option>
                                                                 <option value="">No suffix</option>
                                                                 <option value="Jr">Jr</option>
@@ -147,11 +155,13 @@
                                                     <div class="col-md-4 col-sm-3 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="section" class="login-danger fs-7">Block Section<span class="required"> *</span></label>
-                                                            <select id="section" name="section[]" onmousedown="if(this.options.length>3){this.size=3;}" onchange='this.size=0;' onblur="this.size=0;" required style="opacity: 0.5">
+                                                            <select id="section" name="section[]" required style="opacity: 0.5">
                                                                 <option value="" class="disabled-option" disabled selected hide>Select Block Section</option>
                                                                 <?php
                                                                 // Define the program based on org_name
                                                                 $program = '';
+                                                                $programs = [];
+
                                                                 switch ($org_name) {
                                                                     case 'acap':
                                                                         $program = 'BSP';
@@ -180,7 +190,7 @@
                                                                         $program = 'BSIE';
                                                                         break;
                                                                     case 'sco':
-                                                                        // No need to set program, it will be handled separately
+                                                                        // SCO has special handling
                                                                         break;
                                                                     default:
                                                                         // Handle unknown org_name, if needed
@@ -189,15 +199,15 @@
 
                                                                 if ($org_name === 'sco') {
                                                                     // Handle the special case for SCO
-                                                                    foreach ($org_sections as $program => $years) {
-                                                                        foreach ($years as $year_level => $sections) {
+                                                                    foreach ($org_sections as $program => $year_levels) {
+                                                                        foreach ($year_levels as $year_level => $sections) {
                                                                             foreach ($sections as $section) {
                                                                                 echo '<option value="' . htmlspecialchars($program) . '-' . htmlspecialchars($year_level) . '-' . htmlspecialchars($section) . '">' . htmlspecialchars($program) . ' ' . htmlspecialchars($year_level) . '-' . htmlspecialchars($section) . '</option>';
                                                                             }
                                                                         }
                                                                     }
                                                                 } else {
-                                                                    if (isset($programs)) {
+                                                                    if (!empty($programs)) {
                                                                         // Handle org_names with multiple programs
                                                                         foreach ($programs as $program) {
                                                                             foreach ($org_sections[$program] as $year_level => $sections) {
@@ -206,7 +216,7 @@
                                                                                 }
                                                                             }
                                                                         }
-                                                                    } else {
+                                                                    } elseif (!empty($program)) {
                                                                         // Handle org_names with a single program
                                                                         foreach ($org_sections[$program] as $year_level => $sections) {
                                                                             foreach ($sections as $section) {
@@ -219,6 +229,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
+
 
 
 
@@ -438,14 +449,13 @@
 
                         clonedForm.prepend(closeButtonWrapper);
 
-                        clonedForm.querySelectorAll('input, select').forEach(input => {
+                        clonedForm.querySelectorAll('input, select, hidden').forEach(input => {
                             const originalId = input.id;
                             const originalName = input.name;
                             const newId = originalId.replace(/\d+/g, '') + formCount;
                             const newName = originalName;
                             input.id = newId;
                             input.name = newName;
-                            input.required = true; // Make sure inputs are required
 
                             // Add event listeners to the new inputs and selects
                             if (input.type === 'text') {

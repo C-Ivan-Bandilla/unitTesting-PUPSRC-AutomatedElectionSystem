@@ -1,7 +1,6 @@
 <?php
 include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/classes/file-utils.php');
 require_once FileUtils::normalizeFilePath('includes/classes/db-config.php');
-require_once FileUtils::normalizeFilePath('includes/classes/db-connector.php');
 require_once FileUtils::normalizeFilePath('includes/classes/csrf-token.php');
 require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 require_once FileUtils::normalizeFilePath('includes/classes/session-manager.php');
@@ -47,15 +46,26 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="images/resc/ivote-favicon.png">
-    <link rel="preload" href="images/resc/ivote-icon.png" as="image">
+
+    <!-- Preloader Stylesheet and Image -->
+    <link rel="preload" href="images/resc/ivote-icon.webp" as="image">
     <link rel="stylesheet" href="styles/loader.css" />
-    <link rel="stylesheet" href="styles/core.css" />
-    <link rel="stylesheet" href="styles/dist/all-footer.css">
+    
     <link rel="stylesheet" href="../vendor/node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
-
-    <link rel="stylesheet" href="styles/dist/register.css">
     <title>Register</title>
+
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="styles/dist/register.css">
+    <link rel="stylesheet" href="styles/core.css" />
+    <link rel="stylesheet" href="styles/dist/all-footer.css">
+    <link rel="stylesheet" href="styles/dist/landing-animation.css">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="scripts/register.js" defer></script>
+    <script src="scripts/loader.js" defer></script>
 
     <script>
         // Will be used for validation of existing emails 
@@ -67,36 +77,14 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
 
 <body>
 
-    <?php include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/loader.html'); ?>
+    <?php 
+    include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/loader.html');
+    include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/outside-header.php');  
+    ?>
 
-    <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
-        <div class="container">
-            <!-- <a class="navbar-brand" href="#">Your Brand</a> -->
-            <img src="images/resc/ivote-icon-2.png" id="ivote-logo-landing-header" alt="ivote-logo">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item fw-medium">
-                        <a class="nav-link" href="landing-page.php">Home</a>
-                    </li>
-                    <li class="nav-item fw-medium">
-                        <a class="nav-link" href="about-us.php">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="register.php">Register</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-
-    <div class="container-fluid mt-4 pt-3 main-reg-container" style="padding-top: 0.8rem">
-        <div class="row mt-5 pl-5">
-            <div class="col-md-6">
+    <div class="mt-4 pt-3 fade-in" style="padding-top: 0.8rem">
+        <div class="row mt-5 pl-5 pb-4 container-fluid">
+            <div class="col-md-6 slide-in main-reg-container">
                 <form id="register-form" action="includes/registration-inc.php" method="POST"
                     enctype="multipart/form-data">
 
@@ -110,28 +98,24 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center justify-content-center mb-0 pb-0">
-                        <!-- Displays error message from server-side -->
-                        <?php if (isset($error_message)): ?>
-                            <div class="fw-medium border border-danger text-danger alert alert-danger alert-dismissible fade show  custom-alert"
-                                role="alert">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-exclamation-triangle flex-shrink-0 me-2" viewBox="0 0 16 16">
-                                    <path
-                                        d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z" />
-                                    <path
-                                        d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
-                                </svg>
-                                <div class="d-flex align-items-center">
-                                    <span class="pe-1"><?php echo $error_message; ?></span>
-                                    <button type="button" class="btn-close text-danger" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
+                    <div class="register-container">
+                        
+                    <!-- Displays error message -->
+                    <?php if (isset($error_message)) : ?>
+                    <div class="row pt-3">
+                        <div class="col-12 d-flex justify-content-end">
+                            <div class="col-xl-7 col-md-7">
+                                <div id="serverSideErrorMessage" class="fw-semibold border border-danger text-danger alert alert-danger alert-dismissible fade show  custom-alert" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <span class=""><?php echo $error_message; ?></span>
+                                        <button type="button" class="btn-sm btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
                                 </div>
                             </div>
-                        <?php endif; ?>
+                        </div>
                     </div>
 
-                    <div class="register-container">
+                    <?php endif; ?>
 
                         <!-- Email Address -->
                         <div class="row pt-3">
@@ -260,12 +244,11 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
             </div>
         </div>
 
-        <div class="col-md-6 d-flex align-items-center">
+        <div class="col-md-6 d-flex align-items-center slide-in">
             <div class="register-img-container">
-                <img src="images/resc/voting.png" alt="ivote-register" class="register-img" style="margin-left: 50px">
+                <img src="images/resc/voting.webp" alt="ivote-register" class="register-img" style="margin-left: 50px">
             </div>
         </div>
-    </div>
     </div>
 
     <!-- Registered Successfully Modal -->
@@ -317,6 +300,32 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
                                 <p class="fw-medium spacing-5 pt-2" id="dangerSubtitle">Please also ensure the file is no larger than 25 mb. Let's try that again!
                                 </p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- You have pending changes modal -->
+    <div class="modal" id="pendingChangesModal" data-bs-keyboard="false" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="col-md-12 pt-4">
+                            <img src="images/resc/yellow-warning.png" class="yellow-warning" alt="Warning Icon">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 pb-3 pt-4">
+                                <p class="fw-bold text-warning spacing-4" id="dangerTitle">Pending Registration</p>
+                                <p class="fw-medium spacing-5 pt-2" id="dangerSubtitle">If you leave this page, your progress will be lost.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-3 d-flex justify-content-center pt-3">
+                            <button type="button" class="btn btn-secondary" id="cancelBtn" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary text-light" id="confirmLeaveBtn">Leave anyway</button>
                         </div>
                     </div>
                 </div>
@@ -378,12 +387,7 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     </div>
 
     <?php include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/all-footer.php'); ?>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="scripts/register.js"></script>
-    <script src="scripts/loader.js"></script>
-
+    <script src="scripts/landing-animation.js"></script>
 </body>
 
 </html>

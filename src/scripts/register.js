@@ -2,6 +2,42 @@ $(document).ready(function () {
   let termsAndPolicyData = null;
   let dataLoaded = false;
 
+  let isDirty = false;
+  let targetUrl = "";
+
+  // top.window.onbeforeunload = null;
+
+  $("#register-form input, #register-form select").on("change", function () {
+    isDirty = true;
+  });
+
+  $("#confirmLeaveBtn").on("click", function () {
+    isDirty = false;
+    closeModal("pendingChangesModal");
+    if (targetUrl) {
+      window.location.href = targetUrl;
+    } else {
+      window.location.reload();
+    }
+  });
+
+  $(window).on("beforeunload", function (event) {
+    if (isDirty) {
+      const message = "Changes you made may not be saved.";
+
+      event.returnValue = message;
+      return message;
+    }
+  });
+
+  $(document).on("click", "a", function (e) {
+    if (isDirty) {
+      e.preventDefault();
+      targetUrl = $(this).attr("href");
+      showModal("pendingChangesModal");
+    }
+  });
+
   function loadTermsAndPrivacyPolicy() {
     $.getJSON("includes/misc/terms-and-privacy.json", function (data) {
       termsAndPolicyData = data;
@@ -43,11 +79,15 @@ $(document).ready(function () {
 
     if (!isValidFormat) {
       if (showErrorMessages && fields.email.touched)
-        showError(input, errorElement, "Please enter a valid email address.");
+        showError(
+          input,
+          errorElement,
+          "Please provide a valid email address, such as johndoe@gmail.com."
+        );
       return false;
     } else if (isExistingEmail) {
       if (showErrorMessages && fields.email.touched)
-        showError(input, errorElement, "Email address already exists.");
+        showError(input, errorElement, "This email address is already taken.");
       return false;
     } else {
       clearError(input, errorElement);
@@ -55,9 +95,9 @@ $(document).ready(function () {
     }
   }
 
-  // Email format validation
+  // Email regex format validation
   function validateEmailFormat(email) {
-    return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email);
+    return /^[a-zA-Z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(email);
   }
 
   function validateOrg(select, showErrorMessages = false) {
@@ -305,19 +345,15 @@ $(document).ready(function () {
     checkFormValidity();
   });
 
-  // $("form").on("submit", function (event) {
-  //   $("#sign-up").attr("disabled", true);
-  //   $("#sign-up").html(
-  //     `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
-  //   );
-
-  //   checkFormValidity(true);
-  //   if ($(this).find(".error-border").length) {
-  //     event.preventDefault();
-  //     $("#sign-up").html("Sign Up");
-  //     $("#sign-up").removeAttr("disabled");
-  //   }
-  // });
+  $("form").on("submit", function () {
+    isDirty = false;
+    setTimeout(function () {
+      $("#sign-up").attr("disabled", true);
+      $("#sign-up").html(
+        `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Please wait...`
+      );
+    }, 50);
+  });
 
   // Show success modal if registration is successful
   if (registrationSuccess) {
