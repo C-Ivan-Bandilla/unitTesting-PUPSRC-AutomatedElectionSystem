@@ -194,6 +194,21 @@
   cursor: default;
 }
 
+.truncate-name {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#adminTable td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* --- MEDIAS --- */
 
 @media (min-width: 541px) {
