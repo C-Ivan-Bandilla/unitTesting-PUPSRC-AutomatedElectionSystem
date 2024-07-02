@@ -170,7 +170,7 @@
 		</div>
 
 		<div class="pe-none">
-			<img src="images/resc/ivote-logo.png" class="me-xl-3" style="height:35px">
+			<img src="images/resc/ivote-logo.webp" class="me-xl-3" style="height:35px">
 		</div>
 
 		<div class="header-right">

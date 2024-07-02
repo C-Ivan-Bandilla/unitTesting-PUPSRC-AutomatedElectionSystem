@@ -192,6 +192,21 @@ color: #fff;
   color: #fff;
   }
 
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050; /* Ensure it's above Bootstrap's default modal z-index */
+    width: 300px; /* Adjust width as needed */
+    opacity: 0.9; /* Adjust opacity if desired */
+}
+
+.sticky {
+  position: -webkit-sticky;
+  position: sticky !important;
+  top: 0 !important; /* Stick to the top */
+  z-index: 100 !important; /* Adjust z-index as needed */
+}
 
 .greetings-blue{
 color: #4870C4;
@@ -218,6 +233,15 @@ align-items: center;
 justify-content: center;
 min-height: 100vh;
 }
+
+.adjust-modal-preview .modal-dialog {
+  max-width: 680px;
+  margin: 0 auto; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  }
 
 .adjust-submit-modal .modal-dialog {
 max-width: 650px;
@@ -249,6 +273,37 @@ margin-left: auto;
 width: 100%; 
 }
 
+/* Custom modal style for confirmationModal */
+#confirmationModal .modal-content {
+  border-radius: 20px;
+  max-height: 80vh; /* Set maximum height */
+  overflow: auto; /* Enable scrolling for content that exceeds the modal height */
+}
+
+/* Custom scrollbar style for confirmationModal in WebKit browsers (Chrome, Safari) */
+#confirmationModal .modal-content::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+#confirmationModal .modal-content::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Color of the scrollbar track */
+}
+
+#confirmationModal .modal-content::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the scrollbar thumb */
+  border-radius: 20px; /* Border radius for the scrollbar thumb */
+  border: 2px solid #ccc; /* Border around the scrollbar thumb */
+}
+
+#confirmationModal .modal-content::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Color of the scrollbar thumb on hover */
+}
+
+/* Custom scrollbar style for confirmationModal in Firefox */
+#confirmationModal .modal-content {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1; /* thumb and track color */
+}
 .toggle-btn {
 display: flex;
 justify-content: flex-end;
@@ -271,6 +326,7 @@ outline: none;
 .emoji-size{
 font-size: calc(1.5rem + 1.5vw);
 }
+
 
 .candidate-info {
 display: flex;

@@ -54,7 +54,8 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 					<div class="col-md-11">
 						<div class="breadcrumbs d-flex">
 							<button type="button" class="btn btn-lvl-white d-flex align-items-center spacing-8 fs-8">
-								<i data-feather="users" class="white im-cust feather-2xl"></i> <span class="hide-text">MANAGE USERS</span>
+								<i data-feather="users" class="white im-cust feather-2xl"></i> <span
+									class="hide-text">MANAGE USERS</span>
 							</button>
 							<button type="button" class="btn btn-lvl-current rounded-pill spacing-8 fs-8">VOTERS'
 								ACCOUNTS</button>
@@ -85,7 +86,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 																Registrations</p>
 														</div>
 
-														
+
 
 														<div class="col-sm-6">
 															<div class="row">
@@ -114,7 +115,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 																					aria-haspopup="true" aria-expanded="false">
 																					<i
 																						class="fa-solid fa-arrow-down-wide-short fa-sm"></i>
-																						Sort by
+																					Sort by
 																				</button>
 																				<div class="dropdown-menu dropdown-menu-end"
 																					aria-labelledby="dropdownMenuButtonPending"
@@ -483,6 +484,12 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 				<script src="scripts/table-funcs.js"></script>
 	</body>
 
+
+	<script>
+		function redirectToPage(url) {
+			window.location.href = url;
+		}
+	</script>
 
 	</html>
 
