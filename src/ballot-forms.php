@@ -31,7 +31,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
   $result_candidates = $stmt_candidates->get_result();
 
  // Query for voting guidelines
-  $stmt_guidelines = $connection->prepare("SELECT * FROM vote_guidelines");
+  $stmt_guidelines = $connection->prepare("SELECT * FROM vote_guidelines ORDER BY seq ASC");
   $stmt_guidelines->execute();
   $result_guidelines = $stmt_guidelines->get_result();
 

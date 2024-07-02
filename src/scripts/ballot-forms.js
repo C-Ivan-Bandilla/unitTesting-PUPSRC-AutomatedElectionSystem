@@ -190,7 +190,7 @@ function validateForm(event) {
         // If candidates were selected, add them to selectedCandidateHTML
         if (pairCounter > 0) {
             selectedCandidateHTML += '<div>' +
-                '<hr><div class="main-color pb-2 px-5"><center><b>' + positionTitle.toUpperCase() + '</b></center></div>' +
+                '<hr><div class="main-color px-5" style="padding-bottom:25px"><center><b>' + positionTitle.toUpperCase() + '</b></center></div>' +
                 '<div class="row">' + candidateHTML + '</div>' +
                 '</div>';
         } else {
