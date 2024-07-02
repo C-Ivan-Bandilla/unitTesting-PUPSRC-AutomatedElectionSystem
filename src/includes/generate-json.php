@@ -43,11 +43,7 @@ function fetchCandidateCount($conn)
 function fetchVoterCounts($conn)
 {
     // Fetch total count of voters
-    $totalVotersQuery = "SELECT COUNT(*) AS total_count 
-    FROM voter 
-    WHERE role = 'student_voter' 
-      AND account_status = 'verified';
-    ";
+    $totalVotersQuery =  = "SELECT COUNT(*) AS voted_count FROM voter WHERE vote_status = 'Voted'";
     $totalVotersResult = $conn->query($totalVotersQuery);
     $totalVotersCount = $totalVotersResult->fetch_assoc()['total_count'];
 
