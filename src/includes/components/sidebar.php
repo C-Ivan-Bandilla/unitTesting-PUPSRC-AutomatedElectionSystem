@@ -10,10 +10,18 @@
 
 <nav class="sidebar open">
 	<div class="d-flex align-items-center">
-		<img src="images/logos/<?php echo $org_name ?>.png" alt="" class="org-logo">
+		<img src="images/logos/<?php echo $org_name ?>.webp" alt="" class="org-logo">
 	</div>
 	<div class="org-sub-name text-center">
-		<div class="d-inline-block align-middle main-color"><?php echo strtoupper($org_full_name) ?></div>
+		<div class="d-inline-block align-middle main-color">
+			<?php
+			if ($org_name == 'sco') {
+				echo strtoupper($org_full_name) . ' OF THE POLYTECHNIC UNIVERSITY OF THE PHILIPPINES SANTA ROSA';
+			} else {
+				echo strtoupper($org_full_name);
+			}
+			?>
+		</div>
 	</div>
 
 	<div class="menu-content">
@@ -169,7 +177,7 @@
 			<div class="dropdown user-profile">
 
 				<button class="btn" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-					<img src="images/logos/<?php echo $org_name ?>.png" class="profile-icon me-xl-3"><i
+					<img src="images/logos/<?php echo $org_name ?>.webp" class="profile-icon me-xl-3"><i
 						class="fas fa-chevron-down main-color fs-6"></i>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end main-color p-3" aria-labelledby="dropdownMenuButton">
