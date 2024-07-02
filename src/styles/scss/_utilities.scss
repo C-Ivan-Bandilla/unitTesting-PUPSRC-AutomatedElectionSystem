@@ -232,12 +232,14 @@ section .toast-container-unstacked {
     position: absolute;
     display: flex;
     flex-direction: column;
-    right: 0;
-    bottom: 15%;
+    right: 1%;
+
+    // bottom: 15%;
 
     .toast {
         border: none;
         border-radius: clamp(0.438rem, 0.2rem + 0.3vw, 1rem);
+        box-shadow: var(--bs-box-shadow-lg);
 
         .toast-body {
             display: flex;
