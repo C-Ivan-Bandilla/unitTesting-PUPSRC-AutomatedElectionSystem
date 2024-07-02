@@ -30,6 +30,11 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
   $stmt_candidates->execute();
   $result_candidates = $stmt_candidates->get_result();
 
+ // Query for voting guidelines
+  $stmt_guidelines = $connection->prepare("SELECT * FROM vote_guidelines ORDER BY seq ASC");
+  $stmt_guidelines->execute();
+  $result_guidelines = $stmt_guidelines->get_result();
+
   $voter_id = $_SESSION['voter_id']; // Get voter id to update the vote status
   $vote_status = $_SESSION['vote_status']; // Get voter id to update the vote status
   
@@ -104,6 +109,25 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/topnav
   </div>
 </div>
 
+<?php
+$guidelines_html = '';
+$total_guidelines = $result_guidelines->num_rows;
+$current_guideline = 0;
+
+// Check if there are guidelines to display
+if ($total_guidelines > 0) {
+    while ($row = $result_guidelines->fetch_assoc()) {
+        $current_guideline++;
+        $guidelines_html .= '<div class="ps-4 pe-4 pb-2">' . htmlspecialchars($row['description']) . '</div>';
+        if ($current_guideline < $total_guidelines) {
+            $guidelines_html .= '<hr>';
+        }
+    }
+} else {
+    // Default statement when no guidelines are found
+    $guidelines_html = '<div class="ps-4 pe-4 pb-2">No guidelines found.</div>';
+}
+?>
 
     
 <!-- Modal -->
@@ -114,30 +138,8 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/topnav
                 <div class="title-2 main-bg-color">
                     Voting Guidelines
                 </div>
-                <div class="pt-4"></div>
-                <div class="ps-4 pe-4 pb-2">
-                    Select your preferred candidate(s) for each position.
-                </div>
-                <hr>
-                <div class="ps-4 pe-4 pb-2">
-                    Do not leave an empty selection.
-                </div>
-                <hr>
-                <div class="ps-4 pe-4 pb-2">
-                    Vote buying and intimidation are prohibited.
-                </div>
-                <hr>
-                <div class="ps-4 pe-4 pb-2">
-                    Displaying your ballot or discussing your vote to another person's votes is prohibited.
-                </div>
-                <hr>
-                <div class="ps-4 pe-4 pb-2">
-                    Only registered voters are permitted to vote.
-                </div>
-                <hr>
-                <div class="ps-4 pe-4 pb-2">
-                    After selecting candidate(s) each position, click the <span class="main-color"><b>Submit Vote</b></span> button to successfully cast your vote.
-                </div>
+                  <div class="pt-4"></div>
+                  <?php echo $guidelines_html; ?>
                 <br>
             </div>
         </div>
@@ -171,22 +173,22 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/topnav
 
 
 <!-- Confirmation Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true" 
+<div class="modal fade adjust-modal-preview" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true" 
       data-backdrop="static" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 20px;">
+  <div class="modal-content" style="border-radius: 20px;">
       <div class="modal-body">
-        <div class="text-center pb-4">
-          <div class="main-color pt-lg-5 pt-md-3 pt-3">
+        <div class="text-center pt-2 pb-3">
+          <div class="main-color pt-lg-4 pt-md-3 pt-4 pb-2">
             <h4><b>BALLOT PREVIEW</b></h4>
           </div>
           Kindly review and confirm selections.
         </div>
-        <div id="selectedCandidate"></div> <!-- Display selected candidate here -->
+        <div class="px-4" id="selectedCandidate"></div> <!-- Display selected candidate here -->
       </div>
       <div class="text-center" style="padding-bottom: 6%;">
-        <button type="button" class="btn btn-gray pt-2 pb-2 px-4" id="cancelModalButton" style="margin-right: 12px;"  data-bs-dismiss="modal" aria-label="Close"><b>Cancel</b></button>
-        <button type="submit" class="btn btn-success pt-2 pb-2 px-4" id="submitModalButton"><b>Submit Vote</b></button>
+        <button type="button" class="btn btn-gray pb-2 px-4" id="cancelModalButton" style="margin-right: 12px;color:black"  data-bs-dismiss="modal" aria-label="Close"><b>Cancel</b></button>
+        <button type="submit" class="btn btn-success pb-2 px-4" id="submitModalButton"><b>Submit Vote</b></button>
       </div>
     </div>
   </div>
@@ -208,45 +210,71 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/topnav
   </div>
 </div>
 
-    <div class="row">
-        <div class="col-lg-3 col-0 pb-sm-4 pb-1 d-none d-md-block">
-            <div class="reminder">
-                <div class="title-2 main-bg-color">
-                    Voting Guidelines
-                </div>
-                <div>
-                    <div class="font-weight1" style="font-size: 15px;">
-                        <div class="pt-4"></div>
-                        <div class="ps-4 pe-4 pb-2">
-                            Select your preferred candidate(s) for each position.
-                        </div>
-                        <hr>
-                        <div class="ps-4 pe-4 pb-2">
-                            Do not leave an empty selection.
-                        </div>
-                        <hr>
-                        <div class="ps-4 pe-4 pb-2">
-                            Vote buying and intimidation are prohibited.
-                        </div>
-                        <hr>
-                        <div class="ps-4 pe-4 pb-2">
-                            Displaying your ballot or discussing your vote to another person's votes is prohibited.
-                        </div>
-                        <hr>
-                        <div class="ps-4 pe-4 pb-2">
-                            Only registered voters are permitted to vote.
-                        </div>
-                        <hr>
-                        <div class="ps-4 pe-4 pb-2">
-                            After selecting candidate(s) each position, click the 
-                            <span class="main-color"><b>Submit Vote</b></span> 
-                            button to successfully cast your vote.
-                        </div>
-                        <br>
-                    </div>
+  <!-- Leave Page Modal 
+  <div class="modal fade" id="leavePageModal" tabindex="-1" role="dialog" aria-labelledby="leavePageModallLabel" aria-hidden="false"
+  data-backdrop="static" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Unsaved Changes</h5>
+        </div>
+        <div class="modal-body">
+          You have unsaved changes. Are you sure you want to leave this page?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success text-white" id="stayButton" data-bs-dismiss="modal" aria-label="Close">Stay</button>
+          <button type="button" class="btn btn-danger text-white" id="leaveButton">Leave</button>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <!-- Reset Form Modal -->
+  <div class="modal fade" id="resetFormModal" tabindex="-1" role="dialog" aria-labelledby="resetFormModallLabel" aria-hidden="false"
+  data-backdrop="static" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset Form</h5>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to reset your selections?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning text-white" id="yesButton" onclick="confirmReset()">Yes</button>
+          <button type="button" class="btn btn-success text-white" id="noButton" data-bs-dismiss="modal" aria-label="Close">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="myToast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="mr-auto">Notification</strong>
+    </div>
+    <div class="toast-body">
+        You have reached maximum selections for this position. Please remove other selections.
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-lg-3 col-0 pb-sm-4 pb-1 d-none d-md-block">
+        <div class="reminder sticky">
+            <div class="title-2 main-bg-color">
+                Voting Guidelines
+            </div>
+            <div>
+                <div class="font-weight1" style="font-size: 15px;">
+                    <div class="pt-4"></div>
+                    <?php echo $guidelines_html; ?>
+                    <br>
                 </div>
             </div>
         </div>
+    </div>
+
     
      <!--------------------- Voting Section ------------------------->
 
@@ -298,32 +326,43 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/topnav
                               </div>
                           <?php endif; ?>
                       </div>
-                          <!-- Modal for Duties and Responsibilities -->
-                          <div class="modal fade adjust-modal" id="<?php echo $modal_id ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                              <div class="modal-dialog" role="document">
-                                  <div class="modal-content">
-                                      <div class="modal-header main-bg-color text-white d-flex justify-content-between align-items-center">
-                                          <h4 class="modal-title mb-0"><b><?php echo strtoupper($row['title']) ?></b></h4>
-                                          <button type="button" class="btn-close me-2" data-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <div class="modal-body">
-                                          <div class="main-color pt-4 pb-3"><b>DUTIES AND RESPONSIBILITIES</b></div>
-                                             <div id="description-output-<?php echo $modal_id ?>"></div>
-                                           <script>
-                                                // Retrieve Delta format JSON from PHP variable
-                                                var deltaJson = <?php echo $row['description']; ?>;
-                                                // Initialize Quill editor without any DOM element (for conversion only)
-                                                var quill = new Quill(document.createElement('div'));
-                                                // Set Delta content to Quill editor
-                                                quill.setContents(deltaJson.ops);
-                                                // Get HTML content from Quill editor
-                                                var htmlContent = quill.root.innerHTML;
-                                                document.getElementById('description-output-<?php echo $modal_id ?>').innerHTML = htmlContent;
-                                         </script>
+                         
+                      <!-- Modal for Duties and Responsibilities -->
+                      <div class="modal fade adjust-modal" id="<?php echo $modal_id ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header main-bg-color text-white d-flex justify-content-between align-items-center">
+                                      <h4 class="modal-title mb-0"><b><?php echo strtoupper($row['title']) ?></b></h4>
+                                      <button type="button" class="btn-close me-2" data-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <div class="main-color pt-4 pb-3"><b>DUTIES AND RESPONSIBILITIES</b></div>
+                                      <div id="description-output-<?php echo $modal_id ?>">
+                                          <?php
+                                          if (!empty($row['description'])) {
+                                              ?>
+                                              <script>
+                                                  // Retrieve Delta format JSON from PHP variable
+                                                  var deltaJson = <?php echo $row['description']; ?>;
+                                                  // Initialize Quill editor without any DOM element (for conversion only)
+                                                  var quill = new Quill(document.createElement('div'));
+                                                  // Set Delta content to Quill editor
+                                                  quill.setContents(deltaJson.ops);
+                                                  // Get HTML content from Quill editor
+                                                  var htmlContent = quill.root.innerHTML;
+                                                  document.getElementById('description-output-<?php echo $modal_id ?>').innerHTML = htmlContent;
+                                              </script>
+                                              <?php
+                                          } else {
+                                              // Default message when description is empty
+                                              echo "<p>No description available.</p>";
+                                          }
+                                          ?>
                                       </div>
                                   </div>
                               </div>
                           </div>
+                      </div>
 
                           <!-- Fetch candidates matching the position_id -->
                           <?php
@@ -339,7 +378,7 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/topnav
                                       ?>
                                       <div class="col-lg-6 col-md-12 col-sm-12">
                                           <div class="px-lg-5 px-3 px-sm-3 px-md-3">
-                                              <div class="candidate-info pb-4">
+                                              <div class="candidate-info pe-2 pb-4">
                                                   <label for="<?php echo $row_candidates['candidate_id'] ?>">
                                                       <img src="user_data/<?php echo $org_acronym ?>/candidate_imgs/<?php echo $row_candidates['photo_url'] ?>" alt="Candidate Image" width="100px" height="100px">
                                                   </label>
@@ -397,9 +436,11 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/topnav
                   <button type="submit" class="button-submit main-bg-color mb-2 mb-sm-0 mr-sm-2 order-sm-2" id="submitVoteBtn" onclick="validateForm()">
                       Submit Vote
                   </button>
-                  <button type="button" class="button-reset order-sm-1" onclick="resetForm()">
+                  <div class="px-2">
+                  <button type="button" class="button-reset order-sm-1" onclick="showResetConfirmation()">
                       <u>Reset Form</u>
                   </button>
+                  </div>
               </div>
           </div>
       <?php endif; ?>
@@ -425,6 +466,7 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/topnav
   <script src ="scripts/ballot-forms.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="scripts/loader.js"></script>
+  
 
 </html>
 <?php

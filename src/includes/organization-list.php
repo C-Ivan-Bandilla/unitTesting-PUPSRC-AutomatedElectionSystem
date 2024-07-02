@@ -38,15 +38,15 @@ $org_emails = array(
 );
 
 $org_social_media = array(
-    "sco" => array("facebook" => "sco_facebook", "twitter" => "sco_twitter", "instagram" => "sco_instagram"),
-    "elite" => array("facebook" => "elite_facebook", "twitter" => "elite_twitter", "instagram" => "elite_instagram"),
-    "acap" => array("facebook" => "acap_facebook", "twitter" => "acap_twitter", "instagram" => "acap_instagram"),
-    "aeces" => array("facebook" => "aeces_facebook", "twitter" => "aeces_twitter", "instagram" => "aeces_instagram"),
-    "give" => array("facebook" => "give_facebook", "twitter" => "give_twitter", "instagram" => "give_instagram"),
-    "jehra" => array("facebook" => "jehra_facebook", "twitter" => "jehra_twitter", "instagram" => "jehra_instagram"),
-    "jmap" => array("facebook" => "jmap_facebook", "twitter" => "jmap_twitter", "instagram" => "jmap_instagram"),
-    "jpia" => array("facebook" => "jpia_facebook", "twitter" => "jpia_twitter", "instagram" => "jpia_instagram"),
-    "piie" => array("facebook" => "piie_facebook", "twitter" => "piie_twitter", "instagram" => "piie_instagram")
+    "sco" => array("facebook" => "https://www.facebook.com/thepupsrcstudentcouncil", "twitter" => "https://twitter.com/sco_pupsrc", "instagram" => "https://www.instagram.com/pupsrcsco?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="),
+    "elite" => array("facebook" => "https://www.facebook.com/ELITE.PUPSRC", "twitter" => "https://twitter.com/elite_pupsrc", "instagram" => "https://www.instagram.com/elitepupsrc?igsh=cG11OHJtaHY3MjFp"),
+    "acap" => array("facebook" => "https://www.facebook.com/ACAPpage", "twitter" => "https://twitter.com/acapofficialsrc", "instagram" => "https://www.instagram.com/acapofficialsrc?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="),
+    "aeces" => array("facebook" => "https://www.facebook.com/OfficialAECES", "twitter" => "https://twitter.com/aeces_pupsrc", "instagram" => "https://www.instagram.com/officialaeces"),
+    "give" => array("facebook" => "https://www.facebook.com/educgive", "twitter" => "https://twitter.com/give_pupsrc", "instagram" => "https://www.instagram.com/give_pupsrc"),
+    "jehra" => array("facebook" => "https://www.facebook.com/PUPSRCJEHRA", "twitter" => "https://twitter.com/jehra_pupsrc", "instagram" => "https://www.instagram.com/jehrapupsrc"),
+    "jmap" => array("facebook" => "https://www.facebook.com/JMAPPUPSRCOfficial", "twitter" => "https://twitter.com/jmap_pupsrc", "instagram" => "https://www.instagram.com/jmappupsrcofficial?igsh=Z242d2o4ZG5hM29l"),
+    "jpia" => array("facebook" => "https://www.facebook.com/JPIA.PUPSRC", "twitter" => "https://twitter.com/jpia_pupsrc", "instagram" => "https://www.instagram.com/acapofficialsrc?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="),
+    "piie" => array("facebook" => "https://www.facebook.com/piiepup", "twitter" => "https://twitter.com/piie_pupsrc", "instagram" => "https://www.instagram.com/piiepupsc?igsh=MXJoc3R2Nml2YTdtMw==")
 );
 
 $org_personality = array(

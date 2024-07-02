@@ -39,21 +39,24 @@ class Registration {
             unset($_SESSION['registration_success']);
             unset($_SESSION['error_message']);
             $this->validateEmailAndPasswordLength();
+            $this->validateEmailFormat();
             $this->validateEmailNotExist();
             $this->validatePasswords();
             $this->validateFile();
             $this->saveFile();
+            $this->saveFileToSco();
             $this->beginTransaction();
             $this->insertIntoOrganizationDB();
             $this->insertIntoScoDB();
             $this->commitTransaction();
+            $this->sendEmailNotice();
             $_SESSION['registration_success'] = true;
             header("Location: ../register.php");
             exit();
         }
         catch (Exception $e) {
             $this->rollbackTransaction();
-            $error_message = "Error: " . $e->getMessage();
+            $error_message = $e->getMessage();
             $_SESSION['error_message'] = $error_message;
             header("Location: ../register.php");
             exit();
@@ -71,19 +74,26 @@ class Registration {
         }
     }
 
+    // Check for invalid email format
+    private function validateEmailFormat() {
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("Please provide a valid email address, such as johndoe@gmail.com.");
+        }
+    }
+
     // Additional to check if email address already exists
     private function validateEmailNotExist() {
         $config = DatabaseConfig::getOrganizationDBConfig($this->organization);
         $connection = new mysqli($config['host'], $config['username'], $config['password'], $config['database']);
         
-        $sql = "SELECT email FROM voter WHERE email = ?";
+        $sql = "SELECT email FROM voter WHERE BINARY email = ?";
         $stmt = $connection->prepare($sql);
         $stmt->bind_param("s", $this->email);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if($result->num_rows > 0) {
-            throw new Exception("Email address already exists.");
+            throw new Exception("This email is already taken.");
         }
 
         $stmt->close();
@@ -125,6 +135,20 @@ class Registration {
         $this->file_hash = hash_file('sha256', $target_file);
     }
 
+    // Save the pdf file in user_data/sco/cor/
+    private function saveFileToSco() {
+        $sco_directory = "../user_data/sco/cor/";
+        if (!file_exists($sco_directory)) {
+            mkdir($sco_directory, 0777, true);
+        }
+        
+        $sco_file = $sco_directory . $this->file_name;
+
+        if (!copy("../user_data/{$this->organization}/cor/" . $this->file_name, $sco_file)) {
+            throw new Exception("There was an error copying your file to the SCO directory. Try again");
+        }
+    }
+
     // Insert from picked org from dropdown into its database
     private function insertIntoOrganizationDB() {
         $hashed_password = password_hash($this->password, PASSWORD_DEFAULT);
@@ -163,6 +187,14 @@ class Registration {
 
         $stmt->close();
         $sco_connection->close();
+    }
+
+    // Send an email notice to user
+    private function sendEmailNotice() {
+        include_once FileUtils::normalizeFilePath(__DIR__ . '/../mailer.php');
+        include_once FileUtils::normalizeFilePath(__DIR__ . '/email-sender.php');
+        $mailer = new EmailSender($mail);
+        $mailer->sendForVerificationStatus($this->email);
     }
 
     // Start transaction into db but no insertion until commit is made or call
