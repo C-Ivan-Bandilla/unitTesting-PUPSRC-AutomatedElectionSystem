@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $sco_conn->close();
                     
                     if ($sco_count > 0) {
-                        $_SESSION['email_exists_error'] = 'This email address is already registered in SCO.';
+                        $_SESSION['email_exists_error'] = 'This email address is already registered.';
                         header("Location: admin-creation.php");
                         exit;
                     }
