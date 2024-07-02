@@ -666,7 +666,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                         <div class="main">
                             <div class="container">
                                 <div class="row">
-                                    <div class="col-11 col-md-10 col-lg-11 mx-auto">
+                                    <div class="col-11 col-md-10 col-lg-11 mx-auto"  style="margin-top: -30px;">
                                         <div class="card-report main-bg-color mb-5">
                                             <div class="card-body main-bg-color d-flex justify-content-between">
                                                 <div>
@@ -680,10 +680,8 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                                             rsort($election_years);
                                                             $selected_year = isset($_GET['election_year']) ? $_GET['election_year'] : null;
                                                             if ($selected_year && in_array($selected_year, $election_years)) {
-                                                                echo "Current Academic Year: <strong>" . htmlspecialchars($selected_year) . "</strong>";
-                                                            } else {
-                                                                echo "Select <strong> ELECTION YEAR</strong> to show";
-                                                            }
+                                                                echo "Academic Year: <strong>" . htmlspecialchars($selected_year) . "</strong>";
+                                                            } 
                                                         } else {
                                                             echo "<strong> ELECTION YEAR</strong>";
                                                         }
@@ -727,8 +725,8 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                     <div class="main">
                         <div class="container">
                             <div class="row">
-                                <div class="col-11 col-md-10 col-lg-11 mx-auto">
-                                    <div class="card-report main-bg-color mb-5">
+                            <div class="col-11 col-md-10 col-lg-11 mx-auto"  style="margin-top: -30px;">
+                                <div class="card-report main-bg-color mb-5">
                                         <div class="card-body main-bg-color d-flex justify-content-between">
                                             <div>
                                                 <h5 class="card-title"><i data-feather="bar-chart-2" class="white mb-xl-1"></i> Election Reports</h5>
@@ -741,10 +739,8 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                                         rsort($election_years);
                                                         $selected_year = isset($_GET['election_year']) ? $_GET['election_year'] : null;
                                                         if ($selected_year && in_array($selected_year, $election_years)) {
-                                                            echo "Current Academic Year: <strong>" . htmlspecialchars($selected_year) . "</strong>";
-                                                        } else {
-                                                            echo "Select <strong> ELECTION YEAR</strong> to show";
-                                                        }
+                                                            echo "Academic Year: <strong>" . htmlspecialchars($selected_year) . "</strong>";
+                                                        } 
                                                     } else {
                                                         echo "<strong> ELECTION YEAR</strong>";
                                                     }
@@ -786,10 +782,11 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
             } else {
                 // No election schedule found
                 ?>
+
                 <div class="main">
                     <div class="container">
                         <div class="row">
-                            <div class="col-11 col-md-10 col-lg-11 mx-auto">
+                            <div class="col-11 col-md-10 col-lg-11 mx-auto"  style="margin-top: -30px;">
                                 <div class="card-report main-bg-color mb-5">
                                     <div class="card-body main-bg-color d-flex justify-content-between">
                                         <div>
@@ -803,9 +800,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                                     rsort($election_years);
                                                     $selected_year = isset($_GET['election_year']) ? $_GET['election_year'] : null;
                                                     if ($selected_year && in_array($selected_year, $election_years)) {
-                                                        echo "Current Academic Year: <strong>" . htmlspecialchars($selected_year) . "</strong>";
-                                                    } else {
-                                                        echo "Select <strong> ELECTION YEAR</strong> to show";
+                                                        echo "Academic Year: <strong>" . htmlspecialchars($selected_year) . "</strong>";
                                                     }
                                                 } else {
                                                     echo "<strong> ELECTION YEAR</strong>";
