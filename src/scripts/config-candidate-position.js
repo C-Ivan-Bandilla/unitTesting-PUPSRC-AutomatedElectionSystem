@@ -144,7 +144,7 @@ ConfigPage = {
 
             let posDescrptnLabel = document.createElement('label');
             posDescrptnLabel.setAttribute('for', 'posDescrptn');
-            posDescrptnLabel.textContent = 'Rules and Responsibilities';
+            posDescrptnLabel.textContent = 'Duties and Responsibilities';
             posDescrptnLabel.classList.add('mb-2');
 
 
@@ -1329,7 +1329,7 @@ ConfigPage.NativeModal = class {
         }
         const candidateCount = data.affected_candidates.length;
         promptMessage.innerHTML =
-            `You are about to remove the candidate${candidateCount > 1 ? 's' : ''} and votes associated with the position of <b>${data.value}</b>. `;
+            `You are about to <b class="text-danger">permanently remove</b> the candidate${candidateCount > 1 ? 's' : ''} and votes associated with the position of <b>${data.value}</b>. `;
 
         candidatesList.innerHTML = '';
         data.affected_candidates.forEach(candidate => {
