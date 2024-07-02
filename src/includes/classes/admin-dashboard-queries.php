@@ -89,7 +89,7 @@ WHERE role = 'student_voter'
         $totalVotersCount = $totalVotersResult->fetch_assoc()['total_count'];
     
         // Fetch count of voters with voteStatus as 'voted'
-        $votedVotersQuery = "SELECT COUNT(*) AS voted_count FROM voter WHERE vote_status = 'Voted' AND account_status = 'verified'";
+        $votedVotersQuery = "SELECT COUNT(*) AS voted_count FROM voter WHERE vote_status = 'Voted'";
         $votedVotersResult = $connection->query($votedVotersQuery);
         $votedVotersCount = $votedVotersResult->fetch_assoc()['voted_count'];
         
