@@ -145,12 +145,12 @@ if (isset($_SESSION['voter_id'])) {
             ?>
 
             <div class="main">
-                <div class="container mb-5 ps-5">
+                <div class="container mb-5 ps-5 breadcrumbs-cont">
                     <div class="row justify-content-center">
                         <div class="col-md-11">
                             <div class="breadcrumbs d-flex">
                                 <button type="button" class="btn-white d-flex align-items-center spacing-8 fs-8">
-                                    <i data-feather="users" class="white im-cust feather-2xl"></i> MANAGE USERS
+                                    <i data-feather="users" class="white im-cust feather-2xl"></i> <span class = "hide-text">CANDIDATES</span>
                                 </button>
                                 <button type="button" class="btn-back spacing-8 fs-8" onclick="window.location.href='manage-candidate.php'">MANAGE CANDIDATES</button>
                                 <button type="button" class="btn btn-current rounded-pill spacing-8 fs-8">EDIT CANDIDATE
@@ -192,34 +192,38 @@ if (isset($_SESSION['voter_id'])) {
                                                 <div class="row">
                                                     <div class="col-md-3 mx-auto">
                                                         <div class="form-group local-group">
-                                                            <label for="last_name" class="login-danger">Last Name <span class="required"> * </span></label>
-                                                            <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($candidate['last_name']); ?>" class="form-control" placeholder="Carpena" required pattern="^[a-zA-Z]+$" maxlength="20">
+                                                            <label for="last_name" class="login-danger fs-7">Last Name <span class="required"> * </span></label>
+                                                            <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($candidate['last_name']); ?>" class="form-control" placeholder="Carpena" required pattern="/^[a-z ,.'-]+$/i" maxlength="20">
                                                             <span class="error-message" id="last_name_error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3 mx-auto">
                                                         <div class="form-group">
-                                                            <label for="first_name" class="login-danger">First Name <span class="required"> * </span></label>
-                                                            <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($candidate['first_name']); ?>" class="form-control" placeholder="E.g. Trizia Mae" required pattern="^[a-zA-Z]+$" maxlength="50">
+                                                            <label for="first_name" class="login-danger fs-7">First Name <span class="required"> * </span></label>
+                                                            <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($candidate['first_name']); ?>" class="form-control" placeholder="E.g. Trizia Mae" required pattern="/^[a-z ,.'-]+$/i" maxlength="20">
                                                             <span class="error-message" id="first_name_error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3 mx-auto">
                                                         <div class="form-group">
-                                                            <label for="middle_name" class="login-danger">Middle Name</label>
-                                                            <input type="text" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($candidate['middle_name']); ?>" class="form-control" placeholder="E.g. Santiago" maxlength="20">
+                                                            <label for="middle_name" class="login-danger fs-7">Middle Name</label>
+                                                            <input type="text" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($candidate['middle_name']); ?>" class="form-control" placeholder="E.g. Santiago" pattern="/^[a-z ,.'-]+$/i" maxlength="20">
                                                             <span class="error-message" id="middle_name_error"></span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3 mx-auto">
                                                         <div class="form-group local-forms">
-                                                            <label for="suffix" class="login-danger">Suffix</label>
+                                                            <label for="suffix" class="login-danger fs-7">Suffix</label>
                                                             <select id="suffix" name="suffix">
                                                                 <option value="" class="disabled-option" disabled selected>E.g.
                                                                     II</option>
                                                                 <option value="" <?php if ($candidate['suffix'] == '')
                                                                                         echo 'selected'; ?>>No Suffix</option>
-                                                                <option value="II" <?php if ($candidate['suffix'] == 'II')
+                                                                <option value="II" <?php if ($candidate['suffix'] == 'Jr')
+                                                                                        echo 'selected'; ?>>Jr</option>
+                                                                                        <option value="II" <?php if ($candidate['suffix'] == 'Sr')
+                                                                                        echo 'selected'; ?>>Sr</option>
+                                                                                        <option value="II" <?php if ($candidate['suffix'] == 'II')
                                                                                         echo 'selected'; ?>>II</option>
                                                                 <option value="III" <?php if ($candidate['suffix'] == 'III')
                                                                                         echo 'selected'; ?>>III</option>
@@ -235,7 +239,7 @@ if (isset($_SESSION['voter_id'])) {
                                                 <div class="row">
                                                     <div class="col-md-6 mx-auto">
                                                         <div class="form-group local-forms">
-                                                            <label for="position" class="login-danger">Position <span class="required"> * </span></label>
+                                                            <label for="position" class="login-danger fs-7">Position <span class="required"> * </span></label>
                                                             <select id="position" name="position_id" required>
                                                                 <option value="" class="disabled-option" disabled selected>
                                                                     Select Position</option>
@@ -292,7 +296,7 @@ if (isset($_SESSION['voter_id'])) {
                                                     <div class="col-md-6 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="section" class="login-danger fs-7">Block Section<span class="required"> *</span></label>
-                                                            <select id="section" name="section" onmousedown="if(this.options.length>3){this.size=3;}" onchange='this.size=0;' onblur="this.size=0;" required style="opacity: 0.5">
+                                                            <select id="section" name="section" required>
                                                                 <option value="" class="disabled-option" disabled selected hide>Select Block Section</option>
                                                                 <?php
                                                                 if ($org_name === 'sco') {
@@ -455,7 +459,7 @@ if (isset($_SESSION['voter_id'])) {
                             </div>
                             <div class="mb-2">
                                 <b>
-                                    <p class="fs-2 pt-2">you have<br>pending changes</p>
+                                    <p class="fs-2 pt-2">You have<br>pending changes</p>
                                 </b>
                                 <b>
                                     <p class="mb-4">Discard changes?</p>
