@@ -61,7 +61,7 @@ SessionManager::checkUserRoleAndRedirect();
     <div class="container-fluid ">
       <div class="row">
         <div class="col col-md-6 about-us">
-          <img src="images/resc/about-us.webp" alt="about us icon" class="about-us-icon">
+          <img src="images/resc/icons/about-us.png" alt="about us icon" class="about-us-icon">
         </div>
         <div class="col col-md-6 about-us-body">
           <h2 class="landing-organization-title"><span class="hello-text">About</span> iVote</h2>
