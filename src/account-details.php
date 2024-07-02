@@ -86,7 +86,7 @@ if (isset($_SESSION['voter_id'])) {
 
                                     <div class="col-md-6 mt-md-4 mx-auto">
                                         <div class="row">
-                                            <div class="col-md-12 text-left mx-auto ms-3">
+                                            <div class="col-md-12 text-left mx-auto ms-3 email-container">
                                                 <p class="fw-bold fs-5 pt-sm-2">
                                                     <?php echo strtoupper($voter['first_name'] . ' ' . $voter['middle_name'] . ' ' . $voter['last_name'] . ' ' . $voter['suffix']); ?>
                                                 </p>
@@ -94,7 +94,7 @@ if (isset($_SESSION['voter_id'])) {
                                                     <?php echo strtoupper($org_acronym) ?> Committee Member
                                                 </p>
 
-                                                <p class="fw-bold fs-5 pt-sm-2"><?php echo $voter['email']; ?></p>
+                                                <p class="fw-bold fs-5 pt-sm-2 email-address"><?php echo $voter['email']; ?></p>
                                                 <p class="fw-bold fs-7 main-color spacing-4" style="margin-top: -20px">
                                                     Email Address</p>
                                             </div>
