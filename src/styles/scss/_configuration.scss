@@ -17,6 +17,7 @@ input.input-invalid {
     }
 }
 
+
 html,
 body {
     margin: 0;
@@ -50,6 +51,15 @@ body {
             background-image: none;
         }
 
+        &:focus {
+            border: clamp(1.5px, 1px + 0.1vw, 5px) solid light-dark(var(--main-color), var(--main-color));
+        }
+
+        &:focus {
+            border: clamp(1.5px, 1px + 0.1vw, 5px) solid light-dark(var(--main-color), var(--main-color));
+            outline-color: light-dark(var(--main-color), var(--main-color));
+        }
+
     }
 
     .btn {
@@ -57,7 +67,7 @@ body {
         @extend %general-responsive-base-font-size;
 
         &:disabled {
-            border: none;
+            border: clamp(1px, 1px + 0.01vw, 5px) solid light-dark(transparent, transparent);
         }
 
         // &:not([class*="btn-outline-"]) {
@@ -473,10 +483,11 @@ main.main {
 
     @media only screen and (min-height: 601px) and (hover: none) {
         min-height: 58.5dvh;
-        padding: 50px 20px 35px 20px;
+        padding: 50px 12px 35px 12px;
     }
 
     .card-box {
+        box-shadow: var(--bs-box-shadow-sm);
 
         .card-header {
             display: grid;

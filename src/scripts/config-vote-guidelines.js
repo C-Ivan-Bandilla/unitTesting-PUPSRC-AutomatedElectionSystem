@@ -134,11 +134,12 @@ ConfigPage = {
     },
 
     customValidation: {
-        clear_invalid: false,
+        clear_invalid: true,
         trailing: {
             '-+': '-',    // Replace consecutive dashes with a single dash
             '\\.+': '.',  // Replace consecutive periods with a single period
-            ' +': ' '     // Replace consecutive spaces with a single space
+            ' +': ' ',    // Replace consecutive spaces with a single space
+            '(\\w)\\1{2,}': '$1$1' //remove trailing character if three consecutive /* strict dahil si kath ay bug daw */
         },
         attributes: {
             required: true,
@@ -1007,6 +1008,7 @@ ConfigPage.EditorModal = class {
         const primaryButton = document.createElement('button');
         primaryButton.id = 'modal-action-primary';
         primaryButton.type = 'button';
+        primaryButton.disabled = true;
         primaryButton.classList.add('btn', 'btn-sm', 'btn-primary');
         primaryButton.textContent = 'Save Changes';
 
