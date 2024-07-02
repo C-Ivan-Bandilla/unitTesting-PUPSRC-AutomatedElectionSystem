@@ -230,7 +230,7 @@ $phpDateTimeNow = new DateTimeUtils();
     $link_name = [
         'Candidate Positions',
         'Voting Guidelines',
-        'Schedule'
+        'Voting Schedule'
     ];
 
     // Create an instance of PageRouter with the sub_pages array
