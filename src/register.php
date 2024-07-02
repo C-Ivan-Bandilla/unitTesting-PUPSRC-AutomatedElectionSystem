@@ -60,6 +60,7 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     <link rel="stylesheet" href="styles/core.css" />
     <link rel="stylesheet" href="styles/dist/all-footer.css">
     <link rel="stylesheet" href="styles/dist/landing-animation.css">
+    <link rel="stylesheet" href="styles/dist/landing-animation.css">
 
     <!-- Bootstrap JavaScript -->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -245,6 +246,7 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
         </div>
 
         <div class="col-md-6 d-flex align-items-center slide-in">
+        <div class="col-md-6 d-flex align-items-center slide-in">
             <div class="register-img-container">
                 <img src="images/resc/voting.webp" alt="ivote-register" class="register-img" style="margin-left: 50px">
             </div>
@@ -387,6 +389,7 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     </div>
 
     <?php include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/all-footer.php'); ?>
+    <script src="scripts/landing-animation.js"></script>
     <script src="scripts/landing-animation.js"></script>
 </body>
 
