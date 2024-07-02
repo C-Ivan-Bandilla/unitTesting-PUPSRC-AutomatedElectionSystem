@@ -11,26 +11,49 @@ const roleError = document.getElementById("role_error");
 const suffixInput = document.getElementById("suffix");
 const suffixError = document.getElementById("suffix_error");
 
-// Email validation pattern
-const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}(?!\.c0m$)(?!@test)$/;
+// Email validation patterns
+const generalEmailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const specialEmail = "@iskolarngbayan.pup.edu.ph";
 
 // Email validation function
 function validateEmail() {
-    const emailValue = emailInputField.value.trim();
+    const emailValue = emailInputField.value.trim().replace(/\s/g, '');
     const emailExistsError = document.getElementById("email_exists_error");
 
+    // Set the value back to the input field without spaces
+    emailInputField.value = emailValue;
+
     if (emailValue !== "") {
-        if (emailValue.includes(' ')) {
-            emailErrorField.textContent = "Email address cannot contain spaces.";
-            emailErrorField.style.color = "red";
-            emailInputField.style.borderColor = "red";
-        } else if (!emailValue.match(emailPattern)) {
+        const atIndex = emailValue.indexOf('@');
+        if (atIndex !== -1) {
+            const domain = emailValue.slice(atIndex);
+            if (domain === specialEmail) {
+                // Check if the local part (before @) is valid
+                const localPart = emailValue.slice(0, atIndex);
+                if (!/^[a-zA-Z0-9._%+-]+$/.test(localPart)) {
+                    emailErrorField.textContent = "Invalid characters before @iskolarngbayan.pup.edu.ph";
+                    emailErrorField.style.color = "red";
+                    emailInputField.style.borderColor = "red";
+                } else {
+                    emailErrorField.textContent = "";
+                    emailInputField.style.borderColor = "";
+                }
+            } else if (domain.includes("iskolarngbayan") || domain.includes("pup.edu.ph")) {
+                emailErrorField.textContent = "For PUP email, use the exact format: username@iskolarngbayan.pup.edu.ph";
+                emailErrorField.style.color = "red";
+                emailInputField.style.borderColor = "red";
+            } else if (!generalEmailPattern.test(emailValue)) {
+                emailErrorField.textContent = "Please enter a valid email address.";
+                emailErrorField.style.color = "red";
+                emailInputField.style.borderColor = "red";
+            } else {
+                emailErrorField.textContent = "";
+                emailInputField.style.borderColor = "";
+            }
+        } else {
             emailErrorField.textContent = "Please enter a valid email address.";
             emailErrorField.style.color = "red";
             emailInputField.style.borderColor = "red";
-        } else {
-            emailErrorField.textContent = "";
-            emailInputField.style.borderColor = "";
         }
     } else {
         emailErrorField.textContent = "";
@@ -41,14 +64,15 @@ function validateEmail() {
     emailExistsError.textContent = "";
 }
 
-// Add event listener for email input
+// Add event listeners
 emailInputField.addEventListener("input", validateEmail);
+emailInputField.addEventListener("input", function() {
+    this.value = this.value.replace(/\s/g, '');
+});
 
 // Form submission
 adminForm.addEventListener("submit", function (event) {
     validateEmail();
-
-    // If there is an email error, prevent form submission
     if (emailErrorField.textContent) {
         event.preventDefault();
     }
@@ -177,11 +201,14 @@ function areAllFieldsValid() {
 
 // Function to toggle submit button state
 function toggleSubmitButton() {
+    validateAllFields(); // Run all validations
+
     const isFormValid = 
         firstNameInput.value.trim().length > 0 &&
         lastNameInput.value.trim().length > 0 &&
         emailInputField.value.trim().length > 0 &&
-        (roleSelect.value === 'head_admin' || roleSelect.value === 'admin');
+        (roleSelect.value === 'head_admin' || roleSelect.value === 'admin') &&
+        areAllFieldsValid(); // Check if all fields are valid
 
     submitButton.disabled = !isFormValid;
 
@@ -193,12 +220,43 @@ function toggleSubmitButton() {
 }
 
 // Add event listeners to input fields
-firstNameInput.addEventListener('input', toggleSubmitButton);
-middleNameInput.addEventListener('input', toggleSubmitButton);
-lastNameInput.addEventListener('input', toggleSubmitButton);
-emailInputField.addEventListener('input', toggleSubmitButton);
-roleSelect.addEventListener('change', toggleSubmitButton);
-suffixInput.addEventListener('input', toggleSubmitButton);
+firstNameInput.addEventListener("input", function() {
+    validateFirstName();
+    toggleSubmitButton();
+});
+
+middleNameInput.addEventListener("input", function() {
+    validateMiddleName();
+    toggleSubmitButton();
+});
+
+lastNameInput.addEventListener("input", function() {
+    validateLastName();
+    toggleSubmitButton();
+});
+
+emailInputField.addEventListener("input", function() {
+    validateEmail();
+    toggleSubmitButton();
+});
+
+roleSelect.addEventListener("change", function() {
+    roleInteracted = true;
+    validateRole();
+    toggleSubmitButton();
+});
+
+suffixInput.addEventListener("input", function() {
+    validateSuffix();
+    toggleSubmitButton();
+});
+
+adminForm.addEventListener("submit", function (event) {
+    validateAllFields();
+    if (!areAllFieldsValid()) {
+        event.preventDefault();
+    }
+});
 
 // Initial call to set button state
 toggleSubmitButton();
