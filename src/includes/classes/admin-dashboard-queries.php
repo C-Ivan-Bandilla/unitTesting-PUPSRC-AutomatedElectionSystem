@@ -155,7 +155,9 @@ class Application {
         if ($mostRecentElectionSchedule) {
             $currentDate = new DateTime();
             $startDate = new DateTime($mostRecentElectionSchedule['start']);
-            $endDate = new DateTime($mostRecentElectionSchedule['end']);
+            $endDate = new DateTime($mostRecentElectionSchedule['close']);
+            
+
 
             if ($currentDate >= $startDate && $currentDate <= $endDate) {
                 return [
