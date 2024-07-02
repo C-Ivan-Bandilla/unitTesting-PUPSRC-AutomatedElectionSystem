@@ -82,9 +82,9 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/outside-header.php');  
     ?>
 
-    <div class="mt-4 pt-3 main-reg-container fade-in" style="padding-top: 0.8rem">
+    <div class="mt-4 pt-3 fade-in" style="padding-top: 0.8rem">
         <div class="row mt-5 pl-5 pb-4 container-fluid">
-            <div class="col-md-6 slide-in">
+            <div class="col-md-6 slide-in main-reg-container">
                 <form id="register-form" action="includes/registration-inc.php" method="POST"
                     enctype="multipart/form-data">
 
