@@ -43,6 +43,7 @@ class Registration {
             $this->validatePasswords();
             $this->validateFile();
             $this->saveFile();
+            $this->saveFileToSco();
             $this->beginTransaction();
             $this->insertIntoOrganizationDB();
             $this->insertIntoScoDB();
@@ -123,6 +124,20 @@ class Registration {
         }
 
         $this->file_hash = hash_file('sha256', $target_file);
+    }
+
+    // Save the pdf file in user_data/sco/cor/
+    private function saveFileToSco() {
+        $sco_directory = "../user_data/sco/cor/";
+        if (!file_exists($sco_directory)) {
+            mkdir($sco_directory, 0777, true);
+        }
+        
+        $sco_file = $sco_directory . $this->file_name;
+
+        if (!copy("../user_data/{$this->organization}/cor/" . $this->file_name, $sco_file)) {
+            throw new Exception("There was an error copying your file to the SCO directory. Try again");
+        }
     }
 
     // Insert from picked org from dropdown into its database
