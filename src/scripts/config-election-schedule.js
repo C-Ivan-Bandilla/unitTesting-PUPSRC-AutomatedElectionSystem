@@ -583,11 +583,16 @@ ConfigPage.handleDiscardSchedule = async function () {
 
         if (await ConfigPage.showDiscardModal() == 'true') {
             ConfigPage.resetDatetime();
-            console.log('true');
+            ConfigPage.isScheduleChanged = false;
+            ConfigPage.handleValidation(ConfigPage.datePickerStart, ConfigPage.startDateValidator, false);
+            ConfigPage.handleValidation(ConfigPage.datePickerEnd, ConfigPage.endDateValidator, false);
+            ConfigPage.handleValidation(ConfigPage.timePickerStart, ConfigPage.startTimeValidator, false);
+            ConfigPage.handleValidation(ConfigPage.timePickerEnd, ConfigPage.endTimeValidator, false);
+
         }
     }
     else {
-        console.log('false');
+
     }
 }
 
