@@ -1,3 +1,6 @@
+var toastElement = document.getElementById('myToast');
+var myToast = new bootstrap.Toast(toastElement);
+
 // toggle button for voting guidelines
 document.getElementById("toggleButton").addEventListener("click", function() {
     this.classList.add("clicked");
@@ -24,15 +27,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 var maxVotes = parseInt(this.getAttribute('data-max-votes')); // Get max_votes for the position
                 var checkedCandidateCheckboxes = document.querySelectorAll('input[type="checkbox"][name="position[' + positionId + '][]"]:checked'); // Checked candidate checkboxes for this position
                 var abstainCheckbox = document.querySelector('#abstain_' + positionId); // Abstain checkbox for this position
-
+        
                 // If a candidate checkbox is checked, uncheck the abstain checkbox
                 if (abstainCheckbox && this.checked) {
                     abstainCheckbox.checked = false;
                 }
-
+        
                 // Check if the number of checked checkboxes exceeds max_votes
                 if (checkedCandidateCheckboxes.length > maxVotes) {
                     this.checked = false; // Uncheck the current checkbox
+        
+                    myToast.show();
                 }
             });
         });
@@ -64,16 +69,24 @@ reminders.forEach(function(reminder) {
     
     checkboxes.forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
-            updateErrorState(reminder);
+            removeErrorState(reminder); // Just remove error state on change
         });
     });
 
     if (abstainRadio) {
         abstainRadio.addEventListener('change', function() {
-            updateErrorState(reminder);
+            removeErrorState(reminder); // Just remove error state on change
         });
     }
 });
+
+function removeErrorState(reminder) {
+    var reminderError = reminder.querySelector('.text-danger');
+    if (reminderError) {
+        reminder.removeChild(reminderError);
+    }
+    reminder.classList.remove('border', 'border-danger');
+}
 
 function updateErrorState(reminder) {
     var checkboxes = reminder.querySelectorAll('input[type="checkbox"]');
@@ -104,7 +117,8 @@ function updateErrorState(reminder) {
     }
 }
 
-// Function to validate form
+
+
 function validateForm(event) {
     event.preventDefault();
     var voteForm = document.getElementById('voteForm');
@@ -112,70 +126,80 @@ function validateForm(event) {
     var isValid = true;
     var scrollToReminder = null;
     var selectedCandidateHTML = '';
-    var pairCounter = 0;
 
     // Validate each position
     reminders.forEach(function(reminder) {
         updateErrorState(reminder);
 
-        var checkboxes = reminder.querySelectorAll('input[type="checkbox"]');
-        var abstainRadio = reminder.querySelector('input[type="radio"].abstain-checkbox');
-        var isChecked = false;
+        var positionTitle = reminder.getAttribute('data-position-title');
+        var candidateHTML = '';
+        var pairCounter = 0;
 
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.checked) {
-                isChecked = true;
-                var positionTitle = reminder.getAttribute('data-position-title');
-                var candidateName = checkbox.parentNode.querySelector('div.ps-4 > div.font-weight2').textContent.trim();
-                var candidateHTML = '<div>' + candidateName + '</div>';
-                var imageSrc = checkbox.getAttribute('data-img-src');
+        // Build HTML for selected candidates for each position
+  var checkboxes = reminder.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(function(checkbox, index) {
+    if (checkbox.checked) {
+        var candidateName = checkbox.parentNode.querySelector('div.ps-4 > div.font-weight2').textContent.trim();
+        var imageSrc = checkbox.getAttribute('data-img-src');
 
-                if (pairCounter % 2 === 0) {
-                    selectedCandidateHTML += '<div class="row ms-4">';
-                }
-
-                selectedCandidateHTML += '<div class="col-lg-6 col-md-12 col-sm-12 pb-lg-3 pb-3"><img src="' + imageSrc + '" width="80px" height="80px" style="display: inline-block; vertical-align: middle;border-radius: 10px; border: 2px solid #ccc;">' +
-                    '<div class="ps-4" style="display: inline-block; vertical-align: middle; "><b><div class="main-color">' + candidateHTML + '</div></b><div style="font-size:12px"><b>' +
-                    positionTitle.toUpperCase() + '</b></div></div>' + '</div>';
-
-                pairCounter++;
-
-                if (pairCounter % 2 === 0) {
-                    selectedCandidateHTML += '</div>';
-                }
-            } 
-        });
-
-        // Handle ABSTAIN option
-        if (abstainRadio && abstainRadio.checked) {
-            isChecked = true;
-            var positionTitle = reminder.getAttribute('data-position-title');
-            var candidateName = 'ABSTAINED';
-            var candidateHTML = '<div>' + candidateName + '</div>';
-            var imageSrc = 'images/resc/Abstained.png';
-
-            if (pairCounter % 2 === 0) {
-                selectedCandidateHTML += '<div class="row ms-4">';
-            }
-
-            selectedCandidateHTML += '<div class="col-lg-6 col-md-12 col-sm-12 pb-lg-3 pb-3"><img src="' + imageSrc + '" width="80px" height="80px" style="display: inline-block; vertical-align: middle;border-radius: 10px; border: 2px solid #ccc;">' +
-                '<div class="ps-4" style="display: inline-block; vertical-align: middle; "><b><div class="main-color">' + candidateHTML + '</div></b><div style="font-size:12px"><b>' +
-                positionTitle.toUpperCase() + '</b></div></div>' + '</div>';
-
-            pairCounter++;
-
-            if (pairCounter % 2 === 0) {
-                selectedCandidateHTML += '</div>';
-            }
+        // Determine column classes based on number of candidates
+        var colClasses = 'col-lg-6 col-md-6 col-sm-12'; // Default to two candidates per row
+        if (pairCounter % 2 === 0 && pairCounter === 1) {
+            colClasses = 'col-lg-12 col-md-12 col-sm-12'; // Center if only one candidate in the row, does not work
         }
 
-        // Handle no selection (neither checkboxes nor abstain radio)
-        if (!isChecked) {
+        // Create HTML for each candidate with vertically centered content
+        candidateHTML += '<div class="' + colClasses + ' mb-3">' +
+            '<div class="row align-items-center">' + // Ensure vertical alignment
+            '<div class="col-4">' +
+            '<img src="' + imageSrc + '" width="80px" height="80px" style="display: inline-block; vertical-align: middle; border-radius: 10px; border: 2px solid #ccc;">' +
+            '</div>' +
+            '<div class="col-8" style="font-size:13px">' +
+            '<div class="ps-3"><b>' + candidateName + '</b></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+        pairCounter++;
+
+        // If pairCounter is 2 (i.e., two candidates per row), add a new row
+        if (pairCounter % 2 === 0) {
+            candidateHTML += '</div><div class="row">';
+        }
+    }
+});
+
+        // Handle ABSTAIN option
+        var abstainRadio = reminder.querySelector('input[type="radio"].abstain-checkbox');
+        if (abstainRadio && abstainRadio.checked) {
+            // Create HTML for abstain option with vertically centered content
+            candidateHTML += '<div class="col-lg-6 col-md-6 col-sm-12 mb-3">' +
+                '<div class="row align-items-center">' + // Ensure vertical alignment
+                '<div class="col-lg-4 col-md-4 col-sm-4">' +
+                '<img src="images/resc/Abstained.png" width="80px" height="80px" style="display: inline-block; vertical-align: middle; border-radius: 10px; border: 2px solid #ccc;">' +
+                '</div>' +
+                '<div class="col-lg-8 col-md-8 col-sm-8">' +
+                '<div class="ps-3 "><b>ABSTAINED</b></div>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            pairCounter++;
+        }
+
+        // If candidates were selected, add them to selectedCandidateHTML
+        if (pairCounter > 0) {
+            selectedCandidateHTML += '<div>' +
+                '<hr><div class="main-color px-5" style="padding-bottom:25px"><center><b>' + positionTitle.toUpperCase() + '</b></center></div>' +
+                '<div class="row">' + candidateHTML + '</div>' +
+                '</div>';
+        } else {
             isValid = false;
             if (!scrollToReminder) {
                 scrollToReminder = reminder;
             }
         }
+        
     });
 
     // Handle form submission
@@ -189,31 +213,8 @@ function validateForm(event) {
     }
 }
 
-// Helper function to display input errors
-function displayInputError(inputElement, errorId, errorMessage) {
-    inputElement.classList.add('border', 'border-danger');
-    if (!document.getElementById(errorId)) {
-        var errorText = document.createElement('div');
-        errorText.id = errorId;
-        errorText.classList.add('text-danger', 'mt-2', 'ps-2');
-        errorText.innerHTML = "<i>" + errorMessage + "</i>";
-        inputElement.parentNode.appendChild(errorText);
-    }
-}
-
-// Function to remove error message and border when input is corrected
-function removeErrorAndBorder(inputElement) {
-    inputElement.classList.remove('border', 'border-danger');
-    var errorElement = inputElement.nextElementSibling;
-    if (errorElement && errorElement.classList.contains('text-danger')) {
-        errorElement.remove();
-    }
-}
-
-
 // Add submit event listener to the form
 document.getElementById('voteForm').addEventListener('submit', validateForm);
-
 
 // Handle the confirmation of the vote
 document.getElementById('submitModalButton').addEventListener('click', function() {
@@ -237,6 +238,7 @@ document.getElementById('submitModalButton').addEventListener('click', function(
     });
 });
 
+//Still the same script when user tries to reload the page
 // Add alert when user tries to refresh the page or close the browser
 let formChanged = false;
 
@@ -262,14 +264,84 @@ document.getElementById('giveFeedbackbtn').addEventListener('click', function() 
       return confirmationMessage;
     }
   });
+}); 
+
+/* let formChanged = false;
+let shouldLeave = false;
+
+document.getElementById('voteForm').addEventListener('change', function() {
+  formChanged = true;
 });
 
-function resetForm() {
+window.addEventListener('beforeunload', function (e) {
+  if (formChanged && !shouldLeave) {
+    $('#leavePageModal').modal('show');
+    e.preventDefault();
+    return false; // This prevents the default browser alert
+  }
+});
+
+document.getElementById('leaveButton').addEventListener('click', function() {
+  shouldLeave = true;
+  formChanged = false;
+  $('#leavePageModal').modal('hide');
+  window.location.reload(); // Reload the page
+});
+
+// Add an event listener to the "Give Feedback" button to remove the beforeunload event
+document.getElementById('giveFeedbackbtn').addEventListener('click', function() {
+  formChanged = false; // Reset the flag
+  window.removeEventListener('beforeunload', function (e) {
+    if (formChanged) {
+      const confirmationMessage = ' ';
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    }
+  });
+});
+*/
+
+function showResetConfirmation() {
+    // Check if there are any inputs that need resetting
+    if (shouldResetForm()) {
+      $('#resetFormModal').modal('show'); // Show the modal using jQuery
+    } else {
+      resetForm(); // If no inputs to reset, reset immediately
+    }
+  }
+
+  function confirmReset() {
+    resetForm(); // Call resetForm() if user confirms
+    $('#resetFormModal').modal('hide'); // Hide the modal using jQuery
+  }
+
+  function resetForm() {
+    document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+      checkbox.checked = false;
+    });
     document.querySelectorAll('input[type="radio"]').forEach((radio) => {
-    radio.checked = false;
+      radio.checked = false;
     });
     document.querySelectorAll('input[type="text"]').forEach((textInput) => {
-    textInput.value = '';
+      textInput.value = '';
     });
-}
+  }
 
+  function shouldResetForm() {
+    let anyInputs = false;
+
+    // Check if there are any inputs that need resetting
+    document.querySelectorAll('input[type="checkbox"], input[type="radio"], input[type="text"]').forEach((input) => {
+      if (input.type === 'checkbox' || input.type === 'radio') {
+        if (input.checked) {
+          anyInputs = true;
+        }
+      } else if (input.type === 'text') {
+        if (input.value.trim() !== '') {
+          anyInputs = true;
+        }
+      }
+    });
+
+    return anyInputs;
+  }

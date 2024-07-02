@@ -140,7 +140,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                                             <div id="password-mismatch-error" class="text-danger" style="display: none;">Incorrect password. Please try again.</div>
                                         </div>
                                         <div class="col-md-12 reset-pass">
-                                            <button class="login-sign-in-button main-bg-color mt-5 mb-4" type="button" name="new-password-submit" id="new-password-submit" onclick="window.location.href='setting-password-reset.php';" disabled>Confirm</button>
+                                            <button class="login-sign-in-button main-bg-color mt-5 mb-4" type="button" name="new-password-submit" id="new-password-submit" disabled>Confirm</button>
                                         </div>
                                         <br>
                                         <br>
@@ -166,7 +166,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                 });
 
                 document.addEventListener('DOMContentLoaded', (event) => {
-                    const passwordInput = document.getElementById('changepassword_confirmation');
+                    const passwordInput = document.getElementById('password_confirmation');
                     const toggleButton = document.getElementById('reset-password-toggle-2');
 
                     // Show the toggle button when the password input is focused
@@ -195,6 +195,50 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                         }
                     });
                 });
+
+                // AJAX verify password
+$(document).ready(function() {
+    $('#new-password-submit').click(function(e) {
+        e.preventDefault();
+
+        var currentPassword = $('#password_confirmation').val();
+
+        $.ajax({
+            type: 'POST',
+            url: 'includes/verify-password.php',
+            data: {
+                password: currentPassword
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Password verification successful
+                    window.location.href = 'setting-password-reset.php';
+                } else {
+                    // Show error message
+                    $('#password-mismatch-error').text(response.message).show();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error: ' + status + ', ' + error);
+            }
+        });
+    });
+
+    // Toggle the password visibility
+    $('#reset-password-toggle-2').click(function() {
+        var passwordInput = $('#password_confirmation');
+        var toggleButton = $('#reset-password-toggle-2');
+
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            toggleButton.html('<i class="fas fa-eye"></i>');
+        } else {
+            passwordInput.attr('type', 'password');
+            toggleButton.html('<i class="fas fa-eye-slash"></i>');
+        }
+    });
+});
             </script>
         </main>
         <div class="footer">

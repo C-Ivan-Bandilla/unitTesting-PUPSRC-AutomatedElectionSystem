@@ -47,15 +47,25 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="images/resc/ivote-favicon.png">
-    <link rel="preload" href="images/resc/ivote-icon.png" as="image">
+
+    <!-- Preloader Stylesheet and Image -->
+    <link rel="preload" href="images/resc/ivote-icon.webp" as="image">
     <link rel="stylesheet" href="styles/loader.css" />
-    <link rel="stylesheet" href="styles/core.css" />
-    <link rel="stylesheet" href="styles/dist/all-footer.css">
+    
     <link rel="stylesheet" href="../vendor/node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
-
-    <link rel="stylesheet" href="styles/dist/register.css">
     <title>Register</title>
+
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="styles/dist/register.css">
+    <link rel="stylesheet" href="styles/core.css" />
+    <link rel="stylesheet" href="styles/dist/all-footer.css">
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/register.js" defer></script>
+    <script src="scripts/loader.js" defer></script>
 
     <script>
         // Will be used for validation of existing emails 
@@ -67,32 +77,10 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
 
 <body>
 
-    <?php include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/loader.html'); ?>
-
-    <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
-        <div class="container">
-            <!-- <a class="navbar-brand" href="#">Your Brand</a> -->
-            <img src="images/resc/ivote-icon-2.png" id="ivote-logo-landing-header" alt="ivote-logo">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item fw-medium">
-                        <a class="nav-link" href="landing-page.php">Home</a>
-                    </li>
-                    <li class="nav-item fw-medium">
-                        <a class="nav-link" href="about-us.php">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="register.php">Register</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    <?php 
+    include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/loader.html');
+    include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/outside-header.php');  
+    ?>
 
     <div class="container-fluid mt-4 pt-3 main-reg-container" style="padding-top: 0.8rem">
         <div class="row mt-5 pl-5">
@@ -262,10 +250,9 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
 
         <div class="col-md-6 d-flex align-items-center">
             <div class="register-img-container">
-                <img src="images/resc/voting.png" alt="ivote-register" class="register-img" style="margin-left: 50px">
+                <img src="images/resc/voting.webp" alt="ivote-register" class="register-img" style="margin-left: 50px">
             </div>
         </div>
-    </div>
     </div>
 
     <!-- Registered Successfully Modal -->
@@ -378,11 +365,6 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     </div>
 
     <?php include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/all-footer.php'); ?>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="scripts/register.js"></script>
-    <script src="scripts/loader.js"></script>
 
 </body>
 

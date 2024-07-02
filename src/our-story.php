@@ -19,12 +19,15 @@ SessionManager::checkUserRoleAndRedirect();
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/dist/landing.css">
-  <link rel="stylesheet" href="styles/loader.css">
   <link rel="stylesheet" href="styles/dist/all-footer.css">
   <link rel="stylesheet" href="styles/our-story.css">
+  <link rel="stylesheet" href="styles/dist/landing-animation.css">
   <link rel="icon" href="images/resc/ivote-favicon.png" type="image/x-icon">
   <title>iVote</title>
-  <title>iVote</title>
+
+  <!-- Preloader Stylesheet and Image -->
+  <link rel="preload" href="images/resc/ivote-icon.webp" as="image">
+  <link rel="stylesheet" href="styles/loader.css" />
 
   <!-- Montserrat Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,40 +38,20 @@ SessionManager::checkUserRoleAndRedirect();
 
 <body id="index-body">
 
-  <?php include_once FileUtils::normalizeFilePath('includes/components/loader.html'); ?>
-
-  <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
-    <div class="container">
-      <!-- <a class="navbar-brand" href="#">Your Brand</a> -->
-      <img src="images/resc/ivote-icon-2.png" id="ivote-logo-landing-header" alt="ivote-logo">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item fw-medium">
-            <a class="nav-link" href="landing-page.php">Home</a>
-          </li>
-          <li class="nav-item fw-medium">
-            <a class="nav-link" href="about-us.php">About Us</a>
-          </li>
-          <li class=" nav-item">
-            <a class="nav-link active" href="register.php">Register</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <?php
+  include_once FileUtils::normalizeFilePath('includes/components/loader.html');
+  include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/outside-header.php');
+  ?>
 
   <!-- Parallax section -->
   <section class="parallax">
     <div class="container">
-      <div class="row">
-        <div class="col text-center text-white justify-content-center">
-          <img src="images/resc/iVOTE4.png" class="img-fluid ivote-main-logo" alt="iVote Logo">
-          <h5 id="index-PUPSRC" class="text-truncate mt-3">Polytechnic University of the Philippines -
-            Santa Rosa Campus</h5>
-          <h1 class="" id="index-AES">AUTOMATED ELECTION SYSTEM</h1>
+      <div class="row fade-in">
+        <div class="col text-center text-white justify-content-center slide-in">
+          <img src="images/resc/iVOTE4.webp" class="img-fluid ivote-main-logo" alt="iVote Logo">
+          <h5 id="index-PUPSRC" class="text-truncate mt-3">Polytechnic University of the Philippines - Santa Rosa Campus
+          </h5>
+          <h1 id="index-AES">AUTOMATED ELECTION SYSTEM</h1>
         </div>
       </div>
       <div class="index-wave-footer" id="organizations">
@@ -80,10 +63,10 @@ SessionManager::checkUserRoleAndRedirect();
   </section>
 
   <!-- Normal section -->
-  <section class="about-us-section" id="normal-section">
-    <div class="container-fluid ">
+  <section class="about-us-section mt-4 pt-3" id="normal-section">
+    <div class="container-fluid fade-in">
       <div class="row">
-        <div class="col col-md-6 our-story-left">
+        <div class="col col-md-6 our-story-left slide-in">
           <h2 class="landing-organization-title"><span class="hello-text">Our</span> Story</h2>
           <p class="our-story-subtitle">How it all came to be.</p>
           <div id="carouselMain" class="carousel slide carousel-shadow" data-bs-ride="carousel" data-bs-wrap="true">
@@ -117,7 +100,7 @@ SessionManager::checkUserRoleAndRedirect();
             </button>
           </div>
         </div>
-        <div class="col-md-6 our-story-right">
+        <div class="col-md-6 our-story-right  slide-in">
           <!-- <div id="carouselIndicatorsCopy">
             <button type="button" data-bs-target="#carouselMain" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
             <button type="button" data-bs-target="#carouselMain" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -169,19 +152,19 @@ SessionManager::checkUserRoleAndRedirect();
                 <div class="carousel-inner">
                   <div class="carousel-item active" id="pm">
                     <h4 class="department-name">Project Manager Team</h4>
-                    <p class="department-definition">A project team is a group of individuals brought together to work on a specific project or initiative. The team will include roles needed for project planning, development, and implementation. The team members collaborate to achieve a set of predetermined goals as stated in the project scope. This could be the launch of a product or service, or delivering a new design or feature for a client.
+                    <p class="department-definition">Project teams unite diverse specialists to tackle specific goals. These collaborative groups plan, develop, and implement projects, aiming to launch products, services, or client features.</p>
                   </div>
                   <div class="carousel-item" id="dev">
                     <h4 class="department-name">Development Team</h4>
-                    <p class="department-definition">A development team is a group of people who work together to develop a piece of software, product, or service from initial ideation to completion. While many people use the term as short-hand to refer to a software development team (which develops software), a project development team can actually be any team focused on developing a particular project, whether it be constructing a building or manufacturing a new toy. </p>
+                    <p class="department-definition">Development teams bring ideas to life. From software to buildings, they combine skills to design, build, and deliver projects, ensuring successful completion.</p>
                   </div>
                   <div class="carousel-item" id="qa">
                     <h4 class="department-name">Quality Assurance Team</h4>
-                    <p class="department-definition">A quality assurance team is responsible for maintaining product development standards. QA teams make sure that the product, service, or functions customers get either meet or exceed their expectations. This, in return, enhances your brand reputation and increases customer loyalty.</p>
+                    <p class="department-definition">Ensuring quality from start to finish, QA teams safeguard your brand reputation. They meticulously evaluate products and services to meet or exceed customer expectations, fostering loyalty. </p>
                   </div>
                   <div class="carousel-item" id="ba">
                     <h4 class="department-name">Business Analyst Team</h4>
-                    <p class="department-definition">A Business Analyst is a professional who acts as a liaison between business stakeholders and technical teams. They possess a unique blend of business acumen, communication skills, and analytical expertise. BAs play a pivotal role in identifying, documenting, and analyzing business requirements to ensure successful project delivery. They collaborate with stakeholders at all levels of an organization, from executives to end-users, to gather and interpret requirements accurately. </p>
+                    <p class="department-definition">Business Analysts bridge the business-IT gap. They translate needs into solutions, analyze requirements, and ensure project success by collaborating across all levels.</p>
                   </div>
                 </div>
               </div>
@@ -219,16 +202,16 @@ SessionManager::checkUserRoleAndRedirect();
                       <div id="carouselAuthorQuote" class="image-container-author-quote slide" data-bs-ride="carousel" data-bs-wrap="true">
                         <div class="carousel-inner">
                           <div class="carousel-item active" id="pm">
-                            <p class="authorQuote">To pursue greatness is to experience hardship, but it's through those challenges that we discover our true potential.</p>
+                            <p class="authorQuote">Overcoming hardship unlocks potential. Embrace challenges, achieve greatness.</p>
                           </div>
                           <div class="carousel-item" id="dev">
-                            <p class="authorQuote">What an amazing experience it is, to be surrounded by an environment composed of great-minded individuals, crafting a solution for enhancing the campus’ election system.</p>
+                            <p class="authorQuote">Inspiring collaboration fosters innovative solutions for campus elections </p>
                           </div>
                           <div class="carousel-item" id="qa">
-                            <p class="authorQuote">Challenging limitations, enhancing standards, and producing outstanding outcomes that influence the future.</p>
+                            <p class="authorQuote">Overcoming challenges, exceeding standards, driving impactful results.</p>
                           </div>
                           <div class="carousel-item" id="ba">
-                            <p class="authorQuote">Beyond grateful for the team's collaborative effort in transforming data into actionable insights, which enable us to get things done and achieve our goals.</p>
+                            <p class="authorQuote">Deep appreciation for team's collaboration. Data-driven insights empower achievement.</p>
                           </div>
                         </div>
                       </div>
@@ -313,13 +296,13 @@ SessionManager::checkUserRoleAndRedirect();
               departmentBox.style.backgroundColor = '#D9E0F0';
               break;
             case 'dev':
-              departmentBox.style.backgroundColor = '#ff87ab';
+              departmentBox.style.backgroundColor = '#ffc2d1';
               break;
             case 'qa':
-              departmentBox.style.backgroundColor = '#EECFCE';
+              departmentBox.style.backgroundColor = '#fff185';
               break;
             case 'ba':
-              departmentBox.style.backgroundColor = '#c1ff9b';
+              departmentBox.style.backgroundColor = '#eec7fc';
               break;
             default:
               departmentBox.style.backgroundColor = ''; // Default or clear previous color
@@ -352,16 +335,16 @@ SessionManager::checkUserRoleAndRedirect();
         setTimeout(() => {
           switch (activeItem.id) {
             case 'pm':
-              carousel.querySelector('#pm .carousel-image-author').style.borderColor = '#D9E0F0';
+              carousel.querySelector('#pm .carousel-image-author').style.borderColor = '#9bb2e2';
               break;
             case 'dev':
-              carousel.querySelector('#dev .carousel-image-author').style.borderColor = '#ff87ab';
+              carousel.querySelector('#dev .carousel-image-author').style.borderColor = '#ff8fab';
               break;
             case 'qs':
-              carousel.querySelector('#qs .carousel-image-author').style.borderColor = '#EECFCE';
+              carousel.querySelector('#qs .carousel-image-author').style.borderColor = '#ffdd1f';
               break;
             case 'ba':
-              carousel.querySelector('#ba .carousel-image-author').style.borderColor = '#c1ff9b';
+              carousel.querySelector('#ba .carousel-image-author').style.borderColor = '#c670ff';
               break;
             default:
               break;
@@ -437,16 +420,16 @@ SessionManager::checkUserRoleAndRedirect();
         setTimeout(() => {
           switch (activeItem.id) {
             case 'pm':
-              authorQuoteBox.style.backgroundColor = '#D9E0F0';
+              authorQuoteBox.style.backgroundColor = '#9bb2e2';
               break;
             case 'dev':
-              authorQuoteBox.style.backgroundColor = '#ff87ab';
+              authorQuoteBox.style.backgroundColor = '#ff8fab';
               break;
             case 'qa':
-              authorQuoteBox.style.backgroundColor = '#EECFCE';
+              authorQuoteBox.style.backgroundColor = '#ffdd1f';
               break;
             case 'ba':
-              authorQuoteBox.style.backgroundColor = '#c1ff9b';
+              authorQuoteBox.style.backgroundColor = '#c670ff';
               break;
             default:
               break;
