@@ -82,7 +82,7 @@ $registration_success = isset($_SESSION['registration_success']) && $_SESSION['r
     ?>
 
     <div class="container-fluid mt-4 pt-3 main-reg-container" style="padding-top: 0.8rem">
-        <div class="row mt-5 pl-5">
+        <div class="row mt-5 pl-5 pb-5">
             <div class="col-md-6">
                 <form id="register-form" action="includes/registration-inc.php" method="POST"
                     enctype="multipart/form-data">
