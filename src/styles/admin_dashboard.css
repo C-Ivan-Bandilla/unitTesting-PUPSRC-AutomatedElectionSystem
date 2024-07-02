@@ -4,6 +4,11 @@ body{
 main{
   overflow-x: hidden !important;
 }
+.hover-color{
+  color: white !important;
+  border-radius: 8px;
+}
+
 .position-container {
     display: flex;
     justify-content: space-between;
@@ -14,8 +19,10 @@ main{
   color: #949494;
   font-size: small;
  }
-  
-  
+
+ [class^="bi-"]::before, [class*=" bi-"]::before {
+  line-height: 1.04 !important;
+ }
 .positions-dropdown{
   
     border-radius: 16px;

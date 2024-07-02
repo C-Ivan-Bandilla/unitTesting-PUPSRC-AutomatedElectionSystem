@@ -189,7 +189,34 @@ function updateChart(candidatesData) {
 const IMG_URLS = candidatesData.map(candidate => `user_data/${orgName}/candidate_imgs/${candidate.photoUrl}`);
 
     const DATA_POINTS = candidatesData.map(candidate => candidate.votesCount);
-    const LABELS = candidatesData.map(candidate => [candidate.firstName, candidate.lastName]);
+    const LABELS = candidatesData.map(candidate => {
+        const firstNameWords = candidate.firstName.split(' ');
+
+        // Initialize an array to hold the formatted first names
+        const formattedFirstNames = [];
+        
+        // Loop through firstNameWords in chunks of up to 3
+        for (let i = 0; i < firstNameWords.length; i += 3) {
+            // Slice the array to get the current chunk of up to 3 words
+            const chunk = firstNameWords.slice(i, i + 3);
+            
+            // Join the chunk with spaces to form a formatted segment
+            const formattedChunk = chunk.join(' ');
+            
+            // Add the formatted chunk to the array
+            formattedFirstNames.push(formattedChunk);
+        }
+        
+        // Push candidate's lastName as the last element
+        formattedFirstNames.push(candidate.lastName);
+        
+        // Return the array of formatted first names
+        return formattedFirstNames;
+        
+        
+        
+    });
+    
  
     // Check if the chart exists
     if (!myChart) {
@@ -242,7 +269,7 @@ const IMG_URLS = candidatesData.map(candidate => `user_data/${orgName}/candidate
                 ctx.fillStyle = 'black';
                 ctx.font = `bold ${FONT_SIZE}px Montserrat`;
                 if (shouldSwapNames) {
-                ctx.fillText( candidatesData[i].lastName.toUpperCase() + '' + candidatesData[i].firstName.toUpperCase(), TEXT_X, TEXT_Y);
+                 ctx.fillText('CANDIDATE #' + (i + 1), TEXT_X, TEXT_Y); // Unique candidate number
             } else {
                 if (candidatesData[i].lastName && candidatesData[i].firstName) {
                     ctx.fillText(candidatesData[i].lastName.toUpperCase() + ', ' + candidatesData[i].firstName.toUpperCase(), TEXT_X, TEXT_Y);
