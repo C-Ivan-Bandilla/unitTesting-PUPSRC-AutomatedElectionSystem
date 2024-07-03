@@ -1,8 +1,10 @@
 <?php
 include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/classes/file-utils.php');
 require_once FileUtils::normalizeFilePath('includes/classes/db-connector.php');
+require_once FileUtils::normalizeFilePath('includes/classes/csrf-token.php');
 require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
+require_once FileUtils::normalizeFilePath('includes/classes/manage-ip-address.php');
 
 if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['role'] == 'student_voter')) {
   // ------ SESSION EXCHANGE
@@ -10,8 +12,13 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
   // ------ END OF SESSION EXCHANGE
 
   $connection = DatabaseConnection::connect();
-  $voter_id = $_SESSION['voter_id']; // Get voter id to update the vote status
-  $vote_status = $_SESSION['vote_status']; // Get voter id to update the vote status
+  $voter_id = $_SESSION['voter_id'];
+
+  $stmt = $connection->prepare("SELECT * FROM voter WHERE voter_id = ?");
+  $stmt->bind_param('s', $voter_id);
+  $stmt->execute();
+  $result = $stmt->get_result(); // Get the result set from the prepared statement
+  $row = $result->fetch_assoc(); 
 ?>
 
   <!DOCTYPE html>
@@ -85,8 +92,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                       <i data-feather="user" class="white" style="width: 20px; height: 20px;"></i>
                     </div>
                     <div>
-                      <div class="mb-0" style="font-size: 18px; font-weight:600">
-                        <a href="../src/user-setting-information.php" class="custom-link"> Information </a>
+                      <div class="side-nav mb-0">
+                        <a href="user-setting-information.php" class="custom-link"> Information </a>
                       </div>
                       <div class="mb-0 des">See your account information like your email address and certificate of registration.</div>
                     </div>
@@ -96,8 +103,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                       <i data-feather="lock" class="white" style="width: 20px; height: 20px;"></i>
                     </div>
                     <div>
-                      <div class="mb-0" style="font-size: 18px; font-weight:600">
-                        <a href="../src/user-setting-password.php" class="custom-link"> Change Password </a>
+                      <div class="side-nav mb-0">
+                        <a href="user-setting-password.php" class="custom-link"> Change Password </a>
                       </div>
                       <div class="mb-0 des">Ensure your account's security by updating your password whenever you need.</div>
                     </div>
@@ -105,8 +112,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                   <div class="d-flex align-items-center pb-4">
                     <i class="fas fa-exchange-alt me-4" style="font-size: 1.1rem;"></i>
                     <div>
-                      <div class="mb-0" style="font-size: 18px;">
-                        <b><a href="../src/user-setting-transfer.php" class="custom-link">Transfer Org</a></b>
+                      <div class="side-nav mb-0">
+                        <a href="user-setting-transfer.php" class="custom-link">Transfer Org</a>
                       </div>
                       <div class="mb-0 des">Move your account to a different organization upon transfer.</div>
                     </div>
@@ -116,79 +123,84 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
             </div>
           </div>
           <!-- right side -->
+          
           <div class="col-lg-9 ps-lg-4">
             <div class="row">
-              <div class="p-4 title" style="font-size:15px;">
-                <div class="py-3 px-2 px-lg-4 px-sm-1">
-                  <h5 class="main-color pb-2">
+              <div class="p-4 title" style="font-size: 15px;">
+                <div class="py-3 px-2 px-lg-4 px-sm-1 row">
+                <h5 class="main-color pb-3">
                     <b>
                       <i data-feather="user" class="fas fa-exchange-alt me-4" style="font-size: 1rem;"></i>Information
                     </b>
                   </h5>
-                  <div id="section-1" style="align-items: center; justify-content: center;">
+                <div class="col-lg-6 col-12 mb-4 mb-lg-0 text-center">
+                  <div style="display: flex; flex-direction: column; align-items: center;" class="pt-4">
                     <div class="rounded-icon main-bg-color">
                       <i data-feather="mail" class="white im-cust feather-4l"></i>
                     </div>
-                    <div class="container-data">
+                    <div class="text-center">
                       <h4 class="email-add">Email Address</h4>
-                      <p class="user-email-1">kimMingyu@gmail.com</p>
+                      <p class="user-email-1"><?php echo $row['email']; ?></p>
                       <hr class="email-border">
-                      <button type="button" class="main-color transparent-btn" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#successResetPasswordLinkModal">Change Email Address</button>
-                      </br>
+                      <button type="button" class="pt-2 main-color transparent-btn" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#confirmPassModal">Change Email Address</button>
                     </div>
                   </div>
-                  <div class="col" style="margin-top: -200px; margin-left: 400px;">
-                    <iframe id="pdfViewer" src="<?php echo "user_data/$org_name/cor/" . $row['cor']; ?>" class="right-aligned-iframe" frameborder="0"></iframe>
+                </div>
+                <div class="col-lg-6 col-12">
+                  <div class="pt-4"></div>
+                  <iframe id="pdfViewer" src="<?php echo "user_data/$org_acronym/cor/" . $row['cor']; ?>" frameborder="0" style="width: 400px; height:240px"></iframe>
+                  <p class="filename"><i data-feather="paperclip" class="white im-cust feather-2xs"></i><?php echo $row['cor']; ?></p>
+                  <div class="tools pe-4 d-flex justify-content-end">
+                    <a href="<?php echo "user_data/$org_acronym/cor/" . $row['cor']; ?>" download class="custom-link">
+                      <span class="fs-7 ps-sm-2 pe-2 spacing-3 fw-medium download">
+                        <i class="fas fa-download fa-sm"></i> Download
+                      </span>
+                    </a>
+                    <span><i class="fa-solid fa-expand fa-sm fullscreen-icon" onclick="toggleFullScreen('pdfViewer')"></i></span>
                   </div>
-                  <a href="<?php echo "user_data/$org_name/cor/" . $row['cor']; ?>" download class="d-inline-flex align-items-center">
-                  </a>
-                  <p class="filename"><i data-feather="paperclip" class="white im-cust feather-2xs"></i>RegistrationCertificate.pdf</p>
-
-                  <div class="tools">
-                    <span class="fs-7 ps-sm-2 spacing-3 fw-medium download">
-                      <i class="fas fa-download fa-sm"></i> Download
-                    </span>
-                    <i class="fa-solid fa-expand fa-sm fullscreen-icon"></i>
-                  </div>
-
-                  <br>
-                  <br>
+                  <div style="padding-bottom: 8%;"></div>
                 </div>
               </div>
             </div>
+          </div>
+
           </div>
         </div>
       </div>
       </div>
 
-      <!-- Modals -->
-      <div class="modal fade" id="successResetPasswordLinkModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content d-flex align-items-center justify-content-center" id="success-modal">
-            <div class="modal-body text-center w-100">
-              <div class="col-md-12">
-                <img src="images/resc/icons/shield.png" class="change-passs-modal-icon" alt="iVote Logo">
-              </div>
-              <p class="fw-bold fs-4 change-password-title spacing-4 mt-3">Enter Password</p>
-              <p class="change-password-sub">To change your email address, please provide your current password.</p>
-              <form class="needs-validation" id="forgot-password-form" name="forgot-password-form" novalidate enctype="multipart/form-data">
-                <div class="col-12 col-md-12">
-                  <div class="input-group">
-                    <input type="password" class="form-control mx-auto align-self-center" id="change-password" name="change-password" onkeypress="return avoidSpace(event)" placeholder="Type current password here...">
-                    <button class="btn btn-secondary eye-toggle" type="button" id="password-toggle-1" style="display: none;">
-                      <i class="fas fa-eye-slash"></i>
-                    </button>
-                  </div>
+       <!-- Confirm Password Modal -->
+       <div class="modal fade adjust-modal" id="confirmPassModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content d-flex align-items-center justify-content-center" id="success-modal">
+                    <div class="modal-body text-center w-100 mt-4 mb-2">
+                        <div class="col-md-12">
+                            <img src="images/resc/icons/shield.png" style="width: 25%; height:25%" alt="Shield Logo">
+                        </div>
+                        <p class="fw-bold fs-4 information-title spacing-4 mt-3">Enter Password</p>
+                        <p class="info-sub">To change your email address, please provide your current password.
+                        <form id="confirmPasswordForm" method="post">
+                           <!-- CSRF Token hidden field -->
+                           <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                            <div class="password-input-container">
+                                <input type="password" maxlength="50" class="password-input" name="password" id="password" autocomplete="off" placeholder="Type password here..." oninput="handleInput()">
+                                <span class="toggle-password" onclick="togglePasswordVisibility()">
+                                    <i class="fas fa-eye-slash"></i>
+                                </span>
+                            </div>
+                            <div class="pt-2" id="errorMessage" style="color: red; display: none; font-size:12px"></div>
+                            <div class="pt-4">
+                                <input type="hidden" name="voter_id" value="<?php echo $voter_id ?>">
+                                <input type="hidden" name="email" value="<?php echo $row['email'] ?>">
+                                <button type="button" class="btn btn-gray" id="cancelModalButton" data-bs-dismiss="modal" aria-label="Close"><b>Cancel</b></button>
+                                <button type="button" class="btn button-proceed" id="realSubmitBtn">Submit</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="col-md-12 mt-5">
-                  <button type="button" class="btn btn-secondary cancel-button" data-bs-dismiss="modal" id="cancel-modal">Cancel</button>
-                  <button type="button" class="btn btn-primary delete-button" id="submit-button">Submit</button>
-                </div>
-              </form>
             </div>
-          </div>
         </div>
-      </div>
+
 
       <!-- Success Modal -->
       <div class="modal" id="approvalModal" data-bs-keyboard="false" data-bs-backdrop="static">
@@ -196,7 +208,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
           <div class="modal-content">
             <div class="modal-body">
               <div class="d-flex justify-content-end">
-                <i class="fa fa-solid fa-circle-xmark fa-xl close-mark light-gray custom-margin" onclick="closeModalAndRedirect()"></i>
+                <i class="fa fa-solid fa-circle-xmark fa-xl close-mark light-gray custom-margin" data-bs-dismiss="modal" aria-label="Close"></i>
               </div>
               <div class="text-center">
                 <div class="col-md-12">
@@ -214,98 +226,36 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
         </div>
       </div>
 
-      <!--Max Attempts Reach Modal -->
-      <div class="modal" id="errorModal" data-bs-keyboard="false" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body">
-              <div class="d-flex justify-content-end">
-                <i class="fa fa-solid fa-circle-xmark fa-xl close-mark light-gray custom-margin" id="onlyErrorClose">
-                </i>
-              </div>
-              <div class="text-center">
-                <div class="col-md-12">
-                  <img src="images/resc/warning.png" alt="Warning Icon">
-                </div>
-
-                <div class="row">
-                  <div class="col-md-12 pb-3 pt-4">
-                    <p class="fw-bold fs-3 danger spacing-4 px-2" style="color: #EE1C24;">Max Attempts Reached</p>
-                    <p class="fw-medium spacing-5 pt-2 px-5 ">Sorry, you've reached the maximum number <br>
-                      of attempts to change your password. For <br> security reasons, please wait for <b>30 minutes</b> <br> before trying again.
-                    </p>
+     <!-- Maximum Attempt Modal -->
+     <div class="modal fade adjust-modal" id="maximumAttemptsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                  <div class="modal-body text-center">
+                      <div class="d-flex justify-content-end w-100 border-0 me-4 mt-4">
+                          <button type="button" class="btn-close custom-close-btn" id="closeMaximumAttemptsModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="col-md-12">
+                          <img src="images/resc/warning.png" class="py-2" style="width: 30%; height:30%" alt="Warning Logo">
+                      </div>
+                      <p class="fw-bold fs-4 information-title spacing-4 text-danger">Max Attempts Reached</p>
+                      <p class="info-sub">Sorry you've reached the maximum number<br> of attempts to confirm your password. For <br>
+                          security reasons, please wait for 30 minutes <br> before trying again.</p>
                   </div>
-                </div>
               </div>
-            </div>
           </div>
-        </div>
       </div>
-      <!-- JavaScript to show approval modal after submission -->
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          document.getElementById('submit-button').addEventListener('click', function() {
-            // Assuming the submission is successful, show the approval modal
-            var approvalModal = new bootstrap.Modal(document.getElementById('approvalModal'));
-            approvalModal.show();
-          });
-        });
-
-        // JS for the submit approval modal when the user click submit the modal is closed
-        document.getElementById('submit-button').addEventListener('click', function() {
-          // Perform any form validation or submission logic here
-
-          // If the form is valid, close the modal
-          var myModalEl = document.getElementById('successResetPasswordLinkModal');
-          var modal = bootstrap.Modal.getInstance(myModalEl); // Returns a Bootstrap modal instance
-          modal.hide();
-        });
-
-        function closeModalAndRedirect() {
-          var modal = document.getElementById('approvalModal');
-          modal.style.display = 'none';
-          // Replace with the actual URL you want to redirect to
-          window.location.href = 'user-setting-information.php?voter_id=<?php echo htmlspecialchars($row["voter_id"]); ?>';
-        }
-        document.addEventListener('DOMContentLoaded', (event) => {
-    const passwordInput = document.getElementById('change-password');
-    const toggleButton = document.getElementById('password-toggle-1');
-
-    // Show the toggle button when the password input is focused
-    passwordInput.addEventListener('focus', () => {
-      toggleButton.style.display = 'block';
-    });
-
-    // Prevent the toggle button from hiding if it is clicked
-    toggleButton.addEventListener('mousedown', (event) => {
-      event.preventDefault();
-    });
-
-    // Toggle the password visibility
-    toggleButton.addEventListener('click', () => {
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleButton.innerHTML = '<i class="fas fa-eye"></i>';
-      } else {
-        passwordInput.type = 'password';
-        toggleButton.innerHTML = '<i class="fas fa-eye-slash"></i>';
-      }
-    });
-  });
-      </script>
+     
     </main>
     <div class="footer">
       <?php include_once __DIR__ . '/includes/components/footer.php'; ?>
     </div>
 
     <script src="../src/scripts/feather.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGz5D6306zI1M1rEM0bzW2UN4u5d1a2KX9KRALhWV4aKN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cu5eC5sE/PZz57f5mlP34fIuFj0m9koW2j4X0eY9Fzj5sy9F2YfGOFlUNcr4fnfM" crossorigin="anonymous"></script>
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="scripts/loader.js"></script>
-    <script src="scripts/reset-password.js"></script>
+    <script src="scripts/change-email.js"></script>
   </body>
 
   </html>
