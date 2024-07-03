@@ -78,9 +78,9 @@ input[type='password'] {
   line-height: 0;
   margin-bottom: -5px;
 
-   /* @media only screen and (hover: none) {
+  @media only screen and (max-width: 576px) and (hover: none) {
     margin-bottom: calc(-5vh + -6vw);
-  }  */
+  }
 }
 
 .index-wave-footer svg {
@@ -743,7 +743,8 @@ span {
 }
 
 /* Alert Messages */
-.custom-alert, .custom-info {
+.custom-alert,
+.custom-info {
   width: 100%;
   max-width: 400px;
   font-size: 12px;
@@ -1067,7 +1068,8 @@ span {
     text-align: center;
   }
 
-  #serverSideErrorMessage, #serverSideInfoMessage {
+  #serverSideErrorMessage,
+  #serverSideInfoMessage {
     font-size: 10px;
     font-weight: 700
   }
