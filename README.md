@@ -21,18 +21,16 @@
   <div align="start">
       <h2>About</h2>
       <ul>
-        <li>iVOTE is an online voting web application developed for the student academic organizations of PUP Sta. Rosa Campus.</li>
+        <li>iVOTE is a web-based voting application developed for the student academic organizations of PUP Sta. Rosa Campus.</li>
         <li>This project is for partial fulfillment of the subject COMP 20133: Applications Development and Emerging Technologies.</li>
       </ul>
   </div>
 </div>
 
-<br />
 
 > [!IMPORTANT]
 > iVOTE is currently undergoing continuous development, refinement, and testing and is not ready for use. If you encounter any defects or bugs, you may open a new issue ticket [here.](https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem/issues)
- 
-<br />
+
 
 <!-- TABLE OF CONTENTS -->
 <h2>Table of Contents</h2>
