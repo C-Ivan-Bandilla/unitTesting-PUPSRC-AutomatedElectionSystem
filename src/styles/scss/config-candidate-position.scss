@@ -132,6 +132,11 @@ body dialog.modal-native {
                 @media only screen and (max-width: 600px) {
                     font-size: calc(0.75rem + 0.6575vw);
                 }
+
+                max-width: calc(var(--bs-modal-width) - 3.5rem);
+                overflow: clip;
+                overflow-clip-margin: -5rem;
+                /* Doesnt work */
             }
 
             &.editor {

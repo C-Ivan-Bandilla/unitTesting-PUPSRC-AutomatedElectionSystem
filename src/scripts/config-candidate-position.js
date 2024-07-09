@@ -82,7 +82,7 @@ ConfigPage = {
             positionInput.setAttribute('placeholder', 'Enter a candidate position');
             positionInput.setAttribute('pattern', '[a-zA-Z .\\-]{1,50}');
             positionInput.setAttribute('required', '');
-            positionInput.setAttribute('maxlength', 50);
+            positionInput.setAttribute('maxlength', 51);
 
             let positionAlert = document.createElement('div');
             positionAlert.classList.add('input-alert', 'mb-2');
@@ -153,11 +153,22 @@ ConfigPage = {
             var modalActions = document.createElement('div');
             modalActions.className = 'modal-action w-100';
 
+
+            var editButton = document.createElement('button');
+            editButton.setAttribute('id', 'edit-button');
+            editButton.type = 'button';
+            editButton.className = 'btn btn-sm btn-outline-primary';
+            // editButton.setAttribute('data-bs-dismiss', 'modal');
+            editButton.textContent = 'Edit';
+            var editBtnLabel = document.createElement('label');
+            editBtnLabel.appendChild(editButton);
+            editBtnLabel.setAttribute('for', 'edit-button');
+
             // Create the Save button
             var saveButton = document.createElement('button');
             saveButton.setAttribute('id', 'save-button');
             saveButton.type = 'button';
-            saveButton.className = 'btn btn-sm btn-primary';
+            saveButton.className = 'btn btn-sm btn-primary d-none';
             // saveButton.setAttribute('data-bs-dismiss', 'modal');
             saveButton.textContent = 'Save';
             var saveButtonLabel = document.createElement('label');
@@ -166,12 +177,14 @@ ConfigPage = {
 
             // Create the Cancel button
             var cancelButton = document.createElement('button');
+            cancelButton.setAttribute('id', 'cancel-button');
             cancelButton.type = 'button';
-            cancelButton.className = 'btn btn-sm btn-secondary';
+            cancelButton.className = 'btn btn-sm btn-secondary d-none';
             cancelButton.setAttribute('data-bs-dismiss', 'modal');
             cancelButton.textContent = 'Cancel';
 
             // Append buttons to the inner div
+            modalActions.appendChild(editBtnLabel);
             modalActions.appendChild(saveButtonLabel);
             modalActions.appendChild(cancelButton);
 
@@ -286,7 +299,7 @@ ConfigPage = {
 
             return;
         }
-
+        ConfigPage.mode = 'update';
         ConfigPage.showCandidatePositionDialog(event.target)
 
     },
@@ -294,6 +307,7 @@ ConfigPage = {
     handleTableRowClickShow: function (event) {
         if (event.target === event.currentTarget.querySelector('input')) {
             console.log('click event on input');
+            ConfigPage.mode = 'view';
             ConfigPage.showCandidatePositionDialog(event.currentTarget);
         }
     },
@@ -301,6 +315,7 @@ ConfigPage = {
     handleTableRowDblClick: function (event) {
         console.log('dbl click event ');
         console.log(event);
+        ConfigPage.mode = 'update';
         const INPUT_FOCUSED = event.currentTarget.querySelectorAll('input:focus-visible');
 
         if (INPUT_FOCUSED.length > 0) {
@@ -341,26 +356,45 @@ ConfigPage = {
     handleModalInput: function (event) {
         const inputElement = event.target;
         const adjacentElement = inputElement.nextElementSibling;
+        const primaryBtn = inputElement.closest('.modal-body').querySelector('.modal-action .btn-primary');
 
 
         clearTimeout(ConfigPage.typingTimeout);
         ConfigPage.typingTimeout = setTimeout(() => {
             try {
-                if (ConfigPage.position_validate.validate(inputElement)) {
+                if (ConfigPage.position_validate.validate(inputElement, ConfigPage.handleInvalidAlert)) {
                     inputElement.style.borderBottomColor = '';
                     if (adjacentElement && adjacentElement.classList.contains('input-alert')) {
                         adjacentElement.innerHTML = "&nbsp;";
                     }
-                } else {
-                    inputElement.style.borderBottomColor = 'red';
-                    if (adjacentElement && adjacentElement.classList.contains('input-alert')) {
-                        adjacentElement.innerHTML = 'Valid characters are A-Z a-z dash (-) period(.) and spaces.';
+                    if (primaryBtn) {
+                        primaryBtn.disabled = false;
                     }
                 }
             } catch (error) {
                 console.error('Validation error:', error);
             }
         }, 300);
+    },
+
+    errorDictionary: {
+        ERR_INVALID_POS_NAME: 'Valid characters are A-Z a-z dash (-) period(.) and spaces up to 50.',
+        ERR_MISSING_POS_NAME: 'Position name cannot be blank.',
+        ERR_POS_TOO_LONG: 'Position cannot be longer than 50 characters',
+    },
+
+    handleInvalidAlert: function (inputElement, feedbackId) {
+        inputElement.style.borderBottomColor = 'red';
+        const adjacentElement = inputElement.nextElementSibling;
+        const primaryBtn = inputElement.closest('.modal-body').querySelector('.modal-action .btn-primary');
+
+        if (primaryBtn) {
+            primaryBtn.disabled = true;
+        }
+
+        if (adjacentElement && adjacentElement.classList.contains('input-alert')) {
+            adjacentElement.textContent = ConfigPage.errorDictionary[feedbackId];
+        }
     },
 
     handleInput: function (event) {
@@ -750,7 +784,17 @@ ConfigPage = {
             type: 'text',
             pattern: /[a-zA-Z .\-]{1,50}/,
             required: true,
-            max_length: 50,
+            max_length: 51,
+        },
+        customMsg: {
+            pattern: 'Valid characters are A-Z a-z dash (-) period(.) and spaces.',
+            required: 'Position name cannot be blank.',
+            max_length: 'Position cannot be longer than 50 characters',
+        },
+        errorFeedback: {
+            pattern: 'ERR_INVALID_POS_NAME',
+            required: 'ERR_MISSING_POS_NAME',
+            max_length: 'ERR_POS_TOO_LONG',
         }
     },
 
@@ -1161,20 +1205,56 @@ ConfigPage.CandidatePosition = class CandidatePosition {
         $('#max-vote-picker').selectpicker('val', value);
     }
 
-    static updateModalContent(DATA, quill, isAdd = false) {
+    static toggleEdit(isEdit = true) {
+        let edit_position_modal = document.getElementById(ConfigPage.POSITION_MODAL_ID);
+        let positionInput = edit_position_modal.querySelector(`#positionInput`);
+        let positionInputLabel = edit_position_modal.querySelector(`label[for="positionInput"]`);
+        let positionDescription = edit_position_modal.querySelector(`#posDescrptn .ql-editor`);
+        let editButton = edit_position_modal.querySelector(`#edit-button`);
+        let saveButton = edit_position_modal.querySelector(`#save-button`);
+        let cancelButton = edit_position_modal.querySelector(`#cancel-button`);
+        console.log()
+
+        if (isEdit || ConfigPage.mode == 'add') {
+            positionDescription.setAttribute("contenteditable", true);
+            positionInput.classList.remove('d-none');
+            positionInputLabel.classList.remove('d-none');
+            editButton.classList.add('d-none');
+            saveButton.classList.remove('d-none');
+            cancelButton.classList.remove('d-none');
+            if (ConfigPage.mode != 'add') {
+                ConfigPage.mode = 'update';
+            }
+        } else {
+            positionDescription.setAttribute("contenteditable", false);
+            positionInput.classList.add('d-none');
+            positionInputLabel.classList.add('d-none');
+            editButton.classList.remove('d-none');
+            saveButton.classList.add('d-none');
+            cancelButton.classList.add('d-none');
+        }
+    }
+
+    static updateModalContent(DATA, quill) {
 
         let edit_position_modal = document.getElementById(ConfigPage.POSITION_MODAL_ID);
         let positionNameInput = edit_position_modal.querySelector('input[type="text"]');
+        let editButton = edit_position_modal.querySelector(`#edit-button`);
 
-        if (isAdd) {
+        if (ConfigPage.mode == 'add') {
             edit_position_modal.querySelector('.modal-title').textContent = 'Add New Position';
-            ConfigPage.mode = 'add';
-        } else {
+            this.toggleEdit();
+        } else if (ConfigPage.mode == 'view') {
+            edit_position_modal.querySelector('.modal-title').textContent = DATA[0].value;
+            this.toggleEdit(false);
+            ConfigPage.delEventListener(editButton, 'click');
+            ConfigPage.addEventListenerAndStore(editButton, 'click', this.toggleEdit.bind(this));
 
+        } else if (ConfigPage.mode == 'update') {
+            this.toggleEdit();
             edit_position_modal.querySelector('.modal-title').textContent = 'Edit a Candidate Position';
-            ConfigPage.mode = 'update';
-
         }
+
 
         if (positionNameInput) {
             positionNameInput.setAttribute('data-data-id', DATA[0].data_id);
@@ -1204,11 +1284,22 @@ ConfigPage.CandidatePosition = class CandidatePosition {
             EDIT_MODAL.show();
             let modal = document.getElementById(ConfigPage.POSITION_MODAL_ID);
             modal.removeEventListener('hidden.bs.modal', event => {
+                this.clearFeedback()
                 ConfigPage.deselectAll();
-            })
+            });
             modal.addEventListener('hidden.bs.modal', event => {
+                this.clearFeedback()
                 ConfigPage.deselectAll();
-            })
+            });
+        }
+    }
+
+    static clearFeedback() {
+        const inputElement = document.getElementById("positionInput");
+        inputElement.style.borderBottomColor = "";
+        const adjacentElement = inputElement.nextElementSibling;
+        if (adjacentElement && adjacentElement.classList.contains("input-alert")) {
+            adjacentElement.innerHTML = "&nbsp;";
         }
     }
 }
@@ -1327,7 +1418,9 @@ ConfigPage.table = new DataTable('#example', {
                 placeholder: 'Type duties and responsibilities here.',
             });
 
-            ConfigPage.CandidatePosition.updateModalContent(rowData, ConfigPage.quill, true);
+            ConfigPage.mode = 'add';
+
+            ConfigPage.CandidatePosition.updateModalContent(rowData, ConfigPage.quill);
 
             ConfigPage.CandidatePosition.showModal(ConfigPage.edit_position_modal);
 
