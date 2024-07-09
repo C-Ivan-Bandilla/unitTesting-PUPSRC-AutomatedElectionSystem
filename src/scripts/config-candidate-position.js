@@ -291,6 +291,13 @@ ConfigPage = {
 
     },
 
+    handleTableRowClickShow: function (event) {
+        if (event.target === event.currentTarget.querySelector('input')) {
+            console.log('click event on input');
+            ConfigPage.showCandidatePositionDialog(event.currentTarget);
+        }
+    },
+
     handleTableRowDblClick: function (event) {
         console.log('dbl click event ');
         console.log(event);
@@ -1024,6 +1031,10 @@ ConfigPage.CandidatePosition = class CandidatePosition {
         });
 
         tableRows.forEach(row => {
+            ConfigPage.addEventListenerAndStore(row, 'click', ConfigPage.handleTableRowClickShow);
+        });
+
+        tableRows.forEach(row => {
             ConfigPage.addEventListenerAndStore(row, 'dblclick', ConfigPage.handleTableRowDblClick);
         });
     };
@@ -1257,7 +1268,7 @@ ConfigPage.table = new DataTable('#example', {
         {
             targets: 1, className: `text-left text-editable`,
             render: function (data) {
-                return `<input class="text-editable" type="text" name="${data.data_id}" id="text-editable-${data.sequence}" data-max="${data.max_votes}" value="${data.value}" placeholder="Enter a candidate position" pattern="[a-zA-Z .\\-]{1,50}" required="" style="width: 92.885px;">`;
+                return `<input class="text-editable" type="text" name="${data.data_id}" id="text-editable-${data.sequence}" data-max="${data.max_votes}" value="${data.value}" placeholder="Enter a candidate position" pattern="[a-zA-Z .\\-]{1,50}" required="" style="width: 92.885px;" readonly>`;
             }
         },
 

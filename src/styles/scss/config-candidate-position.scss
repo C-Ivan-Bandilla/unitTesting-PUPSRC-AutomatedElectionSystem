@@ -18,8 +18,14 @@
         max-width: calc(100% - 1px);
         font-size: calc(0.75rem + 0.6575vw);
 
+        &:read-only,
+        &:disabled {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
         // add border while typing
-        &:focus-visible {
+        &:focus-visible:not(:disabled, :read-only) {
             outline: 0.5px solid #0075FF;
         }
     }
