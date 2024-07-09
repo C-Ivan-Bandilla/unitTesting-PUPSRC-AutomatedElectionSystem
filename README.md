@@ -12,7 +12,7 @@
 <br/>
 <!-- PROJECT LOGO -->
 <a href="https://www.ivote-pupsrc.com/">
-  <img src="src/images/resc/iVOTE4.webp" alt="Logo" width="220" height="90">
+  <img src="src/images/resc/iVOTE4.webp" alt="Logo" width="170" height="70">
 </a>
 <br/>
 
@@ -48,33 +48,21 @@
 * [![JQuery][JQuery.com]][JQuery-url]
 
 
-<!-- GETTING STARTED -->
-## Features
-<details><summary>Features Offered:</summary>
-<ol>
-  <li>Electronic Ballot Form</li>
-  <li>Live Counting of Results</li>
-  <li>
-    Election configuration
-    <ul>
-      <li>Vote Scheduling</li>
-      <li>Dynamic Voting Guidelines</li>
-      <li>Rich-text Editor</li>
-    </ul>
-  </li>
-  <li>Exportation of Election Results</li>
-  <li>Candidates Information Management</li>
-  <li>Voters Account Mangagement</li>
-  <li>Password Recovery</li>
-</ol></details>
+## Features and Functionalities
 
-<details><summary>Other Features:</summary>
-<ol>  
-  <li>Mobile Responsive</li>
-  <li>Full Screen Toggle of Live Results</li>
-  <li>Anonymous Toggle of Live Results</li>
-</ol></details>
+| Key Feature | Function |
+|--------|--------|
+| Electronic Ballot Form | Allows student voter to cast and submit his vote. |
+| Live Counter Chart | Live tallying of candidate's votes accumulation. |
+| Vote Scheduling | Create and set a schedule for your organization to open and close the voting period. |
+| Dynamic Voting Guidelines | Set voting guidelines to reflect on the voter ballot form. |
+| Position Creation | Add new positions and list down the title, max vote selection, and duties and responsibilities. | 
+| Export Reports | Download election turnouts in different file format (e.g., PDF, XLSX). |
 
+### _Others_ 
+- Mobile Responsive
+- Full Screen Toggle of Live Results
+- Anonymous Toggle of Live Results
 
 <!-- CONTRIBUTORS -->
 ## Contributors
@@ -84,8 +72,7 @@ Made with [contrib.rocks](https://contrib.rocks).
     <img src="https://contrib.rocks/image?repo=BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem" />
   </a>
 </div>
-
-
+<br/>
 
 <p align="right"><a href="#readme-top">Back to Top</a></p>
 
