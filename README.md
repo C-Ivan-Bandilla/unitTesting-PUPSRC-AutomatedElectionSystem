@@ -1,56 +1,56 @@
 <a name="readme-top"></a>
 
 <div align="start">
-  <h1>iVOTE: PUPSRC Online Election System :ballot_box: :bar_chart:</h1>
+  <h1><a href="https://www.ivote-pupsrc.com/">iVOTE: PUPSRC Online Election System</a> :ballot_box: :bar_chart:</h1>
 </div>
 
 [![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stars][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![Pull requests][pull-requests-shield]][pull-requests-url]
 [![GitHub Release][release-shield]][release-url]
 
-
 <!-- PROJECT LOGO -->
 <br />
-<div align="center">
-  <a href="https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem">
-    <img src="src/images/resc/iVOTE4.png" alt="Logo" width="300" height="120">
+<div align="left">
+  <a href="https://www.ivote-pupsrc.com/">
+    <img src="src/images/resc/iVOTE4.webp" alt="Logo" width="150" height="60">
   </a>
 
   <div align="start">
       <h2>About</h2>
       <ul>
-        <li>iVOTE is an under-development online voting web application for Polytechnic University of the Philippines Santa Rosa Campus Student Academic Organizations.</li>
+        <li>iVOTE is a web-based voting application developed for the student academic organizations of PUP Sta. Rosa Campus.</li>
         <li>This project is for partial fulfillment of the subject COMP 20133: Applications Development and Emerging Technologies.</li>
       </ul>
   </div>
 </div>
 
 
+> [!IMPORTANT]
+> iVOTE is currently undergoing continuous development, refinement, and testing and is not ready for use. If you encounter any defects or bugs, you may open a new issue ticket [here.](https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem/issues)
+
 
 <!-- TABLE OF CONTENTS -->
 <h2>Table of Contents</h2>
 <ol>
-  <li><a href="#tech-stack">Tech Stack</a></li>
+  <li><a href="#built-with">Built With</a></li>
   <li><a href="#features">Features</a></li>
-  <li>
+<!--   <li>
     <a href="#installation">Installation</a>
     <ul>
       <li><a href="#prerequisites">Prerequisites</a></li>
       <li><a href="#steps">Steps</a></li>
     </ul>
-  </li>
+  </li> -->
   <li><a href="#role-access">Role Access</a></li>
-  <li><a href="#for-collaborators">For Collaborators</a></li>
-  <li><a href="#acknowledgments">Acknowledgments</a></li>
   <li><a href="#contributors">Contributors</a></li>
   <li><a href="#ui-snippets">UI Snippets</a></li>
-  <li><a href="#recommendation">Recommendation</a></li>
 </ol>
 
 
-## Tech Stack
-Tech stack and frameworks used to build iVOTE web-application
+## Built With
 
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 * [![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)][PHP-url]
@@ -59,7 +59,6 @@ Tech stack and frameworks used to build iVOTE web-application
 * [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)][JavaScript-url]
 * [![SCSS](https://img.shields.io/badge/SCSS-CC6699?style=for-the-badge&logo=sass&logoColor=white)][SCSS-url]
 * [![JQuery][JQuery.com]][JQuery-url]
-
 
 
 <!-- GETTING STARTED -->
@@ -72,18 +71,15 @@ Tech stack and frameworks used to build iVOTE web-application
   <li>
     Election configuration
     <ul>
-      <li>Add Ballot Form Input Field</li>
       <li>Vote Scheduling</li>
       <li>Dynamic Voting Guidelines</li>
-      <li>Candidates Sequence on Ballot Form</li>
+      <li>Rich-text Editor</li>
     </ul>
   </li>
-  <li>Archive of Election Results</li>
-  <li>Exportable Reports (pdf, xlsx, csv, and docx)</li>
+  <li>Exportation of Election Results</li>
   <li>Candidates Information Management</li>
   <li>Voters Account Mangagement</li>
   <li>Password Recovery</li>
-  <li>Login Attempts Lockout</li>
 </ol></details>
 
 <details><summary>Other Features:</summary>
@@ -91,111 +87,18 @@ Tech stack and frameworks used to build iVOTE web-application
   <li>Mobile Responsive</li>
   <li>Full Screen Toggle of Live Results</li>
   <li>Anonymous Toggle of Live Results</li>
-  <li>Email Notification about Account Approval or Rejection</li>
 </ol></details>
-
-
-
-<!-- INSTALLATION -->
-## Installation
-
-### Prerequisites
-- You must have installed PHP and [Git](https://git-scm.com/downloads) on your machine.
-- To access the [phpMyAdmin](http://localhost/phpmyadmin/index.php), you need [XAMPP](https://www.apachefriends.org/download.html) installed also.
-
-### Steps:
-1. Clone this repository by running this git command.
-
-  ```sh
-  git clone https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem
-  ```
-or if you need to checkout a specific branch only
-
-```sh
-git clone --single-branch --branch main https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem
-```
-_Note: Change the branch name as you see fit. In this case, the name of the checked out branch is main._
-
-2. Download the necessary files on your root folder to create the databases of 9 orgs. 
-These are the only files needed.
-* `create-db.php`
-* `env.php`
-* `create-org-tbl.sql`
-#### Access them [here.](https://drive.google.com/drive/u/1/folders/1Ke1F_vxh0vj1zzWkpMjmeKA96uUizTsT)
-
-3. Run the PHP script on your terminal
-   
-  ```sh
-  php create-db.php
-  ```
-
-  or thru directory listing
-  
-   ```sh
-  localhost/path_to_file/create-db.php
-  ```
-
-4. Open the website locally on your machine. The URL may look something like this:
-  ```sh
-  http://localhost/PUPSRC-AutomatedElectionSystem/src/landing-page.php
-  ```
 
 
 <!-- ROLE ACCESS -->
 ## Role Access
 
-| Account Type | Features |
+| Account Type | Features and Functionalities |
 |--------|--------|
-| Student-Voter | Account registration, password recovery, and vote casting. | 
+| Voter | Account registration, password recovery, and vote casting. | 
 | Admin | Validation of voter account, and access to live counting of results | 
 | Head Admin | Similar to admin, with only the additional privilege of adding new admin accounts |
 
-
-
-
-<!-- CONTRIBUTE -->
-## For Collaborators
-1. Clone this repository and checkout the `development` branch on your computer
- ```sh
-  git clone --single-branch --branch development https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem
-  ```
-2. Create a local branch on your computer
-  ```sh
-  git checkout -b your_branch
-  ```
-3. Commit your changes
-```sh
-  git add .
-  git commit -m "type: issue-key-your_commit_message"
-```
-4. If finished, push/publish your local branch to this repository
-  ```sh
-  git push origin your_branch
-```
-5. Open a pull request from your published branch to merge it into the `development` branch
-6. Await the review and approval of at least one collaborator on your pull request
-7. After approval, ensure that you pull the latest changes from the `development` branch on your computer.
-  ```sh
-  git pull origin development
-```
-
-_Important Note: Keep in mind the issue key of your Team's Project in Jira and proper conventional commit message._
-
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-The project team would like to thank the student academic organizations of PUPSRC below for their unwavering and continuous support and guidance for the success of this endeavor:
-* [Student Council Organization](https://www.facebook.com/thepupsrcstudentcouncil)
-* [Association of Competent and Aspiring Psychologists](https://www.facebook.com/ACAPpage)
-* [Association of Electronics and Communications Engineering](https://www.facebook.com/OfficialAECES)
-* [Eligible League of Information Technology Enthusiasts](https://www.facebook.com/ELITE.PUPSRC)
-* [Guild of Imporous and Valuable Educators](https://www.facebook.com/educgive)
-* [Junior Executives of Human Resource Association](https://www.facebook.com/PUPSRCJEHRA)
-* [Junior Marketing Association of the Philippines](https://www.facebook.com/JMAPPUPSRCOfficial)
-* [Junior Philippine Institute of Accountants](https://www.facebook.com/JPIA.PUPSRC)
-* [Philippine Institute of Industrial Engineers](https://www.facebook.com/piiepup)
 
 <!-- CONTRIBUTORS -->
 ## Contributors
@@ -208,33 +111,24 @@ Made with [contrib.rocks](https://contrib.rocks).
 </div>
 
 
-
 ## UI Snippets
 - To follow
-
-
-<!-- RECOMMENDATIONS -->
-## Recommendation
-You can read more about:
-
-[Conventional Commits](www.conventionalcommits.org/en/v1.0.0/#summary)<br/>
-[Semantic Versioning](https://semver.org/)
 
 <p align="right"><a href="#readme-top">Back to Top</a></p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg
 [contributors-url]: https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg?
 [forks-url]: https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem/network/members
-[stars-shield]: https://img.shields.io/github/stars/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg
 [stars-url]: https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem/stargazers
-[issues-shield]: https://img.shields.io/github/issues/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg
 [issues-url]: https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem/issues
-[pull-requests-shield]: https://img.shields.io/github/issues-pr/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg?style=for-the-badge
+[pull-requests-shield]: https://img.shields.io/github/issues-pr/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg
 [pull-requests-url]: https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem/pulls
-[release-shield]: https://img.shields.io/github/release/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg?style=for-the-badge
+[release-shield]: https://img.shields.io/github/release/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem.svg
 [release-url]: https://github.com/BSIT-3-1-APPDEV/PUPSRC-AutomatedElectionSystem/releases
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
