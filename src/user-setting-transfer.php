@@ -198,12 +198,36 @@ $voter_id = $_SESSION['voter_id'];
                         </div>
                         <p class="fw-bold fs-4 information-title spacing-4 mt-3">Transfer organization?</p>
                         <p class="info-sub">Are you sure you want to proceed with the transfer? <br>This action cannot be reversed.</p>
-                        <button type="button" class="btn btn-gray" id="cancelModalButton" data-bs-dismiss="modal" aria-label="Close"><b>Cancel</b></button>
+                        <button type="button" class="btn btn-gray" id="cancelModalButton"><a href="user-setting-transfer.php" class="custom-link"><b>Cancel</b></a></button>
                         <button type="button" class="btn button-proceed" id="proceedBtn">Yes, proceed</button>
                     </div>
                 </div>
             </div>
         </div>
+
+    <!-- Only PDF Files Are Allowed Modal -->
+    <div class="modal" id="onlyPDFAllowedModal" data-bs-keyboard="false" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="pt-4 text-end justify-content-end">
+                        <i class="fa fa-solid fa-circle-xmark fa-xl close-mark light-gray" data-bs-dismiss="modal" aria-label="Close">
+                        </i>
+                    </div>
+                    <div class="text-center">
+                        <div class="col-md-12">
+                            <img src="images/resc/warning.png" class="warning-icon" alt="Warning Icon">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 pb-3 pt-4">
+                            <div id="errorMessage"> </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
         <!-- Confirm Password Modal -->
         <div class="modal fade adjust-modal" id="confirmPassModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
