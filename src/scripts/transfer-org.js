@@ -10,11 +10,11 @@ window.onload = function() {
     }
   };
 
-function updateSubmitButton() {
+  function updateSubmitButton() {
     var orgValue = document.getElementById("org").value.trim();
     var fileNameDisplayValue = document.getElementById("corFileName").value.trim();
     var submitBtn = document.getElementById("transferBtn");
-    
+
     // Enable submit button if both inputs have a value
     if (orgValue !== "" && fileNameDisplayValue !== "") {
         submitBtn.disabled = false;
@@ -33,8 +33,27 @@ function displaySelectedOption() {
 
 function displayFileName(input) {
     const fileNameDisplay = document.getElementById('corFileName');
+
     if (input.files.length > 0) {
-        fileNameDisplay.value = input.files[0].name;
+        const file = input.files[0];
+
+        // Check if the file is a PDF
+        if (!file.name.endsWith('.pdf')) {
+            showErrorModal('Only PDF files are allowed.');
+            fileNameDisplay.value = '';
+            input.value = ''; // Clear the file input
+        } else {
+            // Check if the file size is within the limit
+            const maxFileSize = 25 * 1024 * 1024; // 25MB in bytes
+
+            if (file.size > maxFileSize) {
+                showErrorModal('File size exceeds 25MB limit.');
+                fileNameDisplay.value = '';
+                input.value = ''; // Clear the file input
+            } else {
+                fileNameDisplay.value = file.name;
+            }
+        }
     } else {
         fileNameDisplay.value = '';
     }
@@ -43,6 +62,10 @@ function displayFileName(input) {
     updateSubmitButton();
 }
 
+function showErrorModal(message) {
+    document.getElementById('errorMessage').innerText = message;
+    $('#onlyPDFAllowedModal').modal('show');
+}
 feather.replace();
   
     function handleInput() {
