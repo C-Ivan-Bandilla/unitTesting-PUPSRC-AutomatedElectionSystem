@@ -223,10 +223,6 @@ a {
     letter-spacing: 1px;
 }
 
-.modal-content {
-    border-radius: 20px !important; /* Adjust the value as needed */
-  }
-
   .adjust-modal .modal-dialog {
     max-width: 600px;
     margin: 0 auto; 
