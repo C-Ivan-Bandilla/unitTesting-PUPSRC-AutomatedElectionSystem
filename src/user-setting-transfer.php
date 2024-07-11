@@ -43,6 +43,7 @@ $voter_id = $_SESSION['voter_id'];
   <!-- Bootstrap 5 code -->
   <link type="text/css" href="../vendor/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/user-settings.css">
+  <link rel="stylesheet" href="styles/core.css">
   <link rel="stylesheet" href="styles/loader.css">
   <link rel="stylesheet" href="<?php echo 'styles/orgs/' . $org_acronym . '.css'; ?>">
 
@@ -205,13 +206,13 @@ $voter_id = $_SESSION['voter_id'];
             </div>
         </div>
 
-    <!-- Only PDF Files Are Allowed Modal -->
+   <!-- Only PDF Files Are Allowed Modal -->
     <div class="modal" id="onlyPDFAllowedModal" data-bs-keyboard="false" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div class="pt-4 text-end justify-content-end">
-                        <i class="fa fa-solid fa-circle-xmark fa-xl close-mark light-gray" data-bs-dismiss="modal" aria-label="Close">
+                    <div class="d-sm-flex text-end justify-content-end">
+                        <i class="fa fa-solid fa-circle-xmark fa-xl close-mark light-gray" data-bs-dismiss="modal" aria-label="Close" >
                         </i>
                     </div>
                     <div class="text-center">
@@ -220,7 +221,9 @@ $voter_id = $_SESSION['voter_id'];
                         </div>
                         <div class="row">
                             <div class="col-md-12 pb-3 pt-4">
-                            <div id="errorMessage"> </div>
+                                <p class="fw-bold danger spacing-4" id="dangerTitle">Only PDF files are allowed</p>
+                                <p class="fw-medium spacing-5 pt-2" id="dangerSubtitle">Please also ensure the file is no larger than 25 mb. Let's try that again!
+                                </p>
                             </div>
                         </div>
                     </div>
