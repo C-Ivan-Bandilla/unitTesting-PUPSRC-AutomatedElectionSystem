@@ -342,12 +342,6 @@ ConfigPage = {
             placeholder: 'Type duties and responsibilities here.',
         });
 
-        ConfigPage.quill.off('text-change', ConfigPage.handleDescValidate);
-
-        ConfigPage.quill.on('text-change', ConfigPage.handleDescValidate);
-
-
-
         ConfigPage.CandidatePosition.updateModalContent(FORM_DATA, ConfigPage.quill);
 
         ConfigPage.CandidatePosition.showModal(ConfigPage.edit_position_modal);
@@ -1448,6 +1442,9 @@ ConfigPage.CandidatePosition = class CandidatePosition {
     static showModal(EDIT_MODAL) {
         if (EDIT_MODAL) {
             EDIT_MODAL.show();
+            ConfigPage.quill.off('text-change', ConfigPage.handleDescValidate);
+
+            ConfigPage.quill.on('text-change', ConfigPage.handleDescValidate);
             let modal = document.getElementById(ConfigPage.POSITION_MODAL_ID);
             modal.removeEventListener('hidden.bs.modal', event => {
                 this.clearFeedback()
