@@ -141,7 +141,7 @@ $(document).ready(function () {
       emailValidElement.text("");
     } else if (!isLogin && !user) {
       email.removeClass("is-valid was-validated").addClass("is-invalid");
-      emailErrorElement.text("Your email couldn't be found.");
+      emailErrorElement.text("We couldn't find your email address.");
       emailValidElement.text("");
     } else if (!isLogin && user === "invalid") {
       email.removeClass("is-valid was-validated").addClass("is-invalid");
