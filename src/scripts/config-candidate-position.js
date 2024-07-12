@@ -248,6 +248,10 @@ ConfigPage = {
             return;
         }
 
+        if (!ConfigPage.handleDescValidate(null, null, 'save-btn')) {
+            return;
+        }
+
         INPUT_ELEMENT.style.borderBottomColor = '';
 
         if (data && data.isChange) {
@@ -337,6 +341,12 @@ ConfigPage = {
             },
             placeholder: 'Type duties and responsibilities here.',
         });
+
+        ConfigPage.quill.off('text-change', ConfigPage.handleDescValidate);
+
+        ConfigPage.quill.on('text-change', ConfigPage.handleDescValidate);
+
+
 
         ConfigPage.CandidatePosition.updateModalContent(FORM_DATA, ConfigPage.quill);
 
@@ -558,63 +568,6 @@ ConfigPage = {
 
         }
         tooltip.update();
-    },
-
-    handleDeleteBtn: function () {
-        ConfigPage.DELETE_BUTTON.disabled = true;
-        const FORM = document.querySelectorAll(`table tbody tr.selected`);
-
-        let deleteData = {
-            'delete_position': []
-        };
-
-        const DATA = ConfigPage.getForm(FORM, false);
-
-        for (const ITEM of DATA) {
-            deleteData.delete_position.push(ITEM);
-        }
-
-
-        ConfigPage.postData(deleteData)
-            .then(function (result) {
-                try {
-                    const { data, success, error } = result;
-                    if (success) {
-                        ConfigPage.deletePosition(data)
-                            .then(() => {
-
-                                ConfigPage.handleResponseStatus(200, data, 'Position deleted successfully.');
-                            })
-                            .catch((error) => {
-                                console.error("Error inserting data:", error);
-                            });
-
-                    } else if (error.data) {
-                        error.data.forEach(item => {
-                            console.log('item');
-                            console.log(item);
-                            console.log(item.hasOwnProperty('affected_candidates'));
-
-                            if (item.hasOwnProperty('affected_candidates')) {
-                                ConfigPage.NativeModal.show(item);
-                            } else {
-                                ConfigPage.deletePosition({ data: [item] })
-                                    .then(() => {
-
-                                        ConfigPage.handleResponseStatus(200, data, 'Position deleted successfully.');
-                                    })
-                                    .catch((error) => {
-                                        console.error("Error inserting data:", error);
-                                    });
-                            }
-                        });
-                    }
-
-                }
-                catch (e) {
-                    console.error('POST request failed:', e);
-                }
-            })
     },
 
     deletePosition: function (DATA) {
@@ -948,7 +901,212 @@ ConfigPage = {
 
         ConfigPage.CandidatePosition.addTableListener('example');
 
+    },
+
+    descriptionLimit: 1000,
+
+}
+
+ConfigPage.handleDescValidate = function (delta, old, source) {
+    if (source == 'user' || source == 'save-btn') {
+        let descriptionInput = document.querySelector(`#posDescrptn .ql-editor`);
+        let saveButton = document.querySelector(`#save-button`);
+
+        if (ConfigPage.quill.getLength() > ConfigPage.descriptionLimit) {
+            ConfigPage.quill.deleteText(ConfigPage.descriptionLimit, ConfigPage.quill.getLength());
+        }
+
+        console.log(ConfigPage.quill.getLength());
+        console.log(ConfigPage.quill.getContents());
+
+        let descriptionVal = ConfigPage.quill.getContents();
+        console.log("length ", descriptionVal.ops.length);
+
+
+        const originalVal = descriptionVal.slice();
+        let modifiedVal = originalVal.slice();
+
+        for (let i = 0; i < originalVal.ops.length; i++) {
+
+            let originalText = originalVal.ops[i].insert;
+
+            const regex = /(\w|\s)\1{2,}/g; // Regular expression with global flag ('g')
+            const newText = originalText.replace(regex, '$1$1');
+
+            if (newText != originalText) {
+                console.log("originalText");
+                console.log(originalText);
+                console.log("newText");
+                console.log(newText);
+                modifiedVal.ops[i].insert = newText;
+            }
+        }
+
+        if (JSON.stringify(modifiedVal) !== JSON.stringify(originalVal)) {
+            console.log(modifiedVal);
+            ConfigPage.quill.setContents(modifiedVal);
+            return false;
+        }
+
+
+        if (ConfigPage.quill.getLength() <= 1) {
+            descriptionInput.classList.add('is-invalid', 'form-control');
+            saveButton.disabled = true;
+            return false;
+        } else {
+            descriptionInput.classList.remove('is-invalid', 'form-control');
+            saveButton.disabled = false;
+        }
     }
+    return true;
+}
+
+
+ConfigPage.handleDeleteBtn = async function () {
+    ConfigPage.DELETE_BUTTON.disabled = true;
+    ConfigPage.isDeleteConflict = false;
+
+    if (await
+        ConfigPage.showConfirmModal(ConfigPage.ConfirmDeleteModal, ConfigPage.ConfirmModalInstance, 'confirmDeleteInput', 'Confirm Delete', true)
+        == 'true') {
+        ConfigPage.DELETE_BUTTON.disabled = true;
+        const FORM = document.querySelectorAll(`table tbody tr.selected`);
+
+        let deleteData = {
+            'delete_position': []
+        };
+
+        const DATA = ConfigPage.getForm(FORM, false);
+
+        for (const ITEM of DATA) {
+            deleteData.delete_position.push(ITEM);
+        }
+
+
+        ConfigPage.postData(deleteData)
+            .then(function (result) {
+                try {
+                    const { data, success, error } = result;
+                    if (success) {
+                        ConfigPage.deletePosition(data)
+                            .then(() => {
+
+                                ConfigPage.handleResponseStatus(200, data, 'Position deleted successfully.');
+                            })
+                            .catch((error) => {
+                                console.error("Error inserting data:", error);
+                            });
+
+                    } else if (error.data) {
+                        error.data.forEach(item => {
+                            console.log('item');
+                            console.log(item);
+                            console.log(item.hasOwnProperty('affected_candidates'));
+
+                            if (item.hasOwnProperty('affected_candidates')) {
+                                ConfigPage.isDeleteConflict = true;
+                                ConfigPage.NativeModal.show(item);
+                            } else {
+                                ConfigPage.deletePosition({ data: [item] })
+                                    .then(() => {
+
+                                        ConfigPage.handleResponseStatus(200, data, 'Position deleted successfully.');
+                                    })
+                                    .catch((error) => {
+                                        console.error("Error inserting data:", error);
+                                    });
+                            }
+                        });
+                    }
+
+                }
+                catch (e) {
+                    console.error('POST request failed:', e);
+                }
+            }.bind(this))
+    }
+
+}
+
+
+ConfigPage.ConfirmDeleteModal = document.getElementById('delete-modal');
+ConfigPage.ConfirmModalInstance = { instance: null };
+ConfigPage.isDeleteConflict = false;
+
+ConfigPage.handleModalDispose = function () {
+    ConfigPage.modalInstance.instance.dispose();
+    ConfigPage.deselectAll();
+}
+
+ConfigPage.showConfirmModal = async function (modal, instanceRef, inputId = null, inputVal = null, isDisabled = false) {
+    // https://stackoverflow.com/questions/65454144/javascript-await-bootstrap-modal-close-by-user
+    instanceRef.instance = new bootstrap.Modal(modal);
+    $(modal).find('button.btn-secondary.secondary').text('Go to Candidates');
+
+
+    instanceRef.instance.show();
+
+    if (isDisabled) {
+        ConfigPage.handleConfirmInput(modal, inputId, inputVal);
+    }
+
+    console.log(!ConfigPage.isDeleteConflict);
+
+    if (!ConfigPage.isDeleteConflict) {
+        $(modal).find('button.btn-secondary.secondary').text('Cancel');
+    }
+
+    modal.removeEventListener('hidden.bs.modal', ConfigPage.handleConfirmModalDispose)
+    modal.addEventListener('hidden.bs.modal', ConfigPage.handleConfirmModalDispose)
+
+    return new Promise(resolve => {
+
+        $(modal).find('button').off('click');
+        $(modal).find('button').on('click', (event) => {
+            const buttonValue = event.currentTarget.value;
+            if (event.target && event.target.textContent.trim() === 'Go to Candidates') {
+                console.log('got to candidates');
+                window.location.href = 'src/manage-candidate.php';
+            }
+
+
+            if (isDisabled) {
+                let inputElement = modal.querySelector(`#${inputId}`);
+                inputElement.classList.remove('is-invalid');
+                inputElement.value = '';
+                $(modal).find('.prompt-action .btn.primary').prop('disabled', true)
+                    .val('false')
+            }
+
+            instanceRef.instance.hide();
+            resolve(buttonValue);
+        });
+
+    });
+}
+
+ConfigPage.handleConfirmModalDispose = function () {
+    ConfigPage.ConfirmModalInstance.instance.dispose();
+    ConfigPage.deselectAll();
+}
+
+ConfigPage.handleConfirmInput = function (modal, inputId, inputVal) {
+    let inputElement = modal.querySelector(`#${inputId}`);
+
+    ConfigPage.delEventListener(inputElement, 'blur');
+    ConfigPage.addEventListenerAndStore(inputElement, 'blur', function () {
+        if (inputElement.value == inputVal) {
+            $(modal).find('.prompt-action .btn.primary').prop('disabled', false)
+                .val('true');
+            inputElement.classList.remove('is-invalid');
+        }
+        else {
+            $(modal).find('.prompt-action .btn.primary').prop('disabled', true)
+                .val('false');
+            inputElement.classList.add('is-invalid')
+        }
+
+    })
 
 }
 
@@ -1209,6 +1367,8 @@ ConfigPage.CandidatePosition = class CandidatePosition {
         let edit_position_modal = document.getElementById(ConfigPage.POSITION_MODAL_ID);
         let positionInput = edit_position_modal.querySelector(`#positionInput`);
         let positionInputLabel = edit_position_modal.querySelector(`label[for="positionInput"]`);
+        let maxVoteSelect = edit_position_modal.querySelector(`button[data-id="max-vote-picker"]`);
+        let maxVoteLabelRequired = edit_position_modal.querySelector(`label[for="max-vote-picker"] .required`);
         let positionDescription = edit_position_modal.querySelector(`#posDescrptn .ql-editor`);
         let editButton = edit_position_modal.querySelector(`#edit-button`);
         let saveButton = edit_position_modal.querySelector(`#save-button`);
@@ -1216,9 +1376,11 @@ ConfigPage.CandidatePosition = class CandidatePosition {
         console.log()
 
         if (isEdit || ConfigPage.mode == 'add') {
-            positionDescription.setAttribute("contenteditable", true);
             positionInput.classList.remove('d-none');
             positionInputLabel.classList.remove('d-none');
+            maxVoteLabelRequired.classList.remove('d-none');
+            maxVoteSelect.disabled = false;
+            positionDescription.setAttribute("contenteditable", true);
             editButton.classList.add('d-none');
             saveButton.classList.remove('d-none');
             cancelButton.classList.remove('d-none');
@@ -1226,9 +1388,11 @@ ConfigPage.CandidatePosition = class CandidatePosition {
                 ConfigPage.mode = 'update';
             }
         } else {
-            positionDescription.setAttribute("contenteditable", false);
             positionInput.classList.add('d-none');
             positionInputLabel.classList.add('d-none');
+            maxVoteLabelRequired.classList.add('d-none');
+            maxVoteSelect.disabled = true;
+            positionDescription.setAttribute("contenteditable", false);
             editButton.classList.remove('d-none');
             saveButton.classList.add('d-none');
             cancelButton.classList.add('d-none');
@@ -1240,6 +1404,8 @@ ConfigPage.CandidatePosition = class CandidatePosition {
         let edit_position_modal = document.getElementById(ConfigPage.POSITION_MODAL_ID);
         let positionNameInput = edit_position_modal.querySelector('input[type="text"]');
         let editButton = edit_position_modal.querySelector(`#edit-button`);
+
+        this.initSelectMaxVotes(positionNameInput, DATA[0].max_votes);
 
         if (ConfigPage.mode == 'add') {
             edit_position_modal.querySelector('.modal-title').textContent = 'Add New Position';
@@ -1264,7 +1430,7 @@ ConfigPage.CandidatePosition = class CandidatePosition {
             positionNameInput.value = DATA[0].value ?? '';
         }
 
-        this.initSelectMaxVotes(positionNameInput, DATA[0].max_votes);
+
 
         console.log("Text editor " + JSON.stringify(DATA[0].description));
         try {
@@ -1578,10 +1744,6 @@ ConfigPage.NativeModal = class {
         // ConfigPage.delEventListener(saveButton, 'click');
         // ConfigPage.addEventListenerAndStore(saveButton, 'click', ConfigPage.saveFunc);
 
-        let cancelBtn = this.modalElement[0].querySelector('.modal-body .cancel-btn');
-        ConfigPage.delEventListener(cancelBtn, 'click');
-        ConfigPage.addEventListenerAndStore(cancelBtn, 'click', this.close.bind(this));
-
         let closeBtn = this.modalElement[0].querySelector('button.modal-close');
         ConfigPage.delEventListener(closeBtn, 'click');
         ConfigPage.addEventListenerAndStore(closeBtn, 'click', this.close.bind(this));
@@ -1600,7 +1762,7 @@ ConfigPage.NativeModal = class {
         this.#removeBtn();
 
         const modalActionDiv = document.createElement('div');
-        modalActionDiv.classList.add('modal-action', 'w-100');
+        modalActionDiv.classList.add('modal-action', 'w-100', 'justify-content-center');
 
         // Create the label and primary button
         const label = document.createElement('label');
@@ -1610,18 +1772,11 @@ ConfigPage.NativeModal = class {
         primaryButton.id = 'modal-action-primary';
         primaryButton.type = 'button';
         primaryButton.classList.add('btn', 'btn-sm', 'btn-primary');
-        primaryButton.textContent = 'Delete';
+        primaryButton.textContent = 'Proceed to Deletion';
 
         label.appendChild(primaryButton);
 
-        const cancelButton = document.createElement('button');
-        cancelButton.type = 'button';
-        cancelButton.classList.add('btn', 'btn-sm', 'btn-secondary', 'cancel-btn');
-        cancelButton.textContent = 'Cancel';
-
-        // Append everything to the main div
         modalActionDiv.appendChild(label);
-        modalActionDiv.appendChild(cancelButton);
 
         return modalActionDiv;
     }
@@ -1642,30 +1797,40 @@ ConfigPage.NativeModal = class {
         }
     }
 
-    static #processDelete() {
-        if (this.data) {
-            this.data.confirmed_delete = true;
-            let data = { delete_position: [this.data] }
-            // console.log(data);
-            ConfigPage.postData(data).then(function (result) {
-                console.log(result);
-                try {
-                    const { data, success, error } = result;
-                    if (success) {
-                        ConfigPage.deletePosition(data);
-                        ConfigPage.NativeModal.close();
+    static async #processDelete() {
+        this.modalElement[0].close();
+        if (await
+            ConfigPage.showConfirmModal(ConfigPage.ConfirmDeleteModal, ConfigPage.ConfirmModalInstance, 'confirmDeleteInput', 'Confirm Delete', true)
+            == 'true') {
+            if (this.data) {
+                this.data.confirmed_delete = true;
+                let data = { delete_position: [this.data] }
+                // console.log(data);
+                ConfigPage.postData(data).then(function (result) {
+                    console.log(result);
+                    try {
+                        const { data, success, error } = result;
+                        if (success) {
+                            ConfigPage.deletePosition(data);
+                            ConfigPage.NativeModal.close();
+                        }
                     }
-                }
-                catch (e) {
-                    console.error('Error deleting', e);
-                }
-            });
+                    catch (e) {
+                        console.error('Error deleting', e);
+                    }
+                });
+            }
+        } else {
+            this.modalElement[0].showModal();
+            let primaryButton = this.modalElement[0].querySelector('.modal-body #modal-action-primary');
+            primaryButton.disabled = false;
         }
     }
 
     static close() {
         if (this.data) {
             this.modalElement[0].close();
+
         }
     }
 
