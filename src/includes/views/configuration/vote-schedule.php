@@ -99,7 +99,7 @@ include_once 'modals.php';
                     <button type="button" class="btn btn-primary" id="submit-schedule">Set Schedule</button>
                 </div>
                 <div class="action-btn-view">
-                    <div class="shedule-date col-12 col-md-9 col-lg-7">
+                    <div class="shedule-date col-12 col-sm-8 col-md-7 col-lg-8">
                         Election period is set
                         <span class="data">
                             from
@@ -112,7 +112,9 @@ include_once 'modals.php';
                             <time class="end time">11:30 AM</time>
                         </span>
                     </div>
-                    <button type="button" class="btn btn-outline-primary" id="edit-schedule">Edit Schedule</button>
+                    <div class="col-12 col-sm-auto">
+                        <button type="button" class="btn btn-outline-primary" id="edit-schedule">Edit Schedule</button>
+                    </div>
                 </div>
             </div>
         </section>

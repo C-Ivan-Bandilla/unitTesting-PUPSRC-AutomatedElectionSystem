@@ -9,8 +9,6 @@ require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/classes/email-
 
 $orgs = array('sco', 'acap', 'aeces', 'elite', 'give', 'jehra', 'jmap', 'jpia', 'piie');
 
-$send_email = new EmailSender($mail);
-
 // Check email queues on all organization
 foreach ($orgs as $org) {
 
@@ -39,17 +37,21 @@ foreach ($orgs as $org) {
 
         $emails = EmailQueue::getCurrQueue();
 
-        print_r($emails);
+        // print_r($emails);
 
         // Check pending emails for the current organization
         foreach ($emails as $email) {
+            $send_email = new EmailSender($mail);
+
             $is_send_success = $send_email->sendQueuedMail($email['content']);
+            // sleep(3);
 
             if ($is_send_success) {
                 EmailQueue::updateEmailStatus($email['email_id'], 'sent');
             } else {
                 EmailQueue::updateEmailStatus($email['email_id'], 'failed');
             }
+            // sleep(1);
         }
 
         unset($_SESSION['organization']);
