@@ -113,6 +113,10 @@ fs-11 {
   font-size: 0.3rem;
 }
 
+.fs-13 {
+  font-size: 0.135rem;
+}
+
 .w-35 {
   width: 35% !important;
 }
@@ -343,6 +347,10 @@ fs-12 {
 .feather-2xl {
   width: 2em;
   height: 2em;
+}
+
+.text-underline {
+  text-decoration: underline !important;
 }
 
 /*# sourceMappingURL=core.css.map */
