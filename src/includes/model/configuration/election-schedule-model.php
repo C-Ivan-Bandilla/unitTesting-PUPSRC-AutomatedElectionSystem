@@ -10,6 +10,13 @@ require_once FileUtils::normalizeFilePath('../mailer-test.php');
 require_once FileUtils::normalizeFilePath('../classes/email-sender.php');
 require_once FileUtils::normalizeFilePath('../classes/email-queue.php');
 
+error_reporting(E_ALL | E_STRICT);
+
+// Convert warnings to exceptions
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
 class ElectionYearModel extends EmailQueue
 {
     private static $connection;
@@ -70,7 +77,7 @@ class ElectionYearModel extends EmailQueue
 
             $election_id = $start = $end = $push_id = '';
 
-            $stmt->bind_result($start, $end);
+            $stmt->bind_result($start, $end, $push_id);
 
             while ($stmt->fetch()) {
                 $election_shedule = [
@@ -167,7 +174,7 @@ class ElectionYearModel extends EmailQueue
 
             $hash = EmailQueue::generateHash();
 
-            $sql = "INSERT INTO election_schedule (start, close) VALUES (?, ?)";
+            $sql = "INSERT INTO election_schedule (start, close, push_id) VALUES (?, ?, ?)";
 
             $stmt = self::$connection->prepare($sql);
 
@@ -175,7 +182,7 @@ class ElectionYearModel extends EmailQueue
                 throw new Exception("Error preparing statement: " . self::$connection->error);
             }
 
-            $stmt->bind_param("ss", $data['electionStart'], $data['electionEnd']);
+            $stmt->bind_param("sss", $data['electionStart'], $data['electionEnd'], $hash);
 
             $stmt->execute();
 
@@ -196,7 +203,32 @@ class ElectionYearModel extends EmailQueue
     {
         try {
 
-            $sql = "UPDATE election_schedule SET start = ?, close = ? ";
+            $curr_schedule = self::getCurrPushId();
+            $curr_push_id = $curr_schedule[0]['push_id'];
+
+            self::deleteQueues($curr_push_id);
+
+            $queryExecutor = new QueryExecutor(self::$connection);
+
+            $voter_query = "SELECT email FROM voter WHERE account_status = 'verified' AND role = 'student_voter'";
+            $result = $queryExecutor->executeQuery($voter_query);
+
+            $verified_voters_email = [];
+
+            while ($row = $result->fetch_assoc()) {
+                $verified_voters_email[] = $row['email'];
+            }
+
+            global $mail;
+
+            $send_email = new EmailSender($mail);
+
+            $election_close_emails = $send_email->sendElectionCloseEmail($verified_voters_email);
+
+            $hash = EmailQueue::generateHash();
+
+
+            $sql = "UPDATE election_schedule SET start = ?, close = ? , push_id = ?";
 
             $stmt = self::$connection->prepare($sql);
 
@@ -204,11 +236,16 @@ class ElectionYearModel extends EmailQueue
                 throw new Exception("Error preparing statement: " . self::$connection->error);
             }
 
-            $stmt->bind_param("ss", $data['electionStart'], $data['electionEnd']);
+            $stmt->bind_param("sss", $data['electionStart'], $data['electionEnd'], $hash);
 
             $stmt->execute();
 
             $stmt->close();
+
+            // EmailQueue::insertQueue($emails, $data['electionStart'], $hash);
+
+            // print_r($election_close_emails);
+            EmailQueue::insertQueue($election_close_emails, $data['electionEnd'], $hash);
 
             return $data;
         } catch (Exception $e) {

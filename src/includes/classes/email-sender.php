@@ -190,6 +190,7 @@ class EmailSender
                         $this->mail->addBCC($bcc);
                     }
                     $this->mail->preSend();
+                    // compress to binary
                     $serializedEmails[] = serialize($this->mail);
                     $this->mail->clearAllRecipients(); // Clear BCCs for the next chunk
                 }
@@ -206,7 +207,7 @@ class EmailSender
 
     public function sendQueuedMail($mailContent)
     {
-
+        // The email is in compressed to binary
         $this->mail = unserialize($mailContent);
         // print_r($this->mail);
 
