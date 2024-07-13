@@ -2,10 +2,13 @@
 include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/file-utils.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-time-zone.php');
+include_once FileUtils::normalizeFilePath(__DIR__ . '/../components/email-template.php');
 
 class EmailSender
 {
+    use EmailTemplate;
     private $mail;
+    const MAX_RECEPIENT = 98;
 
     public function __construct($mail)
     {
@@ -25,7 +28,8 @@ class EmailSender
     }
 
 
-    public function sendForVerificationStatus($recipientEmail) {
+    public function sendForVerificationStatus($recipientEmail)
+    {
         $mailBody = 'Good day, Iskolar!<br><br>
             
         We wanted to inform you that your account registration has been successfully submitted and is currently awaiting approval. We will review your information shortly and notify you via email once your account has been verified.<br><br>
@@ -58,7 +62,8 @@ class EmailSender
     }
 
 
-    public function sendPasswordEmail($recipientEmail, $password) {
+    public function sendPasswordEmail($recipientEmail, $password)
+    {
         $subject = 'iVOTE Admin Account Created and Password';
         $mailBody = "Hello, Committee Member.<br><br>";
         $mailBody .= "We're pleased to inform you that your account has been successfully created. 
@@ -67,11 +72,12 @@ class EmailSender
         $mailBody .= "Password: $password <br><br>";
         $mailBody .= "For security purposes, we recommend that you log in to your account and change your passsword
         after your first login. If you have any questions or need assistance, contact the support team at ivotepupsrc@gmail.com.";
-    
+
         return $this->sendEmail($recipientEmail, $subject, $mailBody);
     }
 
-    public function sendPasswordResetEmail($recipientEmail, $token, $orgName) {
+    public function sendPasswordResetEmail($recipientEmail, $token, $orgName)
+    {
         $subject = 'iVOTE Password Reset Request';
         $resetPasswordLink = "http://localhost/PUPSRC-AutomatedElectionSystem/src/reset-password.php?token=$token&orgName=$orgName";
         $mailBody = <<<EOT
@@ -98,11 +104,12 @@ class EmailSender
         </body>
         </html>
         EOT;
-    
+
         return $this->sendEmail($recipientEmail, $subject, $mailBody);
     }
-    
-    public function sendResetEmail($recipientEmail, $token, $orgName) {
+
+    public function sendResetEmail($recipientEmail, $token, $orgName)
+    {
         $subject = 'iVOTE Change Email Request';
         $updateEmailLink = "http://localhost/PUPSRC-AutomatedElectionSystem/src/setting-email-update.php?token=$token&orgName=$orgName";
         $mailBody = <<<EOT
@@ -129,10 +136,27 @@ class EmailSender
         </body>
         </html>
         EOT;
-    
+
         return $this->sendEmail($recipientEmail, $subject, $mailBody);
     }
-    
+
+    public function sendElectionCloseEmail($bccs)
+    {
+        $mainHeading = "This is a test";
+
+        $title = "This is a test";
+
+        $messageTemplate = <<<HTML
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, sint sunt aperiam velit illo dolore unde molestias voluptates perspiciatis nemo eligendi cupiditate nesciunt maxime dignissimos expedita. Quod iste totam molestiae!</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, sint sunt aperiam velit illo dolore unde molestias voluptates perspiciatis nemo eligendi cupiditate nesciunt maxime dignissimos expedita. Quod iste totam molestiae!</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, sint sunt aperiam velit illo dolore unde molestias voluptates perspiciatis nemo eligendi cupiditate nesciunt maxime dignissimos expedita. Quod iste totam molestiae!</p>
+        HTML;
+
+        $subject = 'Test Email';
+        $mailBody = self::getEmailContent($messageTemplate, $title, $mainHeading);
+
+        return $this->prepMassEmail($subject, $mailBody, $bccs);
+    }
 
     private function sendEmail($recipientEmail, $subject, $body)
     {
@@ -147,5 +171,49 @@ class EmailSender
         } catch (Exception $e) {
             return false;
         }
+    }
+
+    private function prepMassEmail($subject, $body, $bccs = null)
+    {
+        $serializedEmails = [];
+
+        try {
+            $this->mail->setFrom('chuvarwokahsgahnaquindhenpjheb@gmail.com', 'Test');
+            $this->mail->isHTML(true);
+            $this->mail->Subject = $subject;
+            $this->mail->Body = $body;
+
+            if ($bccs) {
+                $chunks = array_chunk($bccs, self::MAX_RECEPIENT);
+                foreach ($chunks as $chunk) {
+                    foreach ($chunk as $bcc) {
+                        $this->mail->addBCC($bcc);
+                    }
+                    $this->mail->preSend();
+                    $serializedEmails[] = serialize($this->mail);
+                    $this->mail->clearAllRecipients(); // Clear BCCs for the next chunk
+                }
+            } else {
+                throw new Exception;
+            }
+
+            // print_r($serializedEmails);
+            return $serializedEmails;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function sendQueuedMail($mailContent)
+    {
+
+        $this->mail = unserialize($mailContent);
+        // print_r($this->mail);
+
+        if ($this->mail->postSend()) {
+            // If sent correctly
+            return true;
+        }
+        return false;
     }
 }
