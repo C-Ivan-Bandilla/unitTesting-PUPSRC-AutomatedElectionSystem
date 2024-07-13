@@ -84,6 +84,7 @@ class EmailQueue
             }
         }
 
+        // self::$connection->close();
         return $emails;
     }
 
@@ -112,6 +113,7 @@ class EmailQueue
             }
         }
 
+        // self::$connection->close();
         return false;
     }
 
