@@ -28,10 +28,10 @@ class FormHandler {
                 $this->processOrganization($org, $fileData, $row, $voter_id);
             } else {
                 // Organization is not selected, display an error message or handle it as needed
-                //echo "Please select an organization.";
+                // echo "Please select an organization.";
             }
         } else {
-           // echo "Error: Voter ID not found.";
+            // echo "Error: Voter ID not found.";
         }
     }
 
@@ -62,8 +62,9 @@ class FormHandler {
             if (move_uploaded_file($cor_file["tmp_name"], $target_file)) {
                 $this->insertVoterData($connection, $filename, $row, $voter_id);
                 $this->deletePreviousVoterEntry($voter_id);
+                $this->updateScoDatabase($filename, $row['email']);
             } else {
-               // echo "Error: Failed to move uploaded file.";
+                // echo "Error: Failed to move uploaded file.";
             }
         } else {
             // echo "Error: File upload failed with error code " . $fileData["cor"]["error"];
@@ -95,9 +96,9 @@ class FormHandler {
                                             $role, $voter_status, $vote_status, $vote_status_updated, $filename, $account_status);
         
         if ($stmt->execute()) {
-            //echo "Success: Data inserted successfully for voter ID $voter_id.";
+            // echo "Success: Data inserted successfully for voter ID $voter_id.";
         } else {
-            //echo "Error: Data insertion failed for voter ID $voter_id.";
+            // echo "Error: Data insertion failed for voter ID $voter_id.";
         }
 
         $stmt->close();
@@ -108,12 +109,35 @@ class FormHandler {
         $stmt_delete->bind_param('s', $voter_id);
         
         if ($stmt_delete->execute()) {
-           // echo "Success: Previous entry deleted for voter ID $voter_id.";
+            // echo "Success: Previous entry deleted for voter ID $voter_id.";
         } else {
-           // echo "Error: Failed to delete previous entry for voter ID $voter_id.";
+            // echo "Error: Failed to delete previous entry for voter ID $voter_id.";
         }
 
         $stmt_delete->close();
+    }
+
+    private function updateScoDatabase($filename, $email) {
+        $sco_organization = 'sco';
+        $config_sco = DatabaseConfig::getOrganizationDBConfig($sco_organization);
+        $org_connection = new \mysqli($config_sco['host'], $config_sco['username'], $config_sco['password'], $config_sco['database']);
+
+        if ($org_connection->connect_error) {
+            die("Connection failed: " . $org_connection->connect_error);
+        }
+
+        $sql = "UPDATE voter SET cor = ? WHERE email = ?";
+        $stmt = $org_connection->prepare($sql);
+        $stmt->bind_param('ss', $filename, $email);
+
+        if ($stmt->execute()) {
+            // echo "Success: cor updated in sco database for email $email.";
+        } else {
+            // echo "Error: Failed to update cor in sco database for email $email.";
+        }
+
+        $stmt->close();
+        $org_connection->close();
     }
 }
 

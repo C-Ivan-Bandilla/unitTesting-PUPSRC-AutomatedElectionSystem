@@ -246,7 +246,8 @@ $voter_id = $_SESSION['voter_id'];
                            <!-- CSRF Token hidden field -->
                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                             <div class="password-input-container">
-                                <input type="password" maxlength="50" class="password-input" name="password" id="password" autocomplete="off" placeholder="Type password here..." oninput="handleInput()">
+                                <input type="password" maxlength="50" class="password-input" name="password" id="password" autocomplete="off" onkeypress="return preventSpaces(event)"
+                                      placeholder="Type password here..." oninput="handleInput()">
                                 <span class="toggle-password" onclick="togglePasswordVisibility()">
                                     <i class="fas fa-eye-slash"></i>
                                 </span>
