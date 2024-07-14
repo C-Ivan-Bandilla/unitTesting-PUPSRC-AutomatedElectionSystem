@@ -4,6 +4,7 @@ require_once FileUtils::normalizeFilePath('session-handler.php');
 include_once FileUtils::normalizeFilePath('session-exchange.php');
 require_once FileUtils::normalizeFilePath('classes/db-connector.php');
 require_once FileUtils::normalizeFilePath('classes/csrf-token.php');
+require_once FileUtils::normalizeFilePath('classes/logger.php');
 include_once FileUtils::normalizeFilePath('error-reporting.php');
 
 // CsrfToken::validateCsrfToken();
@@ -45,12 +46,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $stmt->close();
-    $connection->close();
+    // $connection->close();
 
     $response['success'] = true;
     $response['message'] = 'Profile updated successfully.';
     $response['timestamp'] = time();
     echo json_encode($response);
+    $logger = new Logger($_SESSION['role'], UPDATE_PROFILE);
+    $logger->logActivity();
     exit();
 }
 else {
