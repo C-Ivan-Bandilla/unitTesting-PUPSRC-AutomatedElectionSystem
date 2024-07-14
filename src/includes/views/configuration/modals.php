@@ -62,7 +62,7 @@ class Modals
         $button = '',
         $hasCloseButton = false,
         $subtitle = 'Confirm Delete?',
-        $message = "<p>A heads up: this action cannot be undone!</p><p>Type 'Confirm Delete' to proceed</p>",
+        $message = "<p>A heads up: this action <b>cannot be undone</b>!</p><p>Type '<b>Confirm Delete</b>' to proceed</p>",
     ) {
         echo <<<HTML
                     <div class="modal fade show danger-modal" id="delete-modal" tabindex="-1" role="dialog">
@@ -74,7 +74,7 @@ class Modals
         if ($hasCloseButton) {
             echo <<<HTML
                     <div class="modal-header "><h5 class="modal-title"></h5> 
-                        <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close">
+                        <button type="button" class="modal-close" value="false" data-bs-dismiss="modal" aria-label="Close">
                             <i data-feather="x-circle"></i>
                         </button>
                     </div>

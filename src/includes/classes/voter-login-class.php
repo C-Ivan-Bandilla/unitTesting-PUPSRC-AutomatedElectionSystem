@@ -2,6 +2,7 @@
 include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/file-utils.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/db-connector.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/manage-ip-address.php');
+require_once FileUtils::normalizeFilePath(__DIR__ . '/logger.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../session-handler.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-time-zone.php');
@@ -15,6 +16,7 @@ class Login extends IpAddress {
     private $ip_manager;
     private $error_message;
     private $info_message;
+    private $logger;
 
     // Creates connection to the database and gets user ip address
     public function __construct() {
@@ -116,14 +118,12 @@ class Login extends IpAddress {
             $start = new Datetime($row['start']);	
             $close = new DateTime($row['close']);	
             if($today >= $start && $today <= $close) {	
-                $_SESSION['electionOpen'] = true;	
-                header("Location: ../ballot-forms.php");	
-                exit();	
+                $_SESSION['electionOpen'] = true;                
+                $this->redirectToBallotForm();
             }	
             else {	
                 $_SESSION['electionOpen'] = false;	
-                header("Location: ../voting-closed.php");	
-                exit();	
+                $this->redirectToVotingClosed();
             }	
         }	
         else {	
@@ -148,15 +148,14 @@ class Login extends IpAddress {
     // Check voter's vote status (e.g., if the user has voted already or no)
     private function redirectBasedOnVoteStatus($vote_status) {
         $this->regenerateSessionId();
-        $this->isElectionYearOpen();
 
         switch ($vote_status) {
             case NULL:
-                header("Location: ../ballot-forms.php");
+                $this->isElectionYearOpen();
                 break;
             case 'voted':
             case 'abstained':
-                header("Location: ../end-point.php");
+                $this->redirectToEndpoint();
                 break;
             default:
                 header("Location: ../landing-page.php");
@@ -172,7 +171,7 @@ class Login extends IpAddress {
         if ($row['account_status'] === 'verified') {
             $this->regenerateSessionId();
             $_SESSION['voter_id'] = $row['voter_id'];
-            header("Location: ../admindashboard.php");
+            $this->redirectToDashboard();
         } else {
             $this->redirectWithMessage($this->info_message, 'This account has been disabled.');
         }
@@ -217,13 +216,49 @@ class Login extends IpAddress {
     // Handles different types of messages
     private function redirectWithMessage($type, $message) {
         $_SESSION[$type] = $message;
-        header("Location: ../voter-login.php");
-        exit();
+        $this->redirectToLogin();
     }
     
     private function isLoginAttemptMax() {
         $_SESSION['maxLimit'] = true;
+        $this->redirectToLogin();
+    }
+
+
+    private function redirectToLogin() {
         header("Location: ../voter-login.php");
+        exit();
+    }
+
+
+    private function redirectToDashboard() {
+        $this->logger = new Logger($_SESSION['role'], LOGIN);
+        $this->logger->logActivity();
+        header("Location: ../admindashboard.php");
+        exit();
+    }
+
+
+    private function redirectToBallotForm() {
+        $this->logger = new Logger($_SESSION['role'], LOGIN);
+        $this->logger->logActivity();
+        header("Location: ../ballot-forms.php");
+        exit();
+    }
+
+
+    private function redirectToVotingClosed() {
+        $this->logger = new Logger($_SESSION['role'], LOGIN);
+        $this->logger->logActivity();
+        header("Location: ../voting-closed.php");
+        exit();
+    }
+
+
+    private function redirectToEndpoint() {
+        $this->logger = new Logger($_SESSION['role'], LOGIN);
+        $this->logger->logActivity();
+        header("Location: ../end-point.php");
         exit();
     }
 }
