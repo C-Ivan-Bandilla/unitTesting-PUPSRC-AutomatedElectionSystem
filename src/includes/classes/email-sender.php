@@ -150,23 +150,23 @@ class EmailSender
         global $org_social_media;
         global $org_full_names;
 
-        $mainHeading = <<<HTML
-            <span class="text-uppercase">{$org_acronyms[$this->org_name]}</span> election is now closed.
-    HTML;
-
         $org_full_name = ucwords($org_full_names[$this->org_name]);
         $socialMediaLink = $org_social_media[$this->org_name]['facebook'];
         $org_acronym = strtoupper($org_acronyms[$this->org_name]);
+
+        $mainHeading = <<<HTML
+            <span>$org_acronym</span> election is now closed.
+    HTML;
 
         $title = "$org_acronym election is now closed.";
 
         $messageTemplate = <<<HTML
         <p>Heads up {$org_personality[$this->org_name]},</p>
         <p>The election period for <b>$org_full_name</b> is now closed.</p>
-        <p>Updates for new officers will be posted on <a href="$socialMediaLink" class="text-uppercase">$org_acronym</a> facebook page.</p>
+        <p>Updates for new officers will be posted on <a href="$socialMediaLink">$org_acronym</a> facebook page.</p>
     HTML;
 
-        $subject = strtoupper($org_acronyms[$this->org_name]) . " election is now closed.";
+        $subject = $org_acronym . " election is now closed.";
 
         $mailBody = self::getEmailContent($messageTemplate, $title, $mainHeading);
 
