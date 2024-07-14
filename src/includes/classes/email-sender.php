@@ -3,16 +3,19 @@ include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/file-utils.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-time-zone.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/../components/email-template.php');
+include_once FileUtils::normalizeFilePath(__DIR__ . '/../organization-list.php');
 
 class EmailSender
 {
     use EmailTemplate;
     private $mail;
+    private $org_name;
     const MAX_RECEPIENT = 98;
 
     public function __construct($mail)
     {
         $this->mail = $mail;
+        $this->org_name = $_SESSION['organization'] ?? '';
     }
 
     public function sendApprovalEmail($recipientEmail)
@@ -142,21 +145,34 @@ class EmailSender
 
     public function sendElectionCloseEmail($bccs)
     {
-        $mainHeading = "This is a test";
+        global $org_acronyms;
+        global $org_personality;
+        global $org_social_media;
+        global $org_full_names;
 
-        $title = "This is a test";
+        $mainHeading = <<<HTML
+            <span class="text-uppercase">{$org_acronyms[$this->org_name]}</span> election is now closed.
+    HTML;
+
+        $org_full_name = ucwords($org_full_names[$this->org_name]);
+        $socialMediaLink = $org_social_media[$this->org_name]['facebook'];
+        $org_acronym = strtoupper($org_acronyms[$this->org_name]);
+
+        $title = "$org_acronym election is now closed.";
 
         $messageTemplate = <<<HTML
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, sint sunt aperiam velit illo dolore unde molestias voluptates perspiciatis nemo eligendi cupiditate nesciunt maxime dignissimos expedita. Quod iste totam molestiae!</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, sint sunt aperiam velit illo dolore unde molestias voluptates perspiciatis nemo eligendi cupiditate nesciunt maxime dignissimos expedita. Quod iste totam molestiae!</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, sint sunt aperiam velit illo dolore unde molestias voluptates perspiciatis nemo eligendi cupiditate nesciunt maxime dignissimos expedita. Quod iste totam molestiae!</p>
-        HTML;
+        <p>Heads up {$org_personality[$this->org_name]},</p>
+        <p>The election period for <b>$org_full_name</b> is now closed.</p>
+        <p>Updates for new officers will be posted on <a href="$socialMediaLink" class="text-uppercase">$org_acronym</a> facebook page.</p>
+    HTML;
 
-        $subject = 'Test Email';
+        $subject = strtoupper($org_acronyms[$this->org_name]) . " election is now closed.";
+
         $mailBody = self::getEmailContent($messageTemplate, $title, $mainHeading);
 
-        return $this->prepMassEmail($subject, $mailBody, $bccs);
+        return $this->prepMassEmailByBcc($subject, $mailBody, $bccs);
     }
+
 
     private function sendEmail($recipientEmail, $subject, $body)
     {
@@ -173,7 +189,7 @@ class EmailSender
         }
     }
 
-    private function prepMassEmail($subject, $body, $bccs = null)
+    private function prepMassEmailByBcc($subject, $body, $bccs = null)
     {
         $serializedEmails = [];
 

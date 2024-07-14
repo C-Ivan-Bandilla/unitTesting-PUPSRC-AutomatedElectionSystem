@@ -139,7 +139,7 @@ class ElectionYearModel extends EmailQueue
             return $result;
         } catch (Exception $e) {
 
-            self::$query_message = $e->getMessage();
+            self::$query_message = htmlspecialchars($e->getMessage());
             self::$connection->rollback();
             return $result;
         } finally {
@@ -193,7 +193,7 @@ class ElectionYearModel extends EmailQueue
 
             return $data;
         } catch (Exception $e) {
-            self::$query_message = 'set ' . $e->getMessage();
+            self::$query_message = 'set ' . htmlspecialchars($e->getMessage());
             return $data;
         }
     }
@@ -250,7 +250,7 @@ class ElectionYearModel extends EmailQueue
             return $data;
         } catch (Exception $e) {
 
-            self::$query_message = 'update ' . $e->getMessage();
+            self::$query_message = 'update ' . htmlspecialchars($e->getMessage());
             return $data;
         }
     }
