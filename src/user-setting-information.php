@@ -188,7 +188,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                            <!-- CSRF Token hidden field -->
                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                             <div class="password-input-container">
-                                <input type="password" maxlength="50" class="password-input" name="password" id="password" autocomplete="off" placeholder="Type password here..." oninput="handleInput()">
+                                <input type="password" maxlength="50" class="password-input" name="password" id="password" autocomplete="off" onkeypress="return preventSpaces(event)"
+                                    placeholder="Type password here..." oninput="handleInput()">
                                 <span class="toggle-password" onclick="togglePasswordVisibility()">
                                     <i class="fas fa-eye-slash"></i>
                                 </span>
@@ -198,7 +199,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                                 <input type="hidden" name="voter_id" value="<?php echo $voter_id ?>">
                                 <input type="hidden" name="email" value="<?php echo $row['email'] ?>">
                                 <button type="button" class="btn btn-gray" id="cancelModalButton" data-bs-dismiss="modal" aria-label="Close"><b>Cancel</b></button>
-                                <button type="button" class="btn button-proceed" id="realSubmitBtn">Submit</button>
+                                <button type="button" class="btn button-proceed" id="realSubmitBtn" disabled>Submit</button>
                             </div>
                         </form>
                     </div>
@@ -249,6 +250,28 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
               </div>
           </div>
       </div>
+
+      	<!-- Email Sending Modal -->
+			<div class="modal" id="emailSending" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body pb-5">
+							<div class="text-center">
+								<div class="col-md-12 pt-5">
+									<img src="images/resc/loader.gif" class="loading-gif" alt="iVote Logo">
+								</div>
+								<div class="row">
+									<div class="col-md-12 pt-4">
+										<p class="fw-bold fs-4 spacing-4">Sending email...</p>
+										<p class="fw-medium spacing-5 fs-7">Please wait for a moment</span>.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
      
     </main>
     <div class="footer">

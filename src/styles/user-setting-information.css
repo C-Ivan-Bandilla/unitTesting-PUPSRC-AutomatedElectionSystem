@@ -370,7 +370,15 @@ a .custom-link{
   text-align: center;
 }
 
+.loading-gif {
+  height: 70% !important;
+  width: 40% !important;
+}
 
+#realSubmitBtn:disabled {
+  background-color: #cccccc;
+  color: white;
+}
 .password-input-container {
   position: relative;
   display: inline-block; 

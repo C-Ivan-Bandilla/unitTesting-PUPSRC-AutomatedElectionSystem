@@ -67,15 +67,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
-    // Update the email address in the database
+    // Update the email address in the current database
     $sql_update = "UPDATE voter SET email = ? WHERE reset_token_hash = ?";
     $stmt_update = $connection->prepare($sql_update);
     $stmt_update->bind_param('ss', $email, $token_hash);
     $success = $stmt_update->execute();
 
+    $organization= 'sco';
+
     if ($success) {
-        echo json_encode(['status' => 'success']);
-        exit();
+        // Update the email address as well in the SCO's database
+        $config = DatabaseConfig::getOrganizationDBConfig($organization);
+        $org_connection = new \mysqli($config['host'], $config['username'], $config['password'], $config['database']);
+
+        if ($org_connection->connect_error) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to connect to organization database.']);
+            exit();
+        }
+
+        $sql_update_org = "UPDATE voter SET email = ? WHERE email = ?";
+        $stmt_update_org = $org_connection->prepare($sql_update_org);
+        $stmt_update_org->bind_param('ss', $email, $row['email']);
+        $success_org = $stmt_update_org->execute();
+
+        if ($success_org) {
+            echo json_encode(['status' => 'success']);
+            exit();
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update your email in the organization database.']);
+            exit();
+        }
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Failed to update your email. Please try again.']);
         exit();
