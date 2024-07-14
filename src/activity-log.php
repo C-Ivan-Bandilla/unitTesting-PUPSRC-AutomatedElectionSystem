@@ -101,6 +101,8 @@ if(isset($_SESSION['voter_id']) && isset($_SESSION['role'])) {
                         $connection = DatabaseConnection::connect();
                         $voter_id = $_SESSION['voter_id'];
                         $role = $_SESSION['role'];
+
+                        $head_admin_email = '';
                         
                         $sql = "SELECT al.timestamp, al.ip_address, al.browser, v.email, v.role, v.first_name, al.action
                                 FROM activity_log al
