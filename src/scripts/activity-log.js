@@ -87,7 +87,7 @@ $(document).ready(function () {
 
     loadActivities(filter);
 
-    $(".activity-dropdown").html(
+    $(".activity-dropdown").text(
       filterText + ' <i data-feather="chevron-down" class="chevron"></i>'
     );
 
