@@ -134,18 +134,18 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                     </b>
                   </h5>
                   <div class="col-lg-6 col-12 col-sm-12 col-md-12 mb-4 mb-lg-0 text-center">
-                    <div style="display: flex; flex-direction: column; align-items: center;" class="pt-4">
-                      <div class="rounded-icon main-bg-color">
-                        <i data-feather="mail" class="white im-cust feather-4l"></i>
-                      </div>
-                      <div class="text-center">
-                        <h4 class="email-add">Email Address</h4>
-                        <p class="user-email-1"><?php echo $row['email']; ?></p>
-                        <hr class="email-border">
-                        <button type="button" class="pt-2 main-color transparent-btn" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#confirmPassModal">Change Email Address</button>
-                      </div>
+                  <div class="d-flex flex-column align-items-center pt-4">
+                    <div class="rounded-icon main-bg-color">
+                      <i data-feather="mail" class="white im-cust feather-4l"></i>
+                    </div>
+                    <div class="text-center w-100">
+                      <h4 class="email-add">Email Address</h4>
+                      <p class="user-email-1"><?php echo $row['email']; ?></p>
+                         <hr style="display: block;" class="mx-5">
+                      <a href="#" class="pt-2 main-color custom-link" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#confirmPassModal">Change Email Address</a>
                     </div>
                   </div>
+                </div>
                   <div class="col-lg-6 col-12 col-sm-12 col-md-12">
                     <div class="pt-4"></div>
                     <iframe id="pdfViewer" src="<?php echo "user_data/$org_acronym/cor/" . $row['cor']; ?>" frameborder="0" style="width: 100%; height:100%"></iframe>
