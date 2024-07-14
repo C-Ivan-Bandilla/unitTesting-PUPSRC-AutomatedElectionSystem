@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
         // Determine the voter status based on whether all votes were abstained
-        $vote_status = $all_abstained ? 'Abstained' : 'Voted';
+        $vote_status = $allAbstained ? 'Abstained' : 'Voted';
 
         // Prepare and execute the SQL query to update voter status
         $stmt_vote = $conn->prepare("UPDATE voter SET vote_status = ? WHERE voter_id = ?");

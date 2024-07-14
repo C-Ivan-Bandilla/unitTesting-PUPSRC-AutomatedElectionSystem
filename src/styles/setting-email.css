@@ -499,6 +499,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
+
   
   .reset-password-title{
     font-weight: bold;
@@ -519,8 +520,15 @@ body {
     border-right: none;
     padding: 2%;
   }
+
+  .reset-password-password2 {
+    background-color: white;
+    border-radius: 100px !important;
+    border: 2px solid #999999;
+    padding: 2%;
+  }
   
-  #reset-password-toggle-1, #reset-password-toggle-2 {
+ #reset-password-toggle-2 {
     background-color: #fff;
     width: 75px;
     padding-right: 3%;
@@ -528,6 +536,8 @@ body {
     border: 2px solid #999999;
     border-left: none;
   }
+
+  
   
   .new-password {
     position: absolute;
