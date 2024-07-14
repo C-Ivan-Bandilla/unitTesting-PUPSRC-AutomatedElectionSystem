@@ -87,10 +87,14 @@ $(document).ready(function () {
 
     loadActivities(filter);
 
-    $(".activity-dropdown").text(
-      filterText + ' <i data-feather="chevron-down" class="chevron"></i>'
-    );
+    function sanitizeHTML(text) {
+      return $("<div/>").text(text).html();
+    }
 
+    $(".activity-dropdown").html(
+      sanitizeHTML(filterText) +
+        ' <i data-feather="chevron-down" class="chevron"></i>'
+    );
     feather.replace();
   });
 });
