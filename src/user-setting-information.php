@@ -14,6 +14,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
   $connection = DatabaseConnection::connect();
   $voter_id = $_SESSION['voter_id'];
 
+  $csrf_token = CsrfToken::generateCSRFToken();
+
   $stmt = $connection->prepare("SELECT * FROM voter WHERE voter_id = ?");
   $stmt->bind_param('s', $voter_id);
   $stmt->execute();
