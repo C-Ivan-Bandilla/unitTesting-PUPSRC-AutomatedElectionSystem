@@ -192,7 +192,7 @@ $voter_id = $_SESSION['voter_id'];
       <!-- Transfer Org Modal -->
         <div class="modal fade adjust-modal" id="transferOrgModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content d-flex align-items-center justify-content-center" id="success-modal">
+                <div class="modal-content d-flex align-items-center justify-content-center" style="border-radius: 20px;" id="success-modal">
                     <div class="modal-body text-center w-100 mt-4 mb-2">
                         <div class="col-md-12">
                             <img src="images/resc/blue-info.png" style="width: 25%; height:25%" alt="Info Circle Logo">
@@ -235,7 +235,7 @@ $voter_id = $_SESSION['voter_id'];
         <!-- Confirm Password Modal -->
         <div class="modal fade adjust-modal" id="confirmPassModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content d-flex align-items-center justify-content-center" id="success-modal">
+                <div class="modal-content d-flex align-items-center justify-content-center" style="border-radius: 20px;" id="success-modal">
                     <div class="modal-body text-center w-100 mt-4 mb-2">
                         <div class="col-md-12">
                             <img src="images/resc/icons/shield.png" style="width: 25%; height:25%" alt="Shield Logo">
@@ -266,7 +266,7 @@ $voter_id = $_SESSION['voter_id'];
         <!-- Transfer Success Modal -->
         <div class="modal fade adjust-modal" id="transferSuccessModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content d-flex align-items-center justify-content-center" id="success-modal">
+                <div class="modal-content d-flex align-items-center justify-content-center" style="border-radius: 20px;" id="success-modal">
                     <div class="modal-body text-center w-100 mb-2">
                         <div class="col-md-12">
                             <img src="images/resc/check-animation.gif" style="width: 50%; height:50%" alt="Check Gif">
@@ -281,7 +281,7 @@ $voter_id = $_SESSION['voter_id'];
        <!-- Maximum Attempt Modal -->
       <div class="modal fade adjust-modal" id="maximumAttemptsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
+              <div class="modal-content" style="border-radius: 20px;">
                   <div class="modal-body text-center">
                       <div class="d-flex justify-content-end w-100 border-0 me-4 mt-4">
                           <button type="button" class="btn-close custom-close-btn" id="closeMaximumAttemptsModal" data-bs-dismiss="modal" aria-label="Close"></button>
