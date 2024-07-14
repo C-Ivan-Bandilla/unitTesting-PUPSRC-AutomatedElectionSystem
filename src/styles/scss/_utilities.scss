@@ -426,12 +426,16 @@ section .toast-container-unstacked {
         @extend %general-responsive-base-font-size;
 
         .filter-option {
-            color: #b6b6b6;
+            color: var(--main-black);
             font-weight: 500;
         }
 
         &:focus {
             outline: clamp(1px, 0.5px + 0.1vw, 5px) solid var(--main-color) !important;
+
+            &:disabled {
+                outline: none;
+            }
         }
 
         &::after {
@@ -447,6 +451,16 @@ section .toast-container-unstacked {
             right: 5%;
             transform-origin: center;
             transition: transform 0.3s ease;
+        }
+
+        &:disabled {
+            &::before {
+                content: "";
+            }
+
+            &[data-id="max-vote-picker"] {
+                opacity: 1;
+            }
         }
 
         &.show::before {

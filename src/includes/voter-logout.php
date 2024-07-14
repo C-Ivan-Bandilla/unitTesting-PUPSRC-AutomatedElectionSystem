@@ -1,5 +1,6 @@
 <?php
 include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/classes/file-utils.php');
+require_once FileUtils::normalizeFilePath('classes/logger.php');
 require_once FileUtils::normalizeFilePath('session-handler.php');
 require_once FileUtils::normalizeFilePath('error-reporting.php');
 
@@ -14,7 +15,10 @@ if ($referer && strpos($referer, $_SERVER['HTTP_HOST']) !== false) {
         unset($_SESSION['return_to']);
         header("Location: $return_to");
     } else {
+        $logger = new Logger($_SESSION['role'], LOGOUT);
+        $logger->logActivity();
         header("Location: ../landing-page");
+        exit;
     }
     exit;
 } 

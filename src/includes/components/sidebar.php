@@ -96,6 +96,7 @@
 							basename($_SERVER['PHP_SELF']) == 'manage-committee.php' ||
 							basename($_SERVER['PHP_SELF']) == 'voter-details.php' ||
 							basename($_SERVER['PHP_SELF']) == 'admin-creation.php' ||
+							basename($_SERVER['PHP_SELF']) == 'add-voters.php' ||
 							basename($_SERVER['PHP_SELF']) == 'account-details.php')
 						? 'active' : ''; ?>" data-bs-toggle="collapse" href="#manageAccounts" data-bs-parent="false">
 
@@ -126,6 +127,12 @@
 							<a href="admin-creation"
 								class="<?php echo basename($_SERVER['PHP_SELF']) == 'admin-creation.php' ? 'active-sub fw-bold' : ''; ?>">
 								Add Admin
+							</a>
+						</li>
+						<li class="item">
+							<a href="add-voters.php"
+								class="<?php echo basename($_SERVER['PHP_SELF']) == 'add-voters.php' ? 'active-sub fw-bold' : ''; ?>">
+								Add Voters
 							</a>
 						</li>
 					</ul>
@@ -181,14 +188,10 @@
 						class="fas fa-chevron-down main-color fs-6"></i>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end main-color p-3" aria-labelledby="dropdownMenuButton">
-					<li class="px-xl-2 py-xl-1"><a class="dropdown-item" href="profile"><i data-feather="user"
-								class="fs-12 main-color mb-xl-1"></i><span style="padding-left: .8rem">Profile</a></li>
-					<li class="px-xl-2"><a class="dropdown-item" href="recycle-bin"><i data-feather="trash-2"
-								class="fs-11 main-color mb-xl-1"></i><span style="padding-left: .8rem">Recycle Bin</a>
-					</li>
-					<li class="px-xl-2 py-xl-1"><a class="dropdown-item" href="includes/voter-logout.php"><i
-								data-feather="log-out" class="fs-11 main-color mb-xl-1"></i><span
-								style="padding-left: .8rem"></span>Log Out</a></li>
+					<li class="px-xl-2 py-xl-1"><a class="dropdown-item" href="profile"><i data-feather="user" class="fs-12 main-color mb-xl-1"></i><span style="padding-left: .8rem">Profile</a></li>
+					<li class="px-xl-2"><a class="dropdown-item" href="recycle-bin"><i data-feather="trash-2" class="fs-11 main-color mb-xl-1"></i><span style="padding-left: .8rem">Recycle Bin</a></li>
+					<li class="px-xl-2 py-xl-1"><a class="dropdown-item" href="activity-log"><i data-feather="clock" class="fs-11 main-color mb-xl-1"></i><span style="padding-left: .8rem">Activity Log</a></li>
+					<li class="px-xl-2 py-xl-1"><a class="dropdown-item" href="includes/voter-logout.php"><i data-feather="log-out" class="fs-11 main-color mb-xl-1"></i><span style="padding-left: .8rem"></span>Log Out</a></li>
 				</ul>
 			</div>
 		</div>

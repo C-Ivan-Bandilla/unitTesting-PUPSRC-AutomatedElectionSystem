@@ -122,48 +122,51 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
               </div>
             </div>
           </div>
-          <!-- right side -->
           
+         <!-- right side -->
           <div class="col-lg-9 ps-lg-4">
             <div class="row">
               <div class="p-4 title" style="font-size: 15px;">
                 <div class="py-3 px-2 px-lg-4 px-sm-1 row">
-                <h5 class="main-color pb-3">
+                  <h5 class="main-color pb-3">
                     <b>
-                      <i data-feather="user" class="fas fa-exchange-alt me-4" style="font-size: 1rem;"></i>Information
+                      <i data-feather="user" class="fas fa-exchange-alt me-4" style="font-size: 1rem;"></i> Information
                     </b>
                   </h5>
-                <div class="col-lg-6 col-12 mb-4 mb-lg-0 text-center">
-                  <div style="display: flex; flex-direction: column; align-items: center;" class="pt-4">
-                    <div class="rounded-icon main-bg-color">
-                      <i data-feather="mail" class="white im-cust feather-4l"></i>
-                    </div>
-                    <div class="text-center">
-                      <h4 class="email-add">Email Address</h4>
-                      <p class="user-email-1"><?php echo $row['email']; ?></p>
-                      <hr class="email-border">
-                      <button type="button" class="pt-2 main-color transparent-btn" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#confirmPassModal">Change Email Address</button>
+                  <div class="col-lg-6 col-12 col-sm-12 col-md-12 mb-4 mb-lg-0 text-center">
+                    <div style="display: flex; flex-direction: column; align-items: center;" class="pt-4">
+                      <div class="rounded-icon main-bg-color">
+                        <i data-feather="mail" class="white im-cust feather-4l"></i>
+                      </div>
+                      <div class="text-center">
+                        <h4 class="email-add">Email Address</h4>
+                        <p class="user-email-1"><?php echo $row['email']; ?></p>
+                        <hr class="email-border">
+                        <button type="button" class="pt-2 main-color transparent-btn" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#confirmPassModal">Change Email Address</button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="col-lg-6 col-12">
-                  <div class="pt-4"></div>
-                  <iframe id="pdfViewer" src="<?php echo "user_data/$org_acronym/cor/" . $row['cor']; ?>" frameborder="0" style="width: 400px; height:240px"></iframe>
-                  <p class="filename"><i data-feather="paperclip" class="white im-cust feather-2xs"></i><?php echo $row['cor']; ?></p>
-                  <div class="tools pe-4 d-flex justify-content-end">
-                    <a href="<?php echo "user_data/$org_acronym/cor/" . $row['cor']; ?>" download class="custom-link">
-                      <span class="fs-7 ps-sm-2 pe-2 spacing-3 fw-medium download">
-                        <i class="fas fa-download fa-sm"></i> Download
-                      </span>
-                    </a>
-                    <span><i class="fa-solid fa-expand fa-sm fullscreen-icon" onclick="toggleFullScreen('pdfViewer')"></i></span>
+                  <div class="col-lg-6 col-12 col-sm-12 col-md-12">
+                    <div class="pt-4"></div>
+                    <iframe id="pdfViewer" src="<?php echo "user_data/$org_acronym/cor/" . $row['cor']; ?>" frameborder="0" style="width: 100%; height:100%"></iframe>
+                    <div class="filename pt-1">
+                      <i data-feather="paperclip" class="white im-cust feather-2xs"></i> <?php echo $row['cor']; ?>
+                    </div>
+                    <div class="tools pdf-viewer d-flex justify-content-end" style="padding-top: 3%; position: relative; z-index: 1;">
+                      <a href="<?php echo "user_data/$org_acronym/cor/" . $row['cor']; ?>" download class="custom-link"> 
+                        <span class="fs-7 ps-sm-2 pe-2 spacing-3 fw-medium download">
+                          <i class="fas fa-download fa-sm"></i> Download
+                        </span>
+                      </a>
+                      <span><i class="fa-solid fa-expand fa-sm fullscreen-icon" onclick="toggleFullScreen('pdfViewer')"></i></span>
+                    </div>
                   </div>
-                  <div style="padding-bottom: 8%;"></div>
+                  <div class="row">
+                    <div class="py-5"></div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
           </div>
         </div>
       </div>
@@ -251,7 +254,6 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
     </div>
 
     <script src="../src/scripts/feather.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cu5eC5sE/PZz57f5mlP34fIuFj0m9koW2j4X0eY9Fzj5sy9F2YfGOFlUNcr4fnfM" crossorigin="anonymous"></script>
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="scripts/loader.js"></script>

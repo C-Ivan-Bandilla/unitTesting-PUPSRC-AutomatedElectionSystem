@@ -3,6 +3,7 @@ include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/classes/file-util
 require_once FileUtils::normalizeFilePath(__DIR__ . '/classes/db-connector.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/classes/csrf-token.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/session-handler.php');
+require_once FileUtils::normalizeFilePath(__DIR__ . '/classes/logger.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/session-exchange.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/error-reporting.php');
 
@@ -49,7 +50,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->bind_param("si", $new_password, $voter_id);
     $success = $stmt->execute();
     $stmt->close();
-    $connection->close();   
+    // $connection->close();   
 
     if(!$success) {
         encodeJSONResponse(['message' => 'Something went wrong. Please try again.']);   
@@ -85,5 +86,7 @@ function newPasswordValidation($password) {
 function encodeJSONResponse($response) {
     header('Content-Type: application/json');
     echo json_encode($response);
+    $logger = new Logger($_SESSION['role'], CHANGE_PASSWORD);
+    $logger->logActivity();
     exit();
 }

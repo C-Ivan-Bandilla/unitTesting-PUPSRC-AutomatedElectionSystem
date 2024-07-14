@@ -40,7 +40,31 @@ a {
         padding-right: 5%;
     }
 }
-
+#dangerTitle, #successTitle {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 30.48px;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  
+  #dangerSubtitle, #successSubtitle {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 18.29px;
+    letter-spacing: 0.05em;
+    padding: 0px 44px 0px;
+    text-align: center;
+  }
+  
+  .close-mark {
+    margin: 2.5rem 1rem 0rem 0rem;
+  }
+  
+  .close-mark:hover {
+    cursor: pointer !important;
+    color: var(--bs-gray-200) !important;
+  }
 .button-submit {
     border-radius: 5px;
     border: none;
@@ -198,10 +222,6 @@ a {
     font-size: 14px;
     letter-spacing: 1px;
 }
-
-.modal-content {
-    border-radius: 20px !important; /* Adjust the value as needed */
-  }
 
   .adjust-modal .modal-dialog {
     max-width: 600px;

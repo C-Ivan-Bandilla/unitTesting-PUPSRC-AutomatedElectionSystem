@@ -414,6 +414,10 @@ body > * {
   overflow-y: auto;
 }
 
+.navbar .dropdown-menu {
+  overflow-y: hidden !important;
+}
+
 .header-left i {
   cursor: pointer !important;
 }
@@ -487,6 +491,10 @@ body > * {
 
 .link:hover {
   color: #43abc8 !important;
+}
+
+.link-blue:hover {
+  color: var(--bs-gray-500) !important;
 }
 
 .soc-med-icons {

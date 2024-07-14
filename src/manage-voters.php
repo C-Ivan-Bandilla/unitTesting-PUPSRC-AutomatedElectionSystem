@@ -49,7 +49,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 
 		<div class="main">
 
-			<div class="container mb-5 ps-5 breadcrumbs-cont">
+			<div class="container mb-5 breadcrumbs-cont">
 				<div class="row justify-content-center">
 					<div class="col-md-11">
 						<div class="breadcrumbs d-flex">

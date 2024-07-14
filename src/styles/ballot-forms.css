@@ -50,57 +50,27 @@ text-decoration: none;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 425px) {
   .reminder-student .main-color,
   .reminder-student .form-control {
     padding-left: 15px;
     padding-right: 15px;
   }
   .candidate-info img {
-    width: 75px;
-    height: 75px;
+    width: 70px;
+    height: 70px;
   }
   .candidate-info .font-weight2 {
-    font-size: 14px;
+    font-size: 13px !important;
   }
   .candidate-info .font-weight3 {
-    font-size: 12px;
+    font-size: 11px;
   }
   .text-muted {
     font-size: 1px;
   }
 
-  input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 18px; /* Adjust the width as needed */
-    height: 18px; /* Adjust the height as needed */
-    border: 2px solid black;
-    border-radius: 50%; /* Make it circular */
-    position: relative; /* Ensure proper positioning of the ::before pseudo-element */
-    }
-
-  input[type="radio"]::before {
-    content: "";
-    display: inline-block;
-    width: 18px; /* Adjust the width of the outer circle */
-    height: 18px; /* Adjust the height of the outer circle */
-    border-radius: 50%; /* Make it circular */
-    position: absolute; /* Position the ::before pseudo-element relative to the radio button */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Move it back by half its size */
-  }
   
-  /* Styling when radio button is checked */
-  input[type="radio"]:checked::before {
-  width: 12x; /* Adjust the width of the inner circle when checked */
-  height: 12px; /* Adjust the height of the inner circle when checked */
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  }
-
 }
 
 @media (max-width: 576px) {
@@ -198,13 +168,32 @@ color: #fff;
     right: 20px;
     z-index: 1050; /* Ensure it's above Bootstrap's default modal z-index */
     width: 300px; /* Adjust width as needed */
-    opacity: 0.9; /* Adjust opacity if desired */
+    opacity: 1.0; /* Adjust opacity if desired */
+}
+.full-name {
+  white-space: normal;
+  word-wrap: break-word !important; /* Ensures text will wrap to the next line if it overflows */
+}
+
+.candidate-label {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  font-size: 15px;
+  height: 100%; /* Ensure the label takes full height of its parent */
+}
+.candidate-label > div {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  height: 100%; /* Ensure content inside label takes full height */
 }
 
 .sticky {
   position: -webkit-sticky;
   position: sticky !important;
   top: 0 !important; /* Stick to the top */
+  margin-bottom: 55px !important;
   z-index: 100 !important; /* Adjust z-index as needed */
 }
 
