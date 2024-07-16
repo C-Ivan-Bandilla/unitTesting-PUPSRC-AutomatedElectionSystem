@@ -13,6 +13,7 @@ feather.replace();
         }
     }
 
+
    function togglePasswordVisibility() {
     var passwordInput = document.querySelector('.password-input');
     var toggleIcon = document.querySelector('.toggle-password i');
@@ -57,7 +58,28 @@ function toggleFullScreen(elementId) {
   }
 }
 
+document.getElementById('password').addEventListener('input', function() {
+    var passwordInput = document.getElementById('password').value;
+    var submitButton = document.getElementById('realSubmitBtn');
+    
+    if (passwordInput.trim() === "") {
+        submitButton.disabled = true;
+    } else {
+        submitButton.disabled = false;
+    }
+});
 
+  // Function to prevent spaces from input fields
+  function preventSpaces(event) {
+    var input = $(event.target);
+    var value = input.val().replace(/\s/g, "");
+    input.val(value);
+  }
+
+// Disallow whitespaces from password field
+$("#password").on("input", function (event) {
+    preventSpaces(event);
+  });
 
 $(document).ready(function() {
     console.log('Document ready'); // Check if document ready event fires
@@ -78,13 +100,14 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    // Send email to the user
+                    $('#confirmPassModal').modal('hide');
+                    $("#emailSending").modal("show");
                     $.ajax({
                         type: 'POST',
                         url: 'includes/send-email-change.php',
                         data: { email: email }, 
                         success: function(emailResponse) {
-                            $('#confirmPassModal').modal('hide');
+                            $("#emailSending").modal("hide");
                             $('#approvalModal').modal('show');
                         },
                         error: function(xhr, status, error) {
