@@ -69,8 +69,10 @@ text-decoration: none;
   .text-muted {
     font-size: 1px;
   }
+}
 
-  
+.adjust-checkbox {
+  padding-right: 18px;
 }
 
 @media (max-width: 576px) {

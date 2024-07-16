@@ -14,6 +14,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
   $connection = DatabaseConnection::connect();
   $voter_id = $_SESSION['voter_id'];
 
+  $csrf_token = CsrfToken::generateCSRFToken();
+
   $stmt = $connection->prepare("SELECT * FROM voter WHERE voter_id = ?");
   $stmt->bind_param('s', $voter_id);
   $stmt->execute();
@@ -134,18 +136,18 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                     </b>
                   </h5>
                   <div class="col-lg-6 col-12 col-sm-12 col-md-12 mb-4 mb-lg-0 text-center">
-                    <div style="display: flex; flex-direction: column; align-items: center;" class="pt-4">
-                      <div class="rounded-icon main-bg-color">
-                        <i data-feather="mail" class="white im-cust feather-4l"></i>
-                      </div>
-                      <div class="text-center">
-                        <h4 class="email-add">Email Address</h4>
-                        <p class="user-email-1"><?php echo $row['email']; ?></p>
-                        <hr class="email-border">
-                        <button type="button" class="pt-2 main-color transparent-btn" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#confirmPassModal">Change Email Address</button>
-                      </div>
+                  <div class="d-flex flex-column align-items-center pt-4">
+                    <div class="rounded-icon main-bg-color">
+                      <i data-feather="mail" class="white im-cust feather-4l"></i>
+                    </div>
+                    <div class="text-center w-100">
+                      <h4 class="email-add">Email Address</h4>
+                      <p class="user-email-1"><?php echo $row['email']; ?></p>
+                         <hr style="display: block;" class="mx-5">
+                      <a href="#" class="pt-2 main-color custom-link" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#confirmPassModal">Change Email Address</a>
                     </div>
                   </div>
+                </div>
                   <div class="col-lg-6 col-12 col-sm-12 col-md-12">
                     <div class="pt-4"></div>
                     <iframe id="pdfViewer" src="<?php echo "user_data/$org_acronym/cor/" . $row['cor']; ?>" frameborder="0" style="width: 100%; height:100%"></iframe>
@@ -186,7 +188,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                            <!-- CSRF Token hidden field -->
                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                             <div class="password-input-container">
-                                <input type="password" maxlength="50" class="password-input" name="password" id="password" autocomplete="off" placeholder="Type password here..." oninput="handleInput()">
+                                <input type="password" maxlength="50" class="password-input" name="password" id="password" autocomplete="off" onkeypress="return preventSpaces(event)"
+                                    placeholder="Type password here..." oninput="handleInput()">
                                 <span class="toggle-password" onclick="togglePasswordVisibility()">
                                     <i class="fas fa-eye-slash"></i>
                                 </span>
@@ -196,7 +199,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                                 <input type="hidden" name="voter_id" value="<?php echo $voter_id ?>">
                                 <input type="hidden" name="email" value="<?php echo $row['email'] ?>">
                                 <button type="button" class="btn btn-gray" id="cancelModalButton" data-bs-dismiss="modal" aria-label="Close"><b>Cancel</b></button>
-                                <button type="button" class="btn button-proceed" id="realSubmitBtn">Submit</button>
+                                <button type="button" class="btn button-proceed" id="realSubmitBtn" disabled>Submit</button>
                             </div>
                         </form>
                     </div>
@@ -247,6 +250,28 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
               </div>
           </div>
       </div>
+
+      	<!-- Email Sending Modal -->
+			<div class="modal" id="emailSending" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body pb-5">
+							<div class="text-center">
+								<div class="col-md-12 pt-5">
+									<img src="images/resc/loader.gif" class="loading-gif" alt="iVote Logo">
+								</div>
+								<div class="row">
+									<div class="col-md-12 pt-4">
+										<p class="fw-bold fs-4 spacing-4">Sending email...</p>
+										<p class="fw-medium spacing-5 fs-7">Please wait for a moment</span>.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
      
     </main>
     <div class="footer">
