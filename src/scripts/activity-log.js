@@ -16,18 +16,18 @@ $(document).ready(function () {
   let canShowScrollTop = true;
 
   // Shows popover on hover
-  $("#scrollTopBtn").hover(
-    function () {
-      popover.show();
-    },
-    function () {
-      setTimeout(() => {
-        if (!$(this).is(":hover")) {
-          popover.hide();
-        }
-      }, 100);
-    }
-  );
+  // $("#scrollTopBtn").hover(
+  //   function () {
+  //     popover.show();
+  //   },
+  //   function () {
+  //     setTimeout(() => {
+  //       if (!$(this).is(":hover")) {
+  //         popover.hide();
+  //       }
+  //     }, 100);
+  //   }
+  // );
 
   // Hides popover on click
   $("#scrollTopBtn").click(function () {
@@ -61,15 +61,15 @@ $(document).ready(function () {
     // }
   });
 
-  if (window.innerWidth < 768) {
-    popoverList.forEach((popover) => {
-      popover.dispose();
-      const popoverTriggerEl = popover._element;
-      new bootstrap.Popover(popoverTriggerEl, {
-        trigger: "hover",
-      });
-    });
-  }
+  // if (window.innerWidth < 768) {
+  //   popoverList.forEach((popover) => {
+  //     popover.dispose();
+  //     const popoverTriggerEl = popover._element;
+  //     new bootstrap.Popover(popoverTriggerEl, {
+  //       trigger: "hover",
+  //     });
+  //   });
+  // }
 
   /* Load data on the page */
   // let page = 1;
@@ -112,6 +112,14 @@ $(document).ready(function () {
   // Event listener for dropdown item clicks
   $(".custom-dropdown-item").on("click", function (e) {
     e.preventDefault();
+
+    if ($(this).hasClass("disabled")) {
+      return;
+    }
+
+    $(".custom-dropdown-item").removeClass("disabled");
+    $(this).addClass("disabled");
+
     var filter = $(this).attr("id");
     var filterText = $(this).text();
 
@@ -127,4 +135,6 @@ $(document).ready(function () {
     );
     feather.replace();
   });
+
+  $(".custom-dropdown-item").first().addClass("disabled");
 });
