@@ -52,7 +52,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
         <link rel="stylesheet" href="<?php echo 'styles/orgs/' . $org_name . '.css'; ?>" id="org-style">
         <link rel="stylesheet" href="styles/style.css" />
         <!-- <link rel="stylesheet" href="styles/core.css" /> -->
-        <!-- <link rel="stylesheet" href="styles/profile.css" /> -->
+        <link rel="stylesheet" href="styles/profile.css" />
         <link rel="stylesheet" href="styles/change-password.css" />
         <link rel="stylesheet" href="styles/loader.css" />
         <link rel="stylesheet" href="../vendor/node_modules/bootstrap/dist/css/bootstrap.min.css" />
