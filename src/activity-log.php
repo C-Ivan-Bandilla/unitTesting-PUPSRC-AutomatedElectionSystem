@@ -84,7 +84,7 @@ if(isset($_SESSION['voter_id']) && isset($_SESSION['role'])) {
                                                 <i data-feather="chevron-down" class="chevron"></i>
                                             </button>
                                             <ul class="dropdown-menu custom-dropdown-menu border border-0">
-                                                <li><a class="custom-dropdown-item dropdown-item rounded-0" href="#" id="allActLogs">All Activities</a></li>
+                                                <li><a class="custom-dropdown-item dropdown-item rounded-0" href="#" id="allActLogs" disabled>All Activities</a></li>
                                                 <li><a class="custom-dropdown-item dropdown-item rounded-0" href="#" id="adminActLogs">Admin Activities</a></li>
                                                 <li><a class="custom-dropdown-item dropdown-item rounded-0" href="#" id="voterActLogs">Voter Activities</a></li>
                                             </ul>
