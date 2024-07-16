@@ -192,6 +192,42 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
             </div>
         </div>
 
+        <!-- Invalid Content of CSV/Excel Modal -->
+        <div class="modal" id="invalidContentModal" data-bs-keyboard="false" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="d-sm-flex text-end justify-content-end">
+                            <i class="fa fa-solid fa-circle-xmark fa-xl close-mark light-gray" id="invalidContentClose"
+                                data-bs-dismiss="modal">
+                            </i>
+                        </div>
+                        <div class="text-center">
+                            <div class="col-md-12">
+                                <img src="images/resc/warning.png" class="warning-icon" alt="Warning Icon">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 pb-3 pt-4">
+                                    <p class="fw-bold danger spacing-4" id="invalidTitle">Invalid Content!</p>
+                                    <p class="fw-medium spacing-5 pt-2" id="invalidSubtitle">The file content is invalid. Please ensure that: 
+                                    <ul class="text-start">
+                                    <li class="fw-medium spacing-5 pt-2">The file headers are correct and in the right order</li>
+                                    <li class="fw-medium spacing-5 pt-2">All required fields are filled</li>
+                                    <li class="fw-medium spacing-5 pt-2">Data formats are correct (e.g., valid email addresses)</li>
+                                </ul>
+                                        <p class="fw-medium spacing-5 pt-2">
+                                        Please check your file and try again.
+                                        </p>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Imported Successfully Modal -->
         <div class="modal" id="importDoneModal" data-bs-keyboard="false" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered" role="document">

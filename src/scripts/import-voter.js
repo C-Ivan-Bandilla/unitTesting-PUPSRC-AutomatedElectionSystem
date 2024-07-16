@@ -1,6 +1,9 @@
 $(document).ready(function() {
     const maxFileSize = 25 * 1024 * 1024; // 25MB in bytes
 
+    // Disable the Import Voters button initially
+    $('#import-voters').prop('disabled', true);
+
     $('#voters-list').on('change', function() {
         if (this.files.length > 0) {
             if (this.files[0].size > maxFileSize) {
@@ -33,6 +36,8 @@ $(document).ready(function() {
                         $('#importDoneModal').modal('show');
                     } else if (result.status === 'warning') {
                         showDuplicatesModal(result.message, result.duplicates);
+                    } else if (result.status === 'error') {
+                        showInvalidContentModal(result.message);
                     } else {
                         showWrongFormatModal(result.message);
                     }
@@ -43,7 +48,7 @@ $(document).ready(function() {
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error("AJAX error:", textStatus, errorThrown);
-                $('l').modal('show');
+                showWrongFormatModal('An error occurred while processing your request.');
             }
         });
     });
@@ -64,29 +69,28 @@ $(document).ready(function() {
 
     function showWrongFormatModal(message) {
         $('#onlyPDFAllowedTitle').text('Invalid file format!');
+        $('#onlyPDFAllowedSubtitle').text(message);
         $('#onlyPDFAllowedModal').modal('show');
     }
 
+    function showInvalidContentModal(message) {
+        $('#dangerTitle').text('Invalid Content!');
+        $('#dangerSubtitle').text(message || 'The file content is invalid. Please ensure that: The file headers are correct and in the right order, All required fields are filled, Data formats are correct (e.g., valid email addresses). Please check your file and try again.');
+        $('#invalidContentModal').modal('show');
+    }
+
     // Reload page when modals are closed
-    $('#importDoneModal, #duplicatesModal, #onlyPDFAllowedModal').on('hidden.bs.modal', function () {
+    $('#importDoneModal, #duplicatesModal, #onlyPDFAllowedModal, #invalidContentModal').on('hidden.bs.modal', function () {
         location.reload();
     });
 
     // Close button for modals
-    $('#importDoneClose').on('click', function() {
-        $('#importDoneModal').modal('hide');
-    });
-
-    $('#duplicatesClose').on('click', function() {
-        $('#duplicatesModal').modal('hide');
-    });
-
-    $('#onlyPDFAllowedModal').on('click', function() {
-        $('#duplicatesModal').modal('hide');
+    $('#importDoneClose, #duplicatesClose, #onlyPDFClose, #invalidContentClose').on('click', function() {
+        $(this).closest('.modal').modal('hide');
     });
 
     // Ensure all modals are initialized
-    $('#importDoneModal, #duplicatesModal, #onlyPDFAllowedModal').modal({
+    $('#importDoneModal, #duplicatesModal, #onlyPDFAllowedModal, #invalidContentModal').modal({
         backdrop: 'static',
         keyboard: false,
         show: false
