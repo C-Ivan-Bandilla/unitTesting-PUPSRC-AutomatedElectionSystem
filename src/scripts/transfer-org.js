@@ -95,6 +95,30 @@ feather.replace();
     }
 }
 
+document.getElementById('password').addEventListener('input', function() {
+    var passwordInput = document.getElementById('password').value;
+    var realsubmitButton = document.getElementById('realSubmitBtn');
+    
+    if (passwordInput.trim() === "") {
+        realsubmitButton.disabled = true;
+    } else {
+        realsubmitButton.disabled = false;
+    }
+});
+
+  // Function to prevent spaces from input fields
+  function preventSpaces(event) {
+    var input = $(event.target);
+    var value = input.val().replace(/\s/g, "");
+    input.val(value);
+  }
+  
+ // Disallow whitespaces from password field
+ $("#password").on("input", function (event) {
+    preventSpaces(event);
+  });
+
+
 
 $(document).ready(function() {
     console.log('Document ready'); // Check if document ready event fires

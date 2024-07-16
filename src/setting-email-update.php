@@ -18,7 +18,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
   include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/session-exchange.php');
   
   $connection = DatabaseConnection::connect();
-  
+   
   $sql = "SELECT reset_token_hash, reset_token_expires_at FROM voter WHERE reset_token_hash = ?";
   $stmt = $connection->prepare($sql);
   $stmt->bind_param("s", $token_hash);
@@ -26,18 +26,18 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
   $result = $stmt->get_result();
   $row = $result->fetch_assoc();
   
-  if (!$row) {
+ if (!$row) {
       $_SESSION['error_message'] = 'Reset link was not found.';
-      header("Location: voter-login.php");
+      header("Location: voter-login");
       exit();
-  }
+  } 
   
   $expiry_time = strtotime($row["reset_token_expires_at"]);
   $current_time = time();
   
   if ($expiry_time <= $current_time) {
       $_SESSION['error_message'] = 'Reset link has expired.';
-      header("Location: voter-login.php");
+      header("Location: voter-login");
       exit();
   }
   
@@ -90,7 +90,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
           <!-- FOR VERIFICATION TABLE -->
           <div class="col-md-10 card-box">
             <div class="table-wrapper" id="profile">
-              <form class="needs-validation" action="includes/process-setting-email.php" method="post">
+              <form id="update-email-form" class="needs-validation">
                 <input type="hidden" id="token" name="token" value="<?= htmlspecialchars($token) ?>">
                 <div class="img-container">
                   <img src="images/Emails/<?php echo strtolower($org_name); ?>-email.png" alt="Email Icon" class="forgot-password-icon">
@@ -100,49 +100,30 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                   <h4 class="reset-password-title text-center main-color <?php echo strtoupper($org_name); ?>-text-color" id="">Update your email address</h4>
                   <p class="reset-password-subtitle text-center"><b>Please enter your new email address below to update your <br> account information.</>
                   </p>
-
-
-                  <!-- Displays error message -->
-                  <?php if (isset($error_message)) : ?>
-                    <div class="d-flex align-items-center justify-content-center mb-0">
-                      <div class="fw-medium border border-danger text-danger alert alert-danger alert-dismissible fade show  custom-alert" role="alert">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle flex-shrink-0 me-2" viewBox="0 0 16 16">
-                          <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z" />
-                          <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
-                        </svg>
-                        <div class="d-flex align-items-center">
-                          <span class="pe-1"><?php echo $error_message; ?></span>
-                          <button type="button" class="btn-close text-danger" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                      </div>
-                    </div>
-                  <?php endif; ?>
-
                   <div class="row mt-5 mb-3 reset-pass">
                     <div class="col-md-8 mb-2 position-relative">
-                      <div class="input-group mb-3" id="reset-password">
-                        <input type="email" class="form-control reset-password-password" name="email" onkeypress="return avoidSpace(event)" placeholder="Enter a new email address" id="email" required>
+                      <div class="input-group" id="reset-password">
+                        <input type="email" class="form-control reset-password-password2" name="email" onkeypress="return preventSpaces(event)" placeholder="Enter a new email address" id="password" required>
                         <label for="email" class="new-password translate-middle-y main-color <?php echo strtoupper($org_name); ?>-text-color" id="">NEW EMAIL ADDRESS</label>
-                        <button class="btn btn-secondary reset-password-password" type="button" id="reset-password-toggle-1">
-                        </button>
                       </div>
+                      <div id="emailError" class="text-danger ps-3" style="font-size: small;"></div>
                     </div>
-                    <div class="col-md-8 mb-0 mt-0 position-relative">
+                    <div class="col-md-8 mb-0 mt-4 position-relative">
                       <p class="reset-password-subtitlee">For security purposes, please confirm the change of your email address by entering your password.</p>
                       <div class="input-group" id="reset-password">
-                        <input type="password" class="form-control reset-password-password" onkeypress="return avoidSpace(event)" id="password_confirmation" name="password_confirmation" placeholder="Enter your password" required>
+                        <input type="password" class="form-control reset-password-password" onkeypress="return preventSpaces(event)" id="password_confirmation" name="password_confirmation" placeholder="Enter your password" required>
                         <label for="password_confirmation" class="new-password translate-middle-y main-color <?php echo strtoupper($org_name); ?>-text-color" id="">PASSWORD</label>
                         <button class="btn btn-secondary reset-password-password" type="button" id="reset-password-toggle-2">
                           <i class="fas fa-eye-slash"></i>
                         </button>
                       </div>
+                      <div id="passwordError" class="text-danger ps-3" style="font-size: small;"></div>
                     </div>
                   </div>
-                  <div class="col-md-12 reset-pass">
-                  <button class="btn login-sign-in-button mt-3 mb-3" id="<?php echo strtoupper($org_name); ?>-login-button" type="submit" name="new-password-submit">Update Email</button>
+                  <div class="pb-4">
+                    <center><button class="btn main-bg-color text-white mt-3 mb-3" id="submit-new-email" type="submit" disabled>Update Email</button></center>
                   </div>
                 </div>
-
               </form>
             </div>
           </div>
@@ -151,14 +132,11 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
     </div>
 
     <!-- Success Modal -->
-    <!-- Need Js to function -->
-    <div class="modal" id="successEmailModal" tabindex="-1" role="dialog">
+    <div class="modal" id="successEmailModal" tabindex="-1" role="dialog" aria-hidden="false" 
+          data-backdrop="static" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content" id="success-modal">
                 <div class="modal-body">
-                    <div class="d-flex justify-content-end">
-                        <i class="fa fa-solid fa-circle-xmark fa-xl close-mark light-gray" onclick="closeModal()"></i>
-                    </div>
                     <div class="text-center">
                         <div class="col-md-12">
                             <img src="images/resc/check-animation.gif" class="check-perc" alt="Checked Logo">
@@ -169,7 +147,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                                 <p class="fw-medium spacing-5">Your email address has been updated.
                                 </p>
                                 <button class="button-check main-bg-color text-white py-2 px-4" id="Home">
-                                  <a class="custom-link" href="../src/setting-email-update"><b>Back to Home</b></a>
+                                  <a class="custom-link" href="includes/voter-logout.php"><b>Back to Landing Page</b></a>
                                 </button>
                             </div>
                         </div>

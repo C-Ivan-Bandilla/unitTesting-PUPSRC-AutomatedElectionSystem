@@ -386,10 +386,8 @@ if ($total_guidelines > 0) {
                                                             <input type="hidden" name="position_id[<?php echo $row['position_id'] ?>][]" value="<?php echo $row['position_id'] ?>">
                                                             <input type="hidden" name="candidate_id[<?php echo $row_candidates['candidate_id'] ?>][][]" value="<?php echo $row_candidates['candidate_id'] ?>">
                                                             <div style="display: flex; align-items: center;" class="ps-3">
-                                                              <div style="margin-right: 8px;">
-                                                                <input type="checkbox" id="<?php echo $row_candidates['candidate_id'] ?>" name="position[<?php echo $row['position_id'] ?>][]" value="<?php echo $row_candidates['candidate_id'] ?>" class="candidate-checkbox" 
+                                                                <input type="checkbox" id="<?php echo $row_candidates['candidate_id'] ?>" name="position[<?php echo $row['position_id'] ?>][]" value="<?php echo $row_candidates['candidate_id'] ?>" class="adjust-checkbox"
                                                                     data-img-src="user_data/<?php echo $org_acronym ?>/candidate_imgs/<?php echo $row_candidates['photo_url'] ?>" data-max-votes="<?php echo $row['max_votes'] ?>">
-                                                              </div>
                                                                 <label for="<?php echo $row_candidates['candidate_id'] ?>" class="candidate-label">
                                                                     <div class="ps-4">
                                                                         <div class="font-weight2 full-name" style="font-size:14px;"><?php echo $full_name ?></div>

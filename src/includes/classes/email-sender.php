@@ -106,7 +106,7 @@ class EmailSender
     
     public function sendResetEmail($recipientEmail, $token, $orgName) {
         $subject = 'iVOTE Change Email Request';
-        $updateEmailLink = "http://localhost/PUPSRC-AutomatedElectionSystem/src/setting-email-update.php?token=$token&orgName=$orgName";
+        $updateEmailLink= $this->app_url . "setting-email-update?token=" . urlencode($token) . "&orgName=" . urlencode($orgName);
         $mailBody = <<<EOT
         <!DOCTYPE html>
         <html lang="en">
