@@ -11,6 +11,8 @@ require_once '../includes/classes/db-connector.php';
 require_once '../includes/session-handler.php';
 require_once '../includes/classes/session-manager.php';
 require_once '../includes/classes/query-handler.php';
+require_once '../includes/classes/logger.php';
+
 
 // Check if PhpSpreadsheet is installed
 if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
@@ -45,6 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['voter_id']) && ($_S
         echo json_encode(['status' => 'error', 'message' => "Invalid file format. Please upload a CSV or Excel file."]);
         exit;
     }
+
+    // Log the activity after successful import
+    $logger = new Logger($_SESSION['role'], IMPORT_MEMBER_LIST);
+    $logger->logActivity();
 
     $conn->close();
     echo json_encode($result);
