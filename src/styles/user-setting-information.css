@@ -100,12 +100,34 @@ input[type="password"]::-ms-clear {
 .detail {
   font-size: 10px;
 }
+
 .email-border {
   border-bottom: 1px solid #3a3a3a;
   margin-top: 10px !important;
   width: 230px !important;
-  display: grid !important;
+  display: block;
 }
+
+.text-center {
+  text-align: center;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.flex-column {
+  flex-direction: column !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
 .user-email-1 {
   font-size: smaller;
 }
@@ -140,19 +162,7 @@ input[type="password"]::-ms-clear {
 .subtitle {
   padding-left: 6%;
 }
-.transparent-btn {
-  background-color: transparent;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 20px !important;
-  cursor: pointer;
-  transition-duration: 0.4s;
-  border-style: none;
-  width: 225px;
-  align-items: center;
-}
+
 @media (max-width: 480px) {
   .transparent-btn {
     margin-top: -20px !important;
@@ -360,7 +370,15 @@ a .custom-link{
   text-align: center;
 }
 
+.loading-gif {
+  height: 70% !important;
+  width: 40% !important;
+}
 
+#realSubmitBtn:disabled {
+  background-color: #cccccc;
+  color: white;
+}
 .password-input-container {
   position: relative;
   display: inline-block; 

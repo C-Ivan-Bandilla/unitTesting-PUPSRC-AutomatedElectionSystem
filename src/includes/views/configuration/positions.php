@@ -1,3 +1,12 @@
+<?php
+include_once 'modals.php';
+
+(new class
+{
+    use ConfigGuard;
+})::generateCSRFToken(time() + (60 * 20));
+?>
+
 <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.5.0/css/rowReorder.bootstrap5.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.snow.css" />
@@ -113,6 +122,18 @@
 
 
 </main>
+
+<section class="modals-container">
+    <?php
+    $deleteAction = <<<HTML
+                <button type="button" class="btn btn-secondary secondary" data-bs-dismiss="modal">Go to Candidates</button>
+                <button type="button" id="" class="btn btn-danger primary" value="true" disabled>Delete</button>
+    HTML;
+    Modals::getDeleteModal($deleteAction, true);
+    ?>
+
+</section>
+
 <?php
 global $phpDateTimeNow;
 global $page_scripts;
