@@ -32,7 +32,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 
         <div class="container">
             <div class="row">
-                <div class="col-11 col-md-10 col-lg-11 mx-auto">
+                <div class="col-11 col-md-10 col-lg-11 mx-auto" style="margin-top: -5px;">
                     <div class="col-11 col-md-10 col-lg-11 mx-auto">
                         <div class="card-report main-bg-color mb-5">
                             <div class="card-body main-bg-color d-flex justify-content-between">
@@ -68,10 +68,10 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                     <button class="report-generator-btn main-bg-color" onclick="downloadAllPDF()" type="button" aria-expanded="false">
                                         <i data-feather="download" class="white im-cust feather-1xs"></i> Download
                                     </button>
-                                    <div class="dropdown">
-                                        <button class="btn-election main-color hover-color dropdown-button btn-with-margin" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="dropdown main-color">
+                                        <button class="btn-election hover-color dropdown-button btn-with-margin" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                             <span class="ms-auto">
-                                                <div id="dropdownButtonText" class="text-truncate"><?php echo "A.Y. " . $selected_year_title; ?> <i data-feather="chevron-down" class="white im-cust feather-1xs"></i></div>
+                                                <div id="dropdownButtonText" class="main-color text-truncate"><?php echo "A.Y. " . $selected_year_title; ?> <i data-feather="chevron-down" class="white im-cust feather-1xs"></i></div>
                                             </span>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -92,7 +92,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                             </div>
                         </div>
                         <div class="card card-header main-color">
-                            <p><strong>ELECTION RESULTS</strong></p>
+                            <p class="main-color"><strong>ELECTION RESULTS</strong></p>
                         </div>
                     </div>
 
@@ -172,7 +172,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                     <div class="col-11 col-md-10 col-lg-11 mx-auto">
                         <div class="row m-0 p-0 justify-content-between">
                             <div class="col-md-7 m-0 ps-0 pe-md-4 pe-md-0 pe-sm-0 pe-0 ">
-                                <div class="card2 p-4 " style="border-radius: 20px; height: 250px;">
+                                <div class="card2 p-4 " style="border-radius: 20px; height: 270px;">
                                     <div>
                                         <div class="row justify-content-center">
                                             <div class="col-md-12 col-lg-6 pe-lg-0 pe-xl-5">
@@ -229,7 +229,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                                                 ctx.font = "bold " + fontSize + "em Montserrat, sans-serif"; // Bold and Montserrat
                                                                 ctx.fillStyle = "black";
                                                                 ctx.textBaseline = "middle";
-                                                                var text = parseFloat(chart.data.datasets[0].data[0]).toFixed(2) + "%", // Rounds off to 3 decimal places
+                                                                var text = parseFloat(chart.data.datasets[0].data[0]).toFixed(0) + "%", // Rounds off to 3 decimal places
                                                                     textX = Math.round((width - ctx.measureText(text).width) / 2),
                                                                     textY = height / 1.75;
                                                                 ctx.fillText(text, textX, textY);
@@ -317,9 +317,59 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                 </div>
                             </div>
                         </div>
+                        <br>
+                        <!-- Positions Table -->
+                        <div class="row justify-content-center">
+                            <div class="container-fluid">
+                                <div class="card-box">
+                                    <div class="row">
+                                        <div class="content">
+                                            <div class="table-wrapper">
+                                                <div class="table-title">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <p class="fs-3 main-color fw-bold ls-10 spacing-6 text-comment2">Candidate Counts by Position</p>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-end flex-end">
+                                                                    <div class="d-inline-block ps-3">
+                                                                        <form class="d-inline-block">
+                                                                            <div class="search-container">
+                                                                                <input class="search-input fs-7 spacing-6 fw-medium" type="text" placeholder="  Search" id="searchPosition">
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <table class="table table-hover positions-table">
+                                                    <thead class="tl-header">
+                                                        <tr>
+                                                            <th class="col-md-7 text-center fs-7 fw-bold spacing-5"><i data-feather="user" class="feather-xs im-cust"></i>Position Name</th>
+                                                            <th class="col-md-2 text-center fs-7 fw-bold spacing-5"><i data-feather="bar-chart-2" class="feather-xs im-cust"></i>Total Count</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Table data will be injected here by JavaScript -->
+                                                    </tbody>
+                                                </table>
+                                                <div class="clearfix col-xs-12">
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <ul class="pagination positions-pagination">
+                                                            <!-- Pagination will be injected here by JavaScript -->
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <br>
-                    <br>
                     <br>
                     <br>
                     <br>
@@ -421,25 +471,8 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                 </div>
                             </div>
                         </div>
-                        <!--Feedback Table-->
-                        <?php
-                        $connection = DatabaseConnection::connect();
-                        // Instantiate FeedbackManager
-                        $feedbackManager = new FeedbackManager($connection);
 
-                        // Get sorting and pagination parameters
-                        $sort = isset($_GET['sort']) ? $_GET['sort'] : 'timestamp';
-                        $order = isset($_GET['order']) ? $_GET['order'] : 'DESC';
-                        $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
-                        $records_per_page = 5;
-                        $offset = ($current_page - 1) * $records_per_page;
-
-                        // Fetch feedback data
-                        $feedback_tbl = $feedbackManager->getFeedbackData($sort, $order, $offset, $records_per_page);
-                        $total_records = $feedbackManager->getTotalRecords();
-                        $total_pages = ceil($total_records / $records_per_page);
-
-                        ?>
+                        <!-- Feedback Table -->
                         <div class="row justify-content-center">
                             <div class="container-fluid">
                                 <div class="card-box">
@@ -449,7 +482,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                                 <div class="table-title">
                                                     <div class="row">
                                                         <div class="col-sm-6">
-                                                            <p class="fs-3 main-color fw-bold ls-10 spacing-6 text-comment" style="padding-left: 30px;">Feedback Comments</p>
+                                                            <p class="fs-3 main-color fw-bold ls-10 spacing-6 text-comment">Feedback Comments</p>
                                                         </div>
                                                         <div class="col-sm-6">
                                                             <div class="row">
@@ -462,11 +495,11 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                                                                     Sort by
                                                                                 </button>
                                                                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton" style="padding: 0.5rem">
-                                                                                    <li class="dropdown-item ps-3 fs-7 fw-medium">
-                                                                                        <a href="?sort=timestamp&order=desc">Newest to Oldest</a>
+                                                                                    <li class="dropdown-item ps-3 fs-7 fw-medium" data-sort="timestamp" data-order="DESC">
+                                                                                        <a href="#">Newest to Oldest</a>
                                                                                     </li>
-                                                                                    <li class="dropdown-item ps-3 fs-7 fw-medium">
-                                                                                        <a href="?sort=timestamp&order=asc">Oldest to Newest</a>
+                                                                                    <li class="dropdown-item ps-3 fs-7 fw-medium" data-sort="timestamp" data-order="ASC">
+                                                                                        <a href="#">Oldest to Newest</a>
                                                                                     </li>
                                                                                 </div>
                                                                             </div>
@@ -477,99 +510,41 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <?php if ($feedback_tbl->num_rows > 0) { ?>
-                                                    <table class="table table-hover">
-                                                        <thead class="tl-header">
-                                                            <tr>
-                                                                <th class="col-md-7 text-center fs-7 fw-bold spacing-5"><i data-feather="mail" class="feather-xs im-cust"></i>Feedback</th>
-                                                                <th class="col-md-2 text-center fs-7 fw-bold spacing-5"> <i data-feather="calendar" class="feather-xs im-cust"></i>Date Submitted</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?php while ($row = $feedback_tbl->fetch_assoc()) { ?>
-                                                                <tr class="table-row">
-                                                                    <td class="col-md-7 text-center truncated-text">
-                                                                        <?php echo $row["feedback"]; ?>
-                                                                        <p class="view-more" data-bs-toggle="modal" data-bs-target="#successEmailModal<?php echo $row['id']; ?>" data-feedback='<?php echo htmlspecialchars(json_encode($row)); ?>'>View More</p>
-                                                                    </td>
-                                                                    <td class="col-md-2 text-center"><?php echo date("F j, Y", strtotime($row["timestamp"])); ?></td>
-                                                                </tr>
-                                                            <?php } ?>
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="clearfix col-xs-12">
-                                                        <div class="d-flex justify-content-end align-items-center">
-                                                            <ul class="pagination">
-                                                                <?php if ($current_page > 1) { ?>
-                                                                    <li class="page-item"><a href="?page=<?php echo $current_page - 1 . '&sort=' . urlencode($sort) . '&order=' . urlencode($order); ?>" class="page-link"><i class="fas fa-chevron-left" id="btn-previous"></i> </a></li>
-                                                                <?php } ?>
-                                                                <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
-                                                                    <li class="page-item <?php echo ($i == $current_page) ? 'active' : ''; ?>">
-                                                                        <a href="?page=<?php echo $i . '&sort=' . urlencode($sort) . '&order=' . urlencode($order); ?>" class="page-link"><?php echo $i; ?></a>
-                                                                    </li>
-                                                                <?php } ?>
-                                                                <?php if ($current_page < $total_pages) { ?>
-                                                                    <li class="page-item"><a href="?page=<?php echo $current_page + 1 . '&sort=' . urlencode($sort) . '&order=' . urlencode($order); ?>" class="page-link"><i class="fas fa-chevron-right" id="btn-next"></i></a></li>
-                                                                <?php } ?>
-                                                            </ul>
-                                                        </div>
+
+                                                <table class="table table-hover feedback-table">
+                                                    <thead class="tl-header">
+                                                        <tr>
+                                                            <th class="col-md-7 text-center fs-7 fw-bold spacing-5"><i data-feather="mail" class="feather-xs im-cust"></i>Feedback</th>
+                                                            <th class="col-md-2 text-center fs-7 fw-bold spacing-5"><i data-feather="calendar" class="feather-xs im-cust"></i>Date Submitted</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Table data will be injected here by JavaScript -->
+                                                    </tbody>
+                                                </table>
+                                                <div class="clearfix col-xs-12">
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <ul class="pagination feedback-pagination">
+
+                                                            <!-- Pagination will be injected here by JavaScript -->
+                                                        </ul>
                                                     </div>
-                                                <?php } else { ?>
-                                                    <div class="table-title">
-                                                        <table class="table table-hover">
-                                                            <thead class="tl-header">
-                                                                <tr>
-                                                                    <th class="col-md-3 tl-left text-center fs-7 fw-bold spacing-5">ID</th>
-                                                                    <th class="col-md-3 text-center fs-7 fw-bold spacing-5">Rating</th>
-                                                                    <th class="col-md-3 text-center fs-7 fw-bold spacing-5">Feedback</th>
-                                                                    <th class="col-md-3 tl-right text-center fs-7 fw-bold spacing-5">Date Submitted</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td colspan="4" class="no-border">
-                                                                        <div class="col-md-12 no-registration text-center">
-                                                                            <img src="images/resc/folder-empty.png" class="illus">
-                                                                            <p class="fw-bold spacing-6 black">No records found</p>
-                                                                            <p class="spacing-3 pt-1 black fw-medium">Adjust filter or try a different search term</p>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                <?php } ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
             </div>
         </div>
 
 
-        <!-- Feedback Modal -->
-        <div class="modal fade" id="successEmailModal" tabindex="-1" role="dialog" aria-labelledby="successEmailModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 pb-3">
-                                <p class="fw-bold fs-3 main-color modal-text spacing-4">Comment</p>
-                                <p id="modal-feedback" class="fw-medium spacing-5 comment"></p>
-                                <p id="modal-date" class="fw-medium spacing-5 main-color text-end time-date"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     <?php
     }
 
@@ -608,10 +583,8 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
             <?php
 
             // Output the CSS with the organization color variable for background-color
-            echo ".main-bg-color { background-color: var(--$org_name);}";
-            echo ".main-color { color: var(--$org_name);}";
-            echo ".card-candidate { border: 2px solid var(--$org_name);}";
-            echo ".hover-color:hover { color: var(--$org_name);}";
+
+
 
             ?>.btn-with-margin {
                 margin-top: 38px;
@@ -664,7 +637,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 
                         <div class="container">
                             <div class="row">
-                                <div class="col-11 col-md-10 col-lg-11 mx-auto" style="margin-top: -30px;">
+                                <div class="col-11 col-md-10 col-lg-11 mx-auto" style="margin-top: -15px;">
                                     <div class="card-report main-bg-color mb-5">
                                         <div class="card-body main-bg-color d-flex justify-content-between">
                                             <div>
@@ -722,8 +695,8 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                     // Election period has not yet ended, show the empty state
                     ?>
 
-                    <div class="row justify-content-center"> 
-                        <div class="col-11 col-md-10 col-lg-11">
+                    <div class="row justify-content-center">
+                        <div class="col-11 col-md-10 col-lg-11" style="margin-top: -15px;">
                             <div class="card-report main-bg-color mb-5">
                                 <div class="card-body main-bg-color d-flex justify-content-between">
                                     <div>
@@ -773,7 +746,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 
     <div class="container">
         <div class="row">
-            <div class="col-11 col-md-10 col-lg-11 mx-auto" style="margin-top: -30px;">
+            <div class="col-11 col-md-10 col-lg-11 mx-auto" style="margin-top: -15px;">
                 <div class="card-report main-bg-color mb-5">
                     <div class="card-body main-bg-color d-flex justify-content-between">
                         <div>
@@ -837,6 +810,51 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
             $conn->close();
 ?>
 </div>
+<!-- Feedback Modal -->
+<div class="modal fade" id="successEmailModal" tabindex="-1" role="dialog" aria-labelledby="successEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 25px;">
+            <div class="modal-body">
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 pb-3">
+                        <p class="fw-bold fs-3 main-color modal-text spacing-4">Comment</p>
+                        <p id="modal-feedback" class="fw-medium spacing-5 comment"></p>
+                        <p id="modal-date" class="fw-medium spacing-5 main-color text-end time-date"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for Position Details -->
+<div class="modal fade" id="positionModal" tabindex="-1" role="dialog" aria-labelledby="positionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content" style="border-radius: 25px;">
+            <div class="modal-body">
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 pb-3">
+                        <p class="fw-bold fs-3 main-color modal-text spacing-4" id="modal-position-title"></p>
+                        <div id="modal-position-details" class="comment-descrip">
+                            <p id="modal-position-description"></p>
+                        </div>
+
+                        <div id="modal-candidates">
+                            <!-- Candidates will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <!-- JavaScript -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

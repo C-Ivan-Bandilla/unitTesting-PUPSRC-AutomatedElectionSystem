@@ -56,6 +56,7 @@
   border-radius: 0.25rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   height: 90px !important;
+  border: 2px solid var(--main-color) !important;
   @media (max-width: 768px) {
     padding-left: 15px;
     }
@@ -76,10 +77,10 @@
     height: 55px;
   }
   @media (max-width: 480px) {
-    width: 40px;
-    height: 40px;
-    margin-top: 1px;
-    margin-left: -30px;
+    width: 30px;
+    height: 30px;
+    margin-top: 3px;
+    margin-left: -40px;
   }
 }
 .card-candidate h3, .card-runnerup h3{
@@ -694,6 +695,10 @@ padding-left: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (max-width: 480px) {
+    width: 40px;
+  height: 40px;
+  }
 }
 .secondary-metrics-header{
   font-size: 15px;
@@ -800,9 +805,10 @@ padding-left: 20px;
 }
 @media (max-width: 480px) {
   .emoji li {
-      margin: 0 10px;
+      margin: 0 6px;
   }
 }
+
 .emoji li span {
   display: block;
   width: 100%;
@@ -854,6 +860,14 @@ padding-left: 20px;
     font-size: 10px !important;
     }
 }
+.rating-item{
+  margin-left: -40px;
+  margin-top: -40px;
+  @media (max-width: 480px) {
+    margin-left: -50px;
+    margin-top: -40px;
+  }    
+}
 .text-comment{
   font-size: 27px;
   margin-left: 15px;
@@ -862,6 +876,20 @@ padding-left: 20px;
       margin-left: -5px;
   }
 
+}
+.text-comment2 {
+  font-size: 27px;
+  margin-left: 15px;
+}
+
+@media (max-width: 480px) {
+  .text-comment2 {
+      font-size: 15px !important;
+      margin-left: -5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
 }
 
 .feedback-text{
@@ -902,10 +930,6 @@ padding-left: 20px;
     font-size: 5px !important;
   }    
 }
-.rating-item{
-  margin-left: -40px;
-  margin-top: -40px;
-}
 .form-control2, .form-control2:hover{
   margin-top: 38px ;
   width: 180px ;
@@ -935,15 +959,25 @@ padding-left: 20px;
   } 
   }
   .comment {
-    white-space: pre-wrap; /* Preserve white spaces and allow wrapping */
-    word-wrap: break-word; /* Break long words */
-    max-width: 100%; /* Ensure the comment doesn't exceed the container width */
-    line-height: 1.5; /* Adjust line height as needed for better readability */
+    white-space: pre-wrap; 
+    word-wrap: break-word; 
+    max-width: 100%; 
+    line-height: 1.5; 
     color: black;
     font-size: 15px;
     padding-left: 30px;
     padding-right: 30px;
-    text-align: justify; /* Justify the text */
+    text-align: justify; 
+}
+.comment-descrip{
+  word-wrap: break-word; 
+  max-width: 100%; 
+  line-height: 1.5; 
+  color: black;
+  font-size: 15px;
+  padding-left: 30px;
+  padding-right: 30px;
+  text-align: justify;
 }
 .time-date{
   font-size: 10px;
@@ -951,6 +985,9 @@ padding-left: 20px;
 }
   .modal-text{
     padding-left: 30px;
+    @media (max-width: 480px) {
+      padding-left: 30px !important;
+      } 
   }
   .btn-close {
     position: relative;
@@ -1005,10 +1042,9 @@ padding-left: 20px;
   background-color: #F1F1F1 !important;
 }
 
-.table-row {
+table.table tr td {
   border-bottom: 2px solid #F1F1F1 !important;
 }
-
 @media (max-width: 768px) {
   .table {
     overflow-x: auto;
@@ -1029,4 +1065,69 @@ padding-left: 20px;
 .icon {
   margin-right: 4px; /* Adjust as needed */
   margin-bottom: -15px;
+}
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding-left: 40px; /* Adjust padding to make room for the icon */
+  box-sizing: border-box; /* Ensure padding doesn't affect the overall width */
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"> <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001a1.007 1.007 0 0 0-.198.195l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85a1.007 1.007 0 0 0-.195-.198zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/> </svg>') no-repeat;
+  background-size: 16px 16px; /* Adjust size as needed */
+  background-position: 10px center; /* Adjust position as needed */
+}
+
+.search-input::placeholder {
+  color: #000; /* Adjust placeholder color */
+  text-indent: 20px; /* Adjust to align text with the icon */
+}
+.candidate-photo {
+  border-radius: 50%;
+  border: 2px solid !important;
+  width: 50px;
+  height: 50px;
+  
+  @media (max-width: 768px) {
+    width: 55px;
+    height: 55px;
+  }
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+  }
+}
+#modal-candidates {
+  display: flex; /* Use flexbox */
+  justify-content: center; /* Center items along the main axis */
+  align-items: center; /* Align items vertically in the center */
+  flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+  gap: 60px !important; /* Adjust the gap between items */
+}
+
+.candidate-container {
+  /* Optionally, you can add styles specific to each candidate container */
+  margin-bottom: 10px; /* Add some space between candidate containers */
+  /* Ensure each candidate container gets enough space to fit */
+  flex: 0 1 calc(25% - 10px); /* Adjust width to fit 4 items per row with a small gap */
+  max-width: calc(25% - 10px); /* Ensure maximum width for responsiveness */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .candidate-container {
+    flex: 0 1 calc(50% - 10px); /* Adjust width to fit 2 items per row with a small gap */
+    max-width: calc(50% - 10px); /* Ensure maximum width for responsiveness */
+  }
+}
+
+.candidate-name {
+  text-align: center;
+}
+
+.candidate-photo {
+  display: block;
+  margin: 0 auto;
 }
