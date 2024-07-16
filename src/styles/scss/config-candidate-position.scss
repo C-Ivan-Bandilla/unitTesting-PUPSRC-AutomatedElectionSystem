@@ -18,8 +18,14 @@
         max-width: calc(100% - 1px);
         font-size: calc(0.75rem + 0.6575vw);
 
+        &:read-only,
+        &:disabled {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
         // add border while typing
-        &:focus-visible {
+        &:focus-visible:not(:disabled, :read-only) {
             outline: 0.5px solid #0075FF;
         }
     }
@@ -125,10 +131,17 @@ body dialog.modal-native {
             .modal-title {
                 @media only screen and (max-width: 600px) {
                     font-size: calc(0.75rem + 0.6575vw);
+
                 }
+
+                max-width: calc(100% - 1rem - 1vw);
+                overflow: clip;
+                text-overflow: ellipsis;
             }
 
             &.editor {
+                justify-content: space-between;
+
                 button.modal-close {
                     color: var(--main-color);
                     background-color: var(--white);
@@ -297,6 +310,7 @@ body dialog.modal-native {
         }
     }
 }
+
 
 .dt-rowReorder-float {
     vertical-align: middle;

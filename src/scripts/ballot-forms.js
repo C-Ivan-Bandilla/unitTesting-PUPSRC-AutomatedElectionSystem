@@ -120,100 +120,99 @@ function updateErrorState(reminder) {
 
 
 function validateForm(event) {
-    event.preventDefault();
-    var voteForm = document.getElementById('voteForm');
-    var reminders = voteForm.querySelectorAll('.reminder');
-    var isValid = true;
-    var scrollToReminder = null;
-    var selectedCandidateHTML = '';
+  event.preventDefault(); // Prevent form submission
+  
+  var voteForm = document.getElementById('voteForm');
+  var reminders = voteForm.querySelectorAll('.reminder');
+  var isValid = true;
+  var scrollToReminder = null;
+  var selectedCandidateHTML = '';
 
-    // Validate each position
-    reminders.forEach(function(reminder) {
-        updateErrorState(reminder);
 
-        var positionTitle = reminder.getAttribute('data-position-title');
-        var candidateHTML = '';
-        var pairCounter = 0;
+  // Validate each position
+  reminders.forEach(function(reminder) {
+      updateErrorState(reminder);
 
-        // Build HTML for selected candidates for each position
-  var checkboxes = reminder.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(function(checkbox, index) {
-    if (checkbox.checked) {
-        var candidateName = checkbox.parentNode.querySelector('div.ps-4 > div.font-weight2').textContent.trim();
-        var imageSrc = checkbox.getAttribute('data-img-src');
+      var positionTitle = reminder.getAttribute('data-position-title');
+      var candidateHTML = '';
+      var pairCounter = 0;
 
-        // Determine column classes based on number of candidates
-        var colClasses = 'col-lg-6 col-md-6 col-sm-12'; // Default to two candidates per row
-        if (pairCounter % 2 === 0 && pairCounter === 1) {
-            colClasses = 'col-lg-12 col-md-12 col-sm-12'; // Center if only one candidate in the row, does not work
-        }
+      // Build HTML for selected candidates for each position
+      var checkboxes = reminder.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(function(checkbox) {
+          if (checkbox.checked) {
+              var candidateName = checkbox.parentNode.querySelector('div.ps-4 > div.font-weight2').textContent.trim();
+              var imageSrc = checkbox.getAttribute('data-img-src');
 
-        // Create HTML for each candidate with vertically centered content
-        candidateHTML += '<div class="' + colClasses + ' mb-3">' +
-            '<div class="row align-items-center">' + // Ensure vertical alignment
-            '<div class="col-4">' +
-            '<img src="' + imageSrc + '" width="80px" height="80px" style="display: inline-block; vertical-align: middle; border-radius: 10px; border: 2px solid #ccc;">' +
-            '</div>' +
-            '<div class="col-8" style="font-size:13px">' +
-            '<div class="ps-3"><b>' + candidateName + '</b></div>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
+              // Determine column classes based on number of candidates
+              var colClasses = (pairCounter % 2 === 0 && pairCounter > 0) ? 'col-lg-12 col-md-12 col-sm-12' : 'col-lg-6 col-md-6 col-sm-12';
 
-        pairCounter++;
+              // Create HTML for each candidate with vertically centered content
+              candidateHTML += '<div class="' + colClasses + ' mb-3">' +
+                  '<div class="row align-items-center">' + // Ensure vertical alignment
+                  '<div class="col-4">' +
+                  '<img src="' + imageSrc + '" width="80px" height="80px" style="display: inline-block; vertical-align: middle; border-radius: 10px; border: 2px solid #ccc;">' +
+                  '</div>' +
+                  '<div class="col-8" style="font-size:13px">' +
+                  '<div class="ps-3"><b>' + candidateName + '</b></div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>';
 
-        // If pairCounter is 2 (i.e., two candidates per row), add a new row
-        if (pairCounter % 2 === 0) {
-            candidateHTML += '</div><div class="row">';
-        }
-    }
-});
+              pairCounter++;
 
-        // Handle ABSTAIN option
-        var abstainRadio = reminder.querySelector('input[type="radio"].abstain-checkbox');
-        if (abstainRadio && abstainRadio.checked) {
-            // Create HTML for abstain option with vertically centered content
-            candidateHTML += '<div class="col-lg-6 col-md-6 col-sm-12 mb-3">' +
-                '<div class="row align-items-center">' + // Ensure vertical alignment
-                '<div class="col-lg-4 col-md-4 col-sm-4">' +
-                '<img src="images/resc/Abstained.png" width="80px" height="80px" style="display: inline-block; vertical-align: middle; border-radius: 10px; border: 2px solid #ccc;">' +
-                '</div>' +
-                '<div class="col-lg-8 col-md-8 col-sm-8">' +
-                '<div class="ps-3 "><b>ABSTAINED</b></div>' +
-                '</div>' +
-                '</div>' +
-                '</div>';
+              // Add a new row if pairCounter is even (i.e., two candidates per row)
+              if (pairCounter % 2 === 0) {
+                  candidateHTML += '</div><div class="row">';
+              }
+          }
+      });
 
-            pairCounter++;
-        }
+      // Handle ABSTAIN option
+      var abstainRadio = reminder.querySelector('input[type="radio"].abstain-checkbox');
+      if (abstainRadio && abstainRadio.checked) {
+          // Create HTML for abstain option with vertically centered content
+          candidateHTML += '<div class="col-lg-6 col-md-6 col-sm-12 mb-3">' +
+              '<div class="row align-items-center">' + // Ensure vertical alignment
+              '<div class="col-lg-4 col-md-4 col-sm-4">' +
+              '<img src="images/resc/Abstained.png" width="80px" height="80px" style="display: inline-block; vertical-align: middle; border-radius: 10px; border: 2px solid #ccc;">' +
+              '</div>' +
+              '<div class="col-lg-8 col-md-8 col-sm-8">' +
+              '<div class="ps-3"><b>ABSTAINED</b></div>' +
+              '</div>' +
+              '</div>' +
+              '</div>';
 
-        // If candidates were selected, add them to selectedCandidateHTML
-        if (pairCounter > 0) {
-            selectedCandidateHTML += '<div>' +
-                '<hr><div class="main-color px-5" style="padding-bottom:25px"><center><b>' + positionTitle.toUpperCase() + '</b></center></div>' +
-                '<div class="row">' + candidateHTML + '</div>' +
-                '</div>';
-        } else {
-            isValid = false;
-            if (!scrollToReminder) {
-                scrollToReminder = reminder;
-            }
-        }
-        
-    });
+          pairCounter++;
+      }
 
-    // Handle form submission
-    if (!isValid) {
-        if (scrollToReminder) {
-            scrollToReminder.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    } else {
-        $('#confirmationModal').modal('show');
-        document.getElementById('selectedCandidate').innerHTML = selectedCandidateHTML;
-    }
+      // If candidates were selected, add them to selectedCandidateHTML
+      if (pairCounter > 0) {
+          selectedCandidateHTML += '<div>' +
+              '<hr><div class="main-color px-5" style="padding-bottom:25px"><center><b>' + positionTitle.toUpperCase() + '</b></center></div>' +
+              '<div class="row">' + candidateHTML + '</div>' +
+              '</div>';
+      } else {
+          isValid = false;
+          if (!scrollToReminder) {
+              scrollToReminder = reminder;
+          }
+      }
+  });
+
+  // Handle form submission
+  if (!isValid) {
+      if (scrollToReminder) {
+          scrollToReminder.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+  } else {
+    console.log('Triggering modal');
+      $('#confirmationModal').modal('show');
+      document.getElementById('selectedCandidate').innerHTML = selectedCandidateHTML;
+  }
 }
 
-// Add submit event listener to the form
+// Ensure validateForm is bound to the form submit event
 document.getElementById('voteForm').addEventListener('submit', validateForm);
 
 // Handle the confirmation of the vote
@@ -223,7 +222,7 @@ document.getElementById('submitModalButton').addEventListener('click', function(
 
     $.ajax({
         type: 'POST',
-        url: '../src/includes/insert-vote.php',
+        url: 'includes/insert-vote.php',
         data: formData,
         success: function(response) {
             // Hide the confirmation modal

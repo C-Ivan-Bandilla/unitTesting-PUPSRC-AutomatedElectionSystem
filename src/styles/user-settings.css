@@ -23,6 +23,11 @@ a {
     border: 2px solid #ccc;
 }
 
+#realSubmitBtn:disabled {
+    background-color: #cccccc;
+    color: white;
+  }
+
 .reminder {
     background-color: white;
     border-radius: 10px;
