@@ -2,6 +2,7 @@
 
 include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/file-utils.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/db-connector.php');
+require_once FileUtils::normalizeFilePath(__DIR__ . '/logger.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/manage-ip-address.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../session-handler.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
@@ -9,6 +10,7 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-time-zone.php')
 
 class FormHandler {
     private $conn;
+    private $logger;
 
     public function __construct() {
         $this->conn = DatabaseConnection::connect();
@@ -17,10 +19,10 @@ class FormHandler {
     public function processForm($postData, $fileData) {
         // Retrieve form data
         $voter_id = $postData['voter_id'];
-
+    
         // Fetch user data based on voter ID
         $row = $this->getUserData($voter_id);
-
+    
         if ($row) {
             // Check if organization is selected
             if (isset($postData["org"]) && !empty($postData["org"])) {
@@ -48,32 +50,36 @@ class FormHandler {
     private function processOrganization($org, $fileData, $row, $voter_id) {
         $config = DatabaseConfig::getOrganizationDBConfig($org);
         $connection = new \mysqli($config['host'], $config['username'], $config['password'], $config['database']);
-
+    
         if ($connection->connect_error) {
             die("Connection failed: " . $connection->connect_error);
         }
-
+    
         if (isset($fileData["cor"]) && $fileData["cor"]["error"] == UPLOAD_ERR_OK) {
             $cor_file = $fileData["cor"];
             $upload_directory = "../user_data/$org/cor/";
             $filename = basename($cor_file["name"]);
             $target_file = $upload_directory . $filename;
-
+    
             if (move_uploaded_file($cor_file["tmp_name"], $target_file)) {
-                $this->insertVoterData($connection, $filename, $row, $voter_id);
-                $this->deletePreviousVoterEntry($voter_id);
+                $this->insertVoterData($connection, $filename, $row);
                 $this->updateScoDatabase($filename, $row['email']);
+                $this->invalidatePreviousVoterEntry($voter_id);
+                
+                $logger = new Logger(ROLE_STUDENT_VOTER, TRANSFER_ORG);
+                $logger->logActivity();
+
             } else {
                 // echo "Error: Failed to move uploaded file.";
             }
         } else {
             // echo "Error: File upload failed with error code " . $fileData["cor"]["error"];
         }
-
+    
         $connection->close();
     }
 
-    private function insertVoterData($connection, $filename, $row, $voter_id) {
+    private function insertVoterData($connection, $filename, $row) {
         $last_name = !empty($row['last_name']) ? $row['last_name'] : null;
         $first_name = !empty($row['first_name']) ? $row['first_name'] : null;
         $middle_name = !empty($row['middle_name']) ? $row['middle_name'] : null;
@@ -104,17 +110,18 @@ class FormHandler {
         $stmt->close();
     }
 
-    private function deletePreviousVoterEntry($voter_id) {
-        $stmt_delete = $this->conn->prepare("DELETE FROM voter WHERE voter_id = ?");
-        $stmt_delete->bind_param('s', $voter_id);
+    private function invalidatePreviousVoterEntry($voter_id) {
+        // Prepare the update statement to set account_status to 'invalid'
+        $stmt_update = $this->conn->prepare("UPDATE voter SET account_status = 'invalid' WHERE voter_id = ?");
+        $stmt_update->bind_param('s', $voter_id);
         
-        if ($stmt_delete->execute()) {
-            // echo "Success: Previous entry deleted for voter ID $voter_id.";
+        if ($stmt_update->execute()) {
+            // echo "Success: Account status set to 'invalid' for voter ID $voter_id.";
         } else {
-            // echo "Error: Failed to delete previous entry for voter ID $voter_id.";
+            // echo "Error: Failed to set account status to 'invalid' for voter ID $voter_id.";
         }
-
-        $stmt_delete->close();
+    
+        $stmt_update->close();
     }
 
     private function updateScoDatabase($filename, $email) {
