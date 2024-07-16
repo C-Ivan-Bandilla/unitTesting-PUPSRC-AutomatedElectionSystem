@@ -3,6 +3,7 @@ include_once __DIR__ . '/../includes/classes/file-utils.php';
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/classes/db-connector.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/session-handler.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/session-exchange.php');
+require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/classes/logger.php');
 
 if (isset($_SESSION['voter_id'])) {
     $conn = DatabaseConnection::connect();
@@ -70,6 +71,13 @@ if (isset($_SESSION['voter_id'])) {
 
             if (empty($errors)) {
                 $_SESSION['account_created'] = true;
+                    if (count($_POST['last_name']) === 1) {
+                        $logger = new Logger($_SESSION['role'], ADD_CANDIDATE);
+                        $logger->logActivity(); 
+                    }else{
+                        $logger = new Logger($_SESSION['role'], ADD_MULTIPLE_CANDIDATES);
+                        $logger->logActivity();
+                    }
                 header("Location: ../add-candidate.php");
             } else {
                 $_SESSION['errors'] = $errors;

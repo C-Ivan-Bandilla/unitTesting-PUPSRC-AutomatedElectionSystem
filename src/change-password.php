@@ -56,7 +56,6 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
         <link rel="stylesheet" href="styles/tables.css" />
         <link rel="stylesheet" href="styles/manage-voters.css" />
         <link rel="stylesheet" href="styles/profile.css" />
-        <link rel="stylesheet" href="styles/dist/landing.css" />
         <link rel="stylesheet" href="styles/loader.css" />
         <link rel="stylesheet" href="../vendor/node_modules/bootstrap/dist/css/bootstrap.min.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

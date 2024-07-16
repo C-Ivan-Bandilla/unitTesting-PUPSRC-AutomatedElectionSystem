@@ -3,8 +3,8 @@ include_once __DIR__ . '/../includes/classes/file-utils.php';
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/classes/db-connector.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/session-handler.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/session-exchange.php');
+require_once FileUtils::normalizeFilePath(__DIR__ . '/../includes/classes/logger.php');
 
-session_start();
 
 if (isset($_SESSION['voter_id'])) {
     $conn = DatabaseConnection::connect();
@@ -51,9 +51,11 @@ if (isset($_SESSION['voter_id'])) {
         } else {
             $stmt->bind_param("sssssssssi", $last_name, $first_name, $middle_name, $suffix, $party_list, $position_id, $program, $section, $year_level, $candidate_id);
         }
+
         $stmt->execute();
         $stmt->close();
-
+        $logger = new Logger($_SESSION['role'], UPDATE_CANDIDATE_INFO);
+        $logger->logActivity();
         header("Location: ../candidate-details.php?candidate_id=$candidate_id");
     } else {
         header("Location: ../landing-page.php");

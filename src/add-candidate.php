@@ -42,7 +42,73 @@
                 <link rel="stylesheet" href="../vendor/node_modules/bootstrap/dist/css/bootstrap.min.css" />
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+                <style>
+                    .modal-content {
+                        border-radius: 20px;
+                    }
 
+                    .modal-header {
+                        text-align: center;
+                        /* Center the content */
+                    }
+
+                    .modal-header i {
+                        font-size: 7rem;
+                        /* Make the icon bigger */
+                        display: block;
+                        /* Ensure the icon is on its own line */
+                        margin: auto;
+                    }
+
+                    .modal-body {
+                        text-align: center;
+                    }
+
+                    .modal-body h2 {
+                        color: #333;
+                        font-size: 10px;
+                        margin-bottom: 5px;
+                    }
+
+                    .modal-body p {
+                        font-size: 18px;
+                        color: #555;
+                        margin-bottom: 5px;
+
+                    }
+
+                    .modal-footer {
+                        justify-content: center;
+                        border-top: none;
+
+                    }
+
+                    .cancel {
+                        background-color: lightgray;
+                        color: #B2BEB5;
+                        font-weight: bold;
+                        padding: 5px 18px;
+                    }
+
+                    .discard-button {
+                        background-color: #FFA500;
+                        color: #fff;
+                        padding: 5px 28px;
+                        font-weight: 600;
+                    }
+
+                    /* Button Styles */
+                    .close {
+                        font-size: 1.4rem;
+                        color: #aaa;
+                        opacity: 1;
+                    }
+
+                    .close:hover {
+                        color: #000;
+                        opacity: 1;
+                    }
+                </style>
             </head>
 
             <body>
@@ -119,7 +185,7 @@
                                                     <div class="col-md-2 col-sm-3 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="suffix" class="login-danger fs-7">Suffix</label>
-                                                            <select id="suffix" name="suffix[]" style="opacity: 0.5">
+                                                            <select id="suffix" name="suffix[]">
                                                                 <option value="suffix" class="disabled-option" disabled selected>E.g. Jr</option>
                                                                 <option value="">No suffix</option>
                                                                 <option value="Jr">Jr</option>
@@ -136,7 +202,7 @@
                                                     <div class="col-md-4 col-sm-4 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="position" class="login-danger fs-7">Position<span class="required"> *</span></label>
-                                                            <select id="position" name="position_id[]" required style="opacity: 0.5">
+                                                            <select id="position" name="position_id[]" required>
                                                                 <option value="position" class="disabled-option" disabled selected>Select Position</option>
                                                                 <?php
                                                                 $positionQuery = "SELECT position_id, title FROM position";
@@ -155,7 +221,7 @@
                                                     <div class="col-md-4 col-sm-3 mx-auto">
                                                         <div class="form-group local-forms">
                                                             <label for="section" class="login-danger fs-7">Block Section<span class="required"> *</span></label>
-                                                            <select id="section" name="section[]" required style="opacity: 0.5">
+                                                            <select id="section" name="section[]" required>
                                                                 <option value="" class="disabled-option" disabled selected hide>Select Block Section</option>
                                                                 <?php
                                                                 // Define the program based on org_name
@@ -230,14 +296,11 @@
                                                         </div>
                                                     </div>
 
-
-
-
                                                     <div class="col-md-4 col-sm-3 mx-auto">
-                                                        <div class="form-group local-forms">
+                                                        <div class="form-group">
                                                             <label for="photo" class="login-danger fs-7">Photo<span class="required"> * </span> </label>
                                                             <div class="input-group">
-                                                                <input type="file" id="photo" name="photo[]" class="photo" accept=".jpg, .png, .jpeg" required onchange="validatephoto(this)" style="opacity: 0.5">
+                                                                <input type="file" id="photo" name="photo[]" class="photo" accept=".jpg, .png, .jpeg" required onchange="validatephoto(this)">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -337,6 +400,30 @@
                     </div>
                 </div>
 
+                <!-- Reset Form Modal -->
+                <div class="modal fade" id="resetFormModal" tabindex="-1" role="dialog" aria-labelledby="resetFormModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="modal-header">
+                                    <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                </div>
+                                <div class="mb-2">
+                                    <b>
+                                        <p class="fs-2 pt-2">You have<br>pending changes</p>
+                                    </b>
+                                    <b>
+                                        <p class="mb-4">Reset the form?</p>
+                                    </b>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn cancel" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn discard-button" id="confirmReset">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </body>
 
@@ -513,6 +600,118 @@
                     closeModal();
                 });
             </script>
+
+            <script>
+                //Discard Modal
+                $(document).ready(function() {
+                    feather.replace();
+
+                    // Detect changes in form fields
+                    var isDirty = false;
+                    var targetUrl = '';
+
+                    $('#candidate-form input, #candidate-form select').on('change', function() {
+                        isDirty = true;
+                        $('.submit-btn').prop('disabled', false);
+                    });
+
+                    // Handle form submission
+                    $('#candidate-form').on('submit', function() {
+                        isDirty = false;
+                    });
+
+                    // Handle cancel button click
+                    $('.cancel-button').on('click', function(e) {
+                        if (isDirty) {
+                            e.preventDefault();
+                            $('#warningModal').modal('show');
+                        } else {
+                            window.location.href = 'add-candidate.php';
+                        }
+                    });
+
+                    // Handle leave button click in the modal
+                    $('#leaveButton').on('click', function() {
+                        isDirty = false;
+                        window.removeEventListener('beforeunload', showWarningModal);
+                        window.location.href = targetUrl;
+                    });
+
+                    $('.modal .cancel').on('click', function() {
+                        $('#warningModal').modal('hide');
+                    });
+
+                    function showWarningModal(e) {
+                        if (isDirty) {
+                            e.preventDefault();
+                            $('#warningModal').modal('show');
+                            return ''; // Required for some browsers to show the modal
+                        }
+                    }
+
+                    window.addEventListener('beforeunload', showWarningModal);
+
+                    $(document).on('click', 'a', function(e) {
+                        if (isDirty) {
+                            e.preventDefault();
+                            targetUrl = $(this).attr('href');
+                            $('#warningModal').modal('show');
+                        }
+                    });
+                });
+                //reset form modal
+                document.addEventListener("DOMContentLoaded", function() {
+                    let isFormDirty = false;
+                    const form = document.querySelector("form");
+                    const resetButton = document.querySelector("button[type='reset']");
+                    const resetModal = new bootstrap.Modal(document.getElementById('resetFormModal'));
+
+                    // Mark the form as dirty if any input changes
+                    form.addEventListener("input", function() {
+                        isFormDirty = true;
+                    });
+
+                    // Show the reset modal on reset button click
+                    resetButton.addEventListener("click", function(event) {
+                        if (isFormDirty) {
+                            event.preventDefault();
+                            resetModal.show();
+                        }
+                    });
+
+                    // Handle form reset confirmation
+                    document.getElementById("confirmReset").addEventListener("click", function() {
+                        isFormDirty = false;
+                        form.reset();
+                        resetModal.hide();
+                    });
+                });
+            </script>
+
+            <!-- Warning Modal -->
+            <div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="modal-header">
+                                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                            </div>
+                            <div class="mb-2">
+                                <b>
+                                    <p class="fs-2 pt-2">You have<br>pending changes</p>
+                                </b>
+                                <b>
+                                    <p class="mb-4">Discard changes?</p>
+                                </b>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn cancel" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn discard-button" id="leaveButton">Discard</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
     <?php
         } else {
