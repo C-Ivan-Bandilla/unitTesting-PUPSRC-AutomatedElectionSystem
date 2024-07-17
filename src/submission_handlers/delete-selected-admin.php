@@ -13,9 +13,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Initialize logger based on the number of IDs
         if (count($ids) == 1) {
-            $logger = new Logger($_SESSION['role'], PERMANENT_DELETE_VOTER);
+            $logger = new Logger($_SESSION['role'], PERMANENT_DELETE_ADMIN_ACCOUNT);
         } else {
-            $logger = new Logger($_SESSION['role'], PERMANENT_DELETE_MULTIPLE_VOTERS);
+            $logger = new Logger($_SESSION['role'], PERMANENT_DELETE_MULTIPLE_ADMIN_ACCOUNTS);
         }
         $logger->logActivity();
         
