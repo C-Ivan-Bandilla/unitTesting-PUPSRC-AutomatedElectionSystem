@@ -9,6 +9,3 @@ src/user_data/
 # Store results of unit testing
 .phpunit.cache
 .phpunit.result.cache
-
-# Ignore mailer test file with credentials
-src/includes/mailer-test.php
