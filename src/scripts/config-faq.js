@@ -149,18 +149,19 @@ ConfigPage = {
         },
         attributes: {
             required: true,
-            pattern: '^.{10,}$',
             max_length: 500,
         },
         customMsg: {
             required: true,
-            max_length: 'Vote rule length limit reached.',
+            max_length: 'Question length limit reached.',
         },
         errorFeedback: {
-            required: 'ERR_BLANK_RULE',
-            max_length: 'ERR_MAX_RULE_LENGTH',
+            required: 'ERR_BLANK_QUERY',
+            max_length: 'ERR_MAX_QUERY_LENGTH',
         }
     },
+
+    descriptionLimit: 1000,
 
 }
 
@@ -492,7 +493,7 @@ ConfigPage.TableHandler = class {
                             const { data, success, error } = result;
 
                             if (success) {
-                                ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
+                                ConfigPage.handleResponseStatus(200, data, 'FAQ updated successfuly.');
                                 // let processedData = ConfigPage.processData(data);
                                 // console.log(processedData)
                                 // this.updateData(processedData);
@@ -595,7 +596,7 @@ ConfigPage.TableHandler = class {
                                 .then(() => {
                                     // ConfigPage.handleSucessResponse();
 
-                                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline deleted successfuly.');
+                                    ConfigPage.handleResponseStatus(200, data, 'FAQ deleted successfuly.');
                                 })
                                 .catch((error) => {
                                     console.error("Error inserting data:", error);
@@ -742,7 +743,7 @@ ConfigPage.table = new DataTable('#config-table', {
             targets: 2, className: ``,
             render: function (data) {
 
-                return `<div class="faq-answer">${data.answer}</div>`;
+                return `<div class="faq-answer d-none">${data.answer}</div>`;
             }
         }
     ],
@@ -850,8 +851,8 @@ ConfigPage.handleConfirmModalDispose = function () {
 ConfigPage.handleConfirmInput = function (modal, inputId, inputVal) {
     let inputElement = modal.querySelector(`#${inputId}`);
 
-    ConfigPage.delEventListener(inputElement, 'blur');
-    ConfigPage.addEventListenerAndStore(inputElement, 'blur', function () {
+    ConfigPage.delEventListener(inputElement, 'input');
+    ConfigPage.addEventListenerAndStore(inputElement, 'input', function () {
         if (inputElement.value == inputVal) {
             $(modal).find('.prompt-action .btn.primary').prop('disabled', false)
                 .val('true');
@@ -960,18 +961,43 @@ ConfigPage.itemId;
 ConfigPage.description;
 ConfigPage.faqAnswer;
 
+ConfigPage.inputFeedbackHandler = function (event, feedbackId) {
+    console.log(event);
+    console.log(feedbackId);
+    console.log(ConfigPage.errorDictionary[feedbackId]);
+    try {
+        const inputElement = event;
+
+        const feedbackField = inputElement.nextElementSibling;
+
+        feedbackField.textContent = ConfigPage.errorDictionary[feedbackId];
+    } catch (error) {
+
+    }
+}
+
 ConfigPage.validateTextEditor = function (event) {
-    const inputElement = event.target;
-    const primaryBtn = document.getElementById('modal-action-primary');
 
     clearTimeout(ConfigPage.typingTimeout);
     ConfigPage.typingTimeout = setTimeout(() => {
         try {
-            if (ConfigPage.vote_rule_validate.validate(inputElement)) {
+            let inputElement = event.target;
+            console.log(!inputElement);
+            if (!inputElement) {
+                inputElement = document.getElementById('faq-question');
+            }
+            const primaryBtn = document.getElementById('modal-action-primary');
+
+            const feedbackAlert = inputElement.nextElementSibling;
+
+            if (ConfigPage.vote_rule_validate.validate(inputElement, ConfigPage.inputFeedbackHandler)) {
                 inputElement.classList.remove('is-invalid');
                 primaryBtn.disabled = false;
-            } else {
+                if (feedbackAlert.classList.contains('feedback-alert')) {
+                    feedbackAlert.innerHTML = "&nbsp;";
+                }
 
+            } else {
                 inputElement.classList.add('is-invalid');
                 primaryBtn.disabled = true;
             }
@@ -979,6 +1005,105 @@ ConfigPage.validateTextEditor = function (event) {
             console.error('Validation error:', error);
         }
     }, 300);
+}
+
+ConfigPage.handleDescValidate = function (delta, old, source) {
+
+    clearTimeout(ConfigPage.typingTimeout);
+    ConfigPage.typingTimeout = setTimeout(() => {
+        if (source == 'user' || source == 'save-btn') {
+
+            const questionInput = document.getElementById('faq-question');
+
+            if (!ConfigPage.vote_rule_validate.validate(questionInput, ConfigPage.inputFeedbackHandler)) {
+                questionInput.classList.add('is-invalid');
+            }
+
+            let descriptionInput = document.querySelector(`.ql-editor`);
+            let saveButton = document.querySelector(`#modal-action-primary`);
+
+            let parentElement = descriptionInput.closest('.answer-container');
+
+            let feedbackField;
+            if (parentElement.nextElementSibling.classList.contains('feedback-alert')) {
+                feedbackField = parentElement.nextElementSibling;
+            }
+
+
+            // console.log(saveButton);
+            // console.log(descriptionInput);
+            descriptionInput.classList.add('is-invalid', 'form-control');
+            saveButton.disabled = true;
+
+
+            if (ConfigPage.quill.getLength() > ConfigPage.descriptionLimit) {
+                ConfigPage.quill.deleteText(ConfigPage.descriptionLimit, ConfigPage.quill.getLength());
+                feedbackField.textContent = ConfigPage.errorDictionary['ERR_MAX_ANS_LENGTH'];
+                return false;
+            }
+
+            // console.log(ConfigPage.quill.getLength());
+            // console.log(ConfigPage.quill.getContents());
+
+            let descriptionVal = ConfigPage.quill.getContents();
+            // console.log("length ", descriptionVal.ops.length);
+
+
+            const originalVal = descriptionVal.slice();
+            let modifiedVal = originalVal.slice();
+
+            if (descriptionVal.ops.length < 2) {
+                modifiedVal.ops[0].insert = originalVal.ops[0].insert.replace(/(^\s+|\s+$)/g, '');
+                if (!modifiedVal.ops[0].insert.endsWith('\n')) {
+                    modifiedVal.ops[0].insert += '\n';
+                }
+
+                if (modifiedVal.ops[0].insert == "\n") {
+                    ConfigPage.quill.setContents(modifiedVal);
+                    feedbackField.textContent = ConfigPage.errorDictionary['ERR_BLANK_ANS'];
+                    return false;
+                }
+            }
+
+            console.log(originalVal);
+            console.log(modifiedVal);
+
+            console.log(modifiedVal.ops[0].insert);
+
+            for (let i = 0; i < originalVal.ops.length; i++) {
+
+                let originalText = originalVal.ops[i].insert;
+
+                const regex = /(\w|\s)\1{2,}/g;
+                const newText = originalText.replace(regex, '$1$1');
+
+
+                if (newText != originalText) {
+                    console.log("originalText");
+                    console.log(originalText);
+                    console.log("newText");
+                    console.log(newText);
+
+                    modifiedVal.ops[i].insert = newText;
+                }
+            }
+
+
+            if (JSON.stringify(modifiedVal) !== JSON.stringify(originalVal)) {
+                ConfigPage.quill.setContents(modifiedVal);
+            }
+
+            descriptionInput.classList.remove('is-invalid', 'form-control');
+            feedbackField.innerHTML = "&nbsp;"
+
+            if (!questionInput.classList.contains('is-invalid')) {
+                saveButton.disabled = false;
+            }
+            return true;
+        }
+
+    }, 300);
+
 }
 
 ConfigPage.EditorModal = class {
@@ -1054,6 +1179,10 @@ ConfigPage.EditorModal = class {
         ConfigPage.delEventListener(textarea, 'input');
         ConfigPage.addEventListenerAndStore(textarea, 'input', ConfigPage.validateTextEditor);
 
+        ConfigPage.quill.off('text-change', ConfigPage.handleDescValidate);
+
+        ConfigPage.quill.on('text-change', ConfigPage.handleDescValidate);
+
     }
 
     static #setEditField() {
@@ -1064,10 +1193,32 @@ ConfigPage.EditorModal = class {
         prompTitle.textContent = this.data.sequence;
 
         let descriptionTextArea = document.createElement('textarea');
+        descriptionTextArea.id = 'faq-question';
         descriptionTextArea.maxLength = 500;
-        descriptionTextArea.classList.add('form-control');
+        descriptionTextArea.classList.add('form-control', 'input-question', 'form-content');
         descriptionTextArea.required = true;
         const trimmedDescription = this.data.description.trim();
+
+        let textareaAlert = document.createElement('span');
+        textareaAlert.classList.add('feedback-alert', 'text-danger', 'form-content');
+
+
+        let textareaLabel = document.createElement('label');
+        textareaLabel.setAttribute('for', 'faq-question');
+        textareaLabel.setAttribute('anchor', 'faq-question');
+        textareaLabel.classList.add('label', 'form-content');
+
+        let textareaLabelText = document.createElement('span');
+        textareaLabelText.classList.add('label-text', 'form-content');
+        textareaLabelText.textContent = 'Question';
+        textareaLabel.prepend(textareaLabelText);
+
+        let textareaLabelIcon = document.createElement('span');
+        textareaLabelIcon.classList.add('label-icon', 'form-content');
+        textareaLabelIcon.textContent = '?';
+        textareaLabel.prepend(textareaLabelIcon);
+
+
 
         descriptionTextArea.value = trimmedDescription;
         if (this.mode === 'view') {
@@ -1075,12 +1226,43 @@ ConfigPage.EditorModal = class {
             // descriptionTextArea.disabled = true;
         }
 
+        let answerContainer = document.createElement('div');
+        answerContainer.classList.add('answer-container', 'form-content');
+        let answerLabelContainer = document.createElement('div');
+        answerLabelContainer.classList.add('label-container', 'form-content');
+
 
         let answerTextArea = document.createElement('div');
         answerTextArea.maxLength = 500;
-        answerTextArea.id = "answer-editor";
-        // answerTextArea.classList.add('form-control');
+        answerTextArea.id = "faq-answer";
+        answerTextArea.classList.add('form-content');
         answerTextArea.required = true;
+
+        let answerTextAreaLabel = document.createElement('label');
+        answerTextAreaLabel.setAttribute('for', 'faq-answer');
+        answerTextAreaLabel.classList.add('label', 'form-content');
+        answerTextAreaLabel.textContent = 'Answer';
+
+        let answerTextAreaLabelIcon = document.createElement('span');
+        answerTextAreaLabelIcon.classList.add('label-icon', 'form-content');
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("width", "13");
+        svg.setAttribute("height", "13");
+        svg.setAttribute("viewBox", "0 0 13 13");
+        svg.setAttribute("fill", "none");
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M12.35 2.6H11.05V8.45H2.6V9.75C2.6 10.1075 2.8925 10.4 3.25 10.4H10.4L13 13V3.25C13 2.8925 12.7075 2.6 12.35 2.6ZM9.75 6.5V0.65C9.75 0.2925 9.4575 0 9.1 0H0.65C0.2925 0 0 0.2925 0 0.65V9.75L2.6 7.15H9.1C9.4575 7.15 9.75 6.8575 9.75 6.5Z");
+        path.setAttribute("fill", "white");
+
+        svg.appendChild(path); // Add path to the svg element
+
+        answerTextAreaLabelIcon.prepend(svg);
+        answerTextAreaLabel.prepend(answerTextAreaLabelIcon);
+
+        let answerAlert = document.createElement('span');
+        answerAlert.classList.add('feedback-alert', 'text-danger', 'form-content');
+        answerAlert.classList.id = "answer-alert";
 
         ConfigPage.itemSequence = this.data.sequence;
 
@@ -1091,18 +1273,24 @@ ConfigPage.EditorModal = class {
             ConfigPage.itemId = extractedNumber;
         }
 
-        modalBody.insertBefore(answerTextArea, modalBody.firstChild)
-        modalBody.insertBefore(descriptionTextArea, modalBody.firstChild)
 
+        answerLabelContainer.prepend(answerTextAreaLabel);
+        answerContainer.prepend(answerLabelContainer);
+        answerContainer.append(answerTextArea);
+        modalBody.insertBefore(answerAlert, modalBody.firstChild);
+        modalBody.insertBefore(answerContainer, modalBody.firstChild);
 
-        ConfigPage.quill = new Quill('#answer-editor', {
+        modalBody.insertBefore(textareaAlert, modalBody.firstChild);
+        modalBody.insertBefore(descriptionTextArea, modalBody.firstChild);
+        modalBody.insertBefore(textareaLabel, modalBody.firstChild);
+
+        ConfigPage.quill = new Quill('#faq-answer', {
             modules: {
                 toolbar: false
             },
             placeholder: 'Type FAQ answer here.',
         });
 
-        console.log(this.data.answer);
 
         try {
             let answer = (this.data.answer !== undefined && this.data.answer !== '') ? JSON.parse(this.data.answer) : '';
@@ -1179,7 +1367,7 @@ ConfigPage.EditorModal = class {
         descriptionTextArea.readOnly = false;
         descriptionTextArea.disabled = false;
 
-        let answerTextArea = this.modalElement.querySelector("#answer-editor");;
+        let answerTextArea = this.modalElement.querySelector("#faq-answer");
         answerTextArea.querySelector('.ql-editor').setAttribute("contenteditable", true);
 
         let primaryBtn = this.modalElement.querySelector('label[for="modal-action-primary"]');
@@ -1203,15 +1391,60 @@ ConfigPage.EditorModal = class {
 
     static #removeEditor() {
         let modalBody = this.modalElement.querySelector('.modal-body');
-        let isExistTextEditor = modalBody.querySelector('textarea');
-        if (isExistTextEditor) {
-            modalBody.removeChild(isExistTextEditor);
+        // let isExistTextEditor = modalBody.querySelector('textarea');
+        // let isExistAnswerTextArea = this.modalElement.querySelector("#faq-answer");;
+        try {
+            let formElements = modalBody.querySelectorAll(".form-content");
+
+            formElements.forEach(formElement => {
+                formElement.remove();
+            });
+        } catch (error) {
+            console.error("Element is already removed. ", error);
         }
+
+
+        // if (isExistTextEditor) {
+        //     modalBody.removeChild(isExistTextEditor);
+        // }
+        // if (isExistAnswerTextArea) {
+        //     modalBody.removeChild(isExistAnswerTextArea);
+        // }
     }
 
     static #handlePrimaryBtn() {
         if (this.data) {
             let primaryButton = this.modalElement.querySelector('.modal-body #modal-action-primary');
+
+            const inputElement = document.getElementById('faq-question');
+            const feedbackAlert = inputElement.nextElementSibling;
+
+            if (ConfigPage.vote_rule_validate.validate(inputElement, ConfigPage.inputFeedbackHandler)) {
+                inputElement.classList.remove('is-invalid');
+                primaryButton.disabled = false;
+
+                if (feedbackAlert.classList.contains('feedback-alert')) {
+                    feedbackAlert.innerHTML = "&nbsp;";
+                }
+
+
+            } else {
+                inputElement.classList.add('is-invalid');
+                primaryButton.disabled = true;
+                console.log('invalid q');
+            }
+
+            ConfigPage.handleDescValidate(null, null, 'save-btn');
+            const answerInput = document.getElementById('faq-answer');
+
+            if (answerInput.classList.contains('is-invalid')) {
+                return;
+            }
+
+            if (primaryButton.disabled) {
+                return;
+            }
+
             primaryButton.disabled = true;
             this.#handleSubmit();
         }
@@ -1253,7 +1486,7 @@ ConfigPage.EditorModal = class {
                                 .then(() => {
                                     // ConfigPage.handleSucessResponse();
 
-                                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline added successfuly.');
+                                    ConfigPage.handleResponseStatus(200, data, 'FAQ added successfuly.');
                                 })
                                 .catch((error) => {
                                     console.error("Error inserting data:", error);
@@ -1267,7 +1500,7 @@ ConfigPage.EditorModal = class {
                                 .then(() => {
                                     // ConfigPage.handleSucessResponse();
 
-                                    ConfigPage.handleResponseStatus(200, data, 'Vote guideline updated successfuly.');
+                                    ConfigPage.handleResponseStatus(200, data, 'FAQ updated successfuly.');
                                 })
                                 .catch((error) => {
                                     console.error("Error inserting data:", error);

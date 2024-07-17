@@ -23,8 +23,10 @@ class FaqController extends FaqModel
         'ERR_NEGATIVE_SEQ' => 'Sequence number must be positive integer.',
         'ERR_BLANK_SEQ' => 'Sequence number is missing or blank.',
         'ERR_INVALID_SEQ' => 'Sequence number is invalid.',
-        'ERR_BLANK_RULE' => 'Voting guideline is missing or blank.',
-        'ERR_MAX_RULE_LENGTH' => 'Voting guideline exceeds the maximum length allowed.',
+        'ERR_BLANK_QUERY' => 'Question is missing or blank.',
+        'ERR_MAX_QUERY_LENGTH' => 'Question exceeds the maximum length allowed.',
+        'ERR_BLANK_ANS' => 'Answer is missing or blank.',
+        'ERR_MAX_ANS_LENGTH' => 'Answer exceeds the maximum length allowed.',
     ];
 
 
