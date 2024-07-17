@@ -1,8 +1,5 @@
 <?php
 // Include necessary files using DIRECTORY_SEPARATOR for cross-platform compatibility
-include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/classes/file-utils.php');
-require_once FileUtils::normalizeFilePath(__DIR__ . '/session-handler.php');
-require_once FileUtils::normalizeFilePath(__DIR__ . '/classes/session-manager.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/session-exchange.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/classes/db-connector.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/error-reporting.php');
