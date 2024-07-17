@@ -51,7 +51,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
         <!-- Styles -->
         <link rel="stylesheet" href="<?php echo 'styles/orgs/' . $org_name . '.css'; ?>" id="org-style">
         <link rel="stylesheet" href="styles/style.css" />
-        <!-- <link rel="stylesheet" href="styles/core.css" /> -->
+        <link rel="stylesheet" href="styles/core.css" />
         <link rel="stylesheet" href="styles/profile.css" />
         <link rel="stylesheet" href="styles/change-password.css" />
         <link rel="stylesheet" href="styles/loader.css" />
@@ -200,13 +200,15 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
             </div>
         </div>
 
-        <?php include_once __DIR__ . '/includes/components/footer.php'; ?>
+        <?php include_once FileUtils::normalizeFilePath(__DIR__ . '/includes/components/footer.php'); ?>
 
         <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="scripts/script.js"></script>
+        <script src="scripts/loader.js"></script>
         <script src="scripts/feather.js"></script>
-        <script src="scripts/change-password.js"></script>
+        <script src="scripts/edit-profile.js"></script>
+        <script src="scripts/verify-password.js"></script>
+		<script src="scripts/script.js"></script>
 
     </body>
 
