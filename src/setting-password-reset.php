@@ -118,6 +118,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                                         </div>
                                     </div>
 
+                                    
                                     <div class="col-md-8 mb-0 mt-0 position-relative">
                                         <div class="input-group" id="reset-password">
                                             <input type="password" class="form-control reset-password-password shadow-sm" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>

@@ -128,7 +128,7 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                                             <div class="des" style="justify-self: auto;">To proceed with changing your password, please enter your current password.</div>
                                         </div>
                                         <div class="row mt-5 mb-3 reset-pass">
-                                            <div class="col-md-8 mb-0 mt-0 position-relative">
+                                            <div class="col-md-7 mb-0 mt-0 position-relative">
                                                 <div class="input-group" id="reset-password">
                                                     <input type="password" class="form-control reset-password-password" onkeypress="return avoidSpace(event)" id="password_confirmation" name="password_confirmation" placeholder="Enter your current password" required>
                                                     <label for="password_confirmation" class="new-password main-color translate-middle-y" id="scoSignUP">CURRENT PASSWORD</label>
@@ -136,8 +136,8 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                                                         <i class="fas fa-eye-slash"></i>
                                                     </button>
                                                 </div>
+                                                <div id="password-mismatch-error" class="text-danger">Incorrect password. Please try again.</div>
                                             </div>
-                                            <div id="password-mismatch-error" class="text-danger" style="display: none;">Incorrect password. Please try again.</div>
                                         </div>
                                         <div class="col-md-12 reset-pass">
                                             <button class="login-sign-in-button main-bg-color mt-5 mb-4" type="button" name="new-password-submit" id="new-password-submit" disabled>Confirm</button>
@@ -174,10 +174,6 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                         toggleButton.style.display = 'block';
                     });
 
-                    // Hide the toggle button when the password input loses focus
-                    passwordInput.addEventListener('blur', () => {
-                        toggleButton.style.display = 'none';
-                    });
 
                     // Prevent the toggle button from hiding if it is clicked
                     toggleButton.addEventListener('mousedown', (event) => {
@@ -197,48 +193,48 @@ if (isset($_SESSION['voter_id']) && (isset($_SESSION['role'])) && ($_SESSION['ro
                 });
 
                 // AJAX verify password
-$(document).ready(function() {
-    $('#new-password-submit').click(function(e) {
-        e.preventDefault();
+                $(document).ready(function() {
+                    $('#new-password-submit').click(function(e) {
+                        e.preventDefault();
 
-        var currentPassword = $('#password_confirmation').val();
+                        var currentPassword = $('#password_confirmation').val();
 
-        $.ajax({
-            type: 'POST',
-            url: 'includes/verify-password.php',
-            data: {
-                password: currentPassword
-            },
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    // Password verification successful
-                    window.location.href = 'setting-password-reset.php';
-                } else {
-                    // Show error message
-                    $('#password-mismatch-error').text(response.message).show();
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX Error: ' + status + ', ' + error);
-            }
-        });
-    });
+                        $.ajax({
+                            type: 'POST',
+                            url: 'includes/verify-password.php',
+                            data: {
+                                password: currentPassword
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.success) {
+                                    // Password verification successful
+                                    window.location.href = 'setting-password-reset.php';
+                                } else {
+                                    // Show error message
+                                    $('#password-mismatch-error').text(response.message).show();
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('AJAX Error: ' + status + ', ' + error);
+                            }
+                        });
+                    });
 
-    // Toggle the password visibility
-    $('#reset-password-toggle-2').click(function() {
-        var passwordInput = $('#password_confirmation');
-        var toggleButton = $('#reset-password-toggle-2');
+                    // Toggle the password visibility
+                    $('#reset-password-toggle-2').click(function() {
+                        var passwordInput = $('#password_confirmation');
+                        var toggleButton = $('#reset-password-toggle-2');
 
-        if (passwordInput.attr('type') === 'password') {
-            passwordInput.attr('type', 'text');
-            toggleButton.html('<i class="fas fa-eye"></i>');
-        } else {
-            passwordInput.attr('type', 'password');
-            toggleButton.html('<i class="fas fa-eye-slash"></i>');
-        }
-    });
-});
+                        if (passwordInput.attr('type') === 'password') {
+                            passwordInput.attr('type', 'text');
+                            toggleButton.html('<i class="fas fa-eye"></i>');
+                        } else {
+                            passwordInput.attr('type', 'password');
+                            toggleButton.html('<i class="fas fa-eye-slash"></i>');
+                        }
+                    });
+                });
             </script>
         </main>
         <div class="footer">
