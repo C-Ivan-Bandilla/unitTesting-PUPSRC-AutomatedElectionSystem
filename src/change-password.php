@@ -140,7 +140,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12 reset-pass">
+                                    <div class="col-12 mb-3 reset-pass">
                                         <button class="btn login-sign-in-button fw-semibold my-3 px-4 rounded-2 incomplete-button" id="<?php echo strtoupper($org_name); ?>-login-button" type="submit" name="change-password-submit">Set Password</button>
                                         <script>
                                             const ORG_NAME = "<?php echo strtoupper($org_name) . '-login-button'; ?>";
