@@ -214,7 +214,8 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                     <ul class="text-start">
                                     <li class="fw-medium spacing-5 pt-2">The file headers are correct and in the right order</li>
                                     <li class="fw-medium spacing-5 pt-2">All required fields are filled</li>
-                                    <li class="fw-medium spacing-5 pt-2">Data formats are correct (e.g., valid email addresses)</li>
+                                    <li class="fw-medium spacing-5 pt-2">Data formats are correct (e.g., Valid Email Addresses, Correct Student ID, Complete Name)</li>
+                                    <li class="fw-medium spacing-5 pt-2">No Duplicates (You may check the Recycle Bin for such duplicates)</li>
                                 </ul>
                                         <p class="fw-medium spacing-5 pt-2">
                                         Please check your file and try again.

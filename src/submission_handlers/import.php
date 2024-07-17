@@ -13,7 +13,6 @@ require_once '../includes/classes/session-manager.php';
 require_once '../includes/classes/query-handler.php';
 require_once '../includes/classes/logger.php';
 
-
 // Check if PhpSpreadsheet is installed
 if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
     die("PhpSpreadsheet library not found. Please check your Composer installation and autoloader.");
@@ -22,7 +21,7 @@ if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 function validateHeaders($headers) {
-    $expected_headers = ['Last Name', 'First Name', 'Middle Name', 'Suffix', 'Year Level', 'Section', 'Email'];
+    $expected_headers = ['Student ID', 'Last Name', 'First Name', 'Middle Name', 'Suffix', 'Year Level', 'Section', 'Email'];
     return $headers === $expected_headers;
 }
 
@@ -49,8 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['voter_id']) && ($_S
     }
 
     // Log the activity after successful import
-    $logger = new Logger($_SESSION['role'], IMPORT_MEMBER_LIST);
-    $logger->logActivity();
+    if ($result['status'] === 'success') {
+        $logger = new Logger($_SESSION['role'], IMPORT_MEMBER_LIST);
+        $logger->logActivity();
+    }
 
     $conn->close();
     echo json_encode($result);
@@ -76,24 +77,31 @@ function importCSV($filePath, $conn) {
         return ['status' => 'error', 'message' => "Invalid headers. Please ensure the headers are in the correct order."];
     }
     
-    $count = 0;
     $duplicates = [];
+    $invalidIds = [];
 
     while (($data = fgetcsv($file)) !== FALSE) {
-        $result = insertData($data, $conn);
-        if ($result === true) {
-            $count++;
-        } elseif ($result === 'duplicate') {
-            $duplicates[] = $data[6];
+        $result = validateData($data, $conn);
+        if ($result === 'duplicate') {
+            $duplicates[] = $data[7];
+        } elseif ($result === 'invalid_id') {
+            $invalidIds[] = $data[0];
         }
     }
 
     fclose($file);
     
-    if (!empty($duplicates)) {
-        return ['status' => 'warning', 'message' => "Import completed with duplicates. Rows imported: $count", 'duplicates' => $duplicates];
+    if (!empty($duplicates) || !empty($invalidIds)) {
+        return [
+            'status' => 'error', 
+            'message' => "Import failed due to issues.", 
+            'duplicates' => $duplicates,
+            'invalidIds' => $invalidIds
+        ];
     }
     
+    // If no issues, proceed with actual import
+    $count = actualImport($filePath, $conn);
     return ['status' => 'success', 'message' => "CSV import completed. Rows imported: $count"];
 }
 
@@ -108,30 +116,42 @@ function importExcel($filePath, $conn) {
     }
     
     array_shift($rows); // Remove header row
-    $count = 0;
     $duplicates = [];
+    $invalidIds = [];
 
     foreach ($rows as $row) {
-        $result = insertData($row, $conn);
-        if ($result === true) {
-            $count++;
-        } elseif ($result === 'duplicate') {
-            $duplicates[] = $row[6];
+        $result = validateData($row, $conn);
+        if ($result === 'duplicate') {
+            $duplicates[] = $row[7];
+        } elseif ($result === 'invalid_id') {
+            $invalidIds[] = $row[0];
         }
     }
 
-    if (!empty($duplicates)) {
-        return ['status' => 'warning', 'message' => "Import completed with duplicates. Rows imported: $count", 'duplicates' => $duplicates];
+    if (!empty($duplicates) || !empty($invalidIds)) {
+        return [
+            'status' => 'error', 
+            'message' => "Import failed due to issues.", 
+            'duplicates' => $duplicates,
+            'invalidIds' => $invalidIds
+        ];
     }
     
+    // If no issues, proceed with actual import
+    $count = actualImport($filePath, $conn, 'excel');
     return ['status' => 'success', 'message' => "Excel import completed. Rows imported: $count"];
 }
 
-function insertData($data, $conn) {
+function validateData($data, $conn) {
+    // Validate Student ID format
+    if (!preg_match('/^\d{4}-\d{5}-SR-0$/', $data[0])) {
+        return 'invalid_id';
+    }
+
     // Check if student already exists
     $checkSql = "SELECT * FROM voter WHERE email = ?";
     $checkStmt = $conn->prepare($checkSql);
-    $checkStmt->bind_param("s", $data[6]);
+    $checkStmt->bind_param("s", $data[7]); // Email is now at index 7
     $checkStmt->execute();
     $result = $checkStmt->get_result();
     
@@ -141,6 +161,35 @@ function insertData($data, $conn) {
     }
     $checkStmt->close();
 
+    return true;
+}
+
+function actualImport($filePath, $conn, $type = 'csv') {
+    $count = 0;
+    if ($type === 'csv') {
+        $file = fopen($filePath, 'r');
+        fgetcsv($file); // Skip header
+        while (($data = fgetcsv($file)) !== FALSE) {
+            if (insertData($data, $conn)) {
+                $count++;
+            }
+        }
+        fclose($file);
+    } else {
+        $spreadsheet = IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $rows = $worksheet->toArray();
+        array_shift($rows); // Remove header row
+        foreach ($rows as $row) {
+            if (insertData($row, $conn)) {
+                $count++;
+            }
+        }
+    }
+    return $count;
+}
+
+function insertData($data, $conn) {
     $role = 'student_voter';
     $accountStatus = 'for_verification';
     $voterStatus = 'active';
@@ -149,14 +198,14 @@ function insertData($data, $conn) {
     $password = generatePassword();
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $suffix = empty($data[3]) ? NULL : $data[3];
+    $suffix = empty($data[4]) ? NULL : $data[4];
 
     $sql = "INSERT INTO voter (last_name, first_name, middle_name, suffix, year_level, section, email, password, role, account_status, voter_status, vote_status) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     try {
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssssssssss", $data[0], $data[1], $data[2], $suffix, $data[4], $data[5], $data[6], $hashedPassword, $role, $accountStatus, $voterStatus, $voteStatus);
+        $stmt->bind_param("ssssssssssss", $data[1], $data[2], $data[3], $suffix, $data[5], $data[6], $data[7], $hashedPassword, $role, $accountStatus, $voterStatus, $voteStatus);
         $result = $stmt->execute();
         $stmt->close();
         

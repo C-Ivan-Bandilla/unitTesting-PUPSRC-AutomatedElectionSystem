@@ -19,6 +19,12 @@ $(document).ready(function() {
     });
 
     $('#import-voters').on('click', function() {
+        var $button = $(this);
+        var originalText = $button.text();
+
+        // Change button state to loading
+        setButtonLoading($button);
+
         var formData = new FormData();
         formData.append('file', $('#voters-list')[0].files[0]);
 
@@ -34,65 +40,80 @@ $(document).ready(function() {
                     var result = JSON.parse(response);
                     if (result.status === 'success') {
                         $('#importDoneModal').modal('show');
-                    } else if (result.status === 'warning') {
-                        showDuplicatesModal(result.message, result.duplicates);
-                    } else if (result.status === 'error') {
-                        showInvalidContentModal(result.message);
                     } else {
-                        showWrongFormatModal(result.message);
+                        showErrorModal(result.message, result.duplicates, result.invalidIds);
                     }
                 } catch (e) {
                     console.error("Error parsing response:", e);
-                    showWrongFormatModal('An unexpected error occurred during the import process.');
+                    showErrorModal('An unexpected error occurred during the import process.');
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error("AJAX error:", textStatus, errorThrown);
-                showWrongFormatModal('An error occurred while processing your request.');
+                showErrorModal('An error occurred while processing your request.');
             }
         });
     });
 
-    function showDuplicatesModal(message, duplicates) {
-        $('#duplicatesTitle').text('Duplicate Students Found!');
-        $('#duplicatesSubtitle').text(message);
-        
-        let duplicatesList = '<ul>';
-        duplicates.forEach(email => {
-            duplicatesList += `<li>${email}</li>`;
-        });
-        duplicatesList += '</ul>';
-        
-        $('#duplicatesList').html(duplicatesList);
-        $('#duplicatesModal').modal('show');
+    function setButtonLoading($button) {
+        $button.prop('disabled', true)
+               .text('Import Voters')
+               .addClass('btn-secondary')
+               .removeClass('btn-main-primary');
     }
 
-    function showWrongFormatModal(message) {
-        $('#onlyPDFAllowedTitle').text('Invalid file format!');
-        $('#onlyPDFAllowedSubtitle').text(message);
-        $('#onlyPDFAllowedModal').modal('show');
+    function resetButton($button, originalText) {
+        $button.text(originalText)
+               .removeClass('btn-secondary')
+               .addClass('btn-main-primary')
+               .prop('disabled', true);  // Always disable the button
     }
 
-    function showInvalidContentModal(message) {
-        $('#dangerTitle').text('Invalid Content!');
-        $('#dangerSubtitle').text(message || 'The file content is invalid. Please ensure that: The file headers are correct and in the right order, All required fields are filled, Data formats are correct (e.g., valid email addresses). Please check your file and try again.');
+    function showErrorModal(message, duplicates, invalidIds) {
+        $('#dangerTitle').text('Import Failed');
+        let content = `<p>${message}</p>`;
+        
+        if (duplicates && duplicates.length > 0) {
+            content += '<h5>Duplicate Emails:</h5><ul>';
+            duplicates.forEach(email => {
+                content += `<li>${email}</li>`;
+            });
+            content += '</ul>';
+        }
+        
+        if (invalidIds && invalidIds.length > 0) {
+            content += '<h5>Invalid Student IDs:</h5><ul>';
+            invalidIds.forEach(id => {
+                content += `<li>${id}</li>`;
+            });
+            content += '</ul>';
+        }
+        
+        $('#dangerSubtitle').html(content);
         $('#invalidContentModal').modal('show');
     }
 
-    // Reload page when modals are closed
-    $('#importDoneModal, #duplicatesModal, #onlyPDFAllowedModal, #invalidContentModal').on('hidden.bs.modal', function () {
-        location.reload();
-    });
-
     // Close button for modals
-    $('#importDoneClose, #duplicatesClose, #onlyPDFClose, #invalidContentClose').on('click', function() {
+    $('#importDoneClose, #invalidContentClose').on('click', function() {
         $(this).closest('.modal').modal('hide');
     });
 
     // Ensure all modals are initialized
-    $('#importDoneModal, #duplicatesModal, #onlyPDFAllowedModal, #invalidContentModal').modal({
+    $('#importDoneModal, #invalidContentModal').modal({
         backdrop: 'static',
         keyboard: false,
         show: false
+    });
+
+    // Disable button when any modal is shown
+    $('.modal').on('show.bs.modal', function () {
+        $('#import-voters').prop('disabled', true);
+    });
+
+    // Reset button state when any modal is closed
+    $('.modal').on('hidden.bs.modal', function () {
+        resetButton($('#import-voters'), 'Import Voters');
+        $('#voters-list').val(''); // Clear the file input
+        $('#import-voters').prop('disabled', true); // Ensure the button is disabled
     });
 });
