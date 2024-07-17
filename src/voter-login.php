@@ -218,15 +218,15 @@ $connection->close();
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="justify-content-center">
-                    <h1 class="modal-title fw-bold mb-2 forgot-password-title" id="<?php echo strtolower($org_name); ?>SignUP">Forgot Password
+                    <h1 class="modal-title fw-bold mb-2 forgot-password-title" id="<?php echo strtolower($org_name); ?>SignUP">Forgot your password?
                     </h1><!-- <hr> -->
                 </div>
                 <div class="modal-body">
                     <form class="needs-validation" id="forgot-password-form" name="forgot-password-form" novalidate enctype="multipart/form-data">
                         <div class="col-12 col-md-12">
                             <div class="d-flex align-items-start mb-0 pb-0 forgot-pass-email-title">
-                                <!-- <p for="email" class="form-label text-start ps-1">We will send a password reset link to your registered email address.</p> -->
-                                <p>Email Address</p>
+                                <p for="email" class="form-label text-start ps-1 pb-3 forgot-password-subtitle">Don't sweat it, enter your registered email address below to recover your account.</p>
+                                <!-- <p>Email Address</p> -->
                             </div>
                             <input type="email" class="form-control shadow-sm email" id="email" name="email" placeholder="Email Address" autocomplete="email">
                             <div class="valid-feedback text-start fw-medium" id="email-valid">
