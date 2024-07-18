@@ -208,6 +208,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
         <script src="scripts/feather.js"></script>
         <script src="scripts/edit-profile.js"></script>
         <script src="scripts/verify-password.js"></script>
+        <script src="scripts/reset-password.js"></script>
 		<script src="scripts/script.js"></script>
 
     </body>
