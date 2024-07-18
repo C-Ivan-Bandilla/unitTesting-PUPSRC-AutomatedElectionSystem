@@ -45,7 +45,6 @@ define('IMPORT_MEMBER_LIST', 'import_member_list');
 define('ADD_FAQ', 'add_faq');
 define('UPDATE_FAQ', 'update_faq');
 define('DELETE_FAQ', 'delete_faq');
-define('ACCESS_FAQ', 'access_faq');
 
 
 // Specific to Head Admin
@@ -94,7 +93,6 @@ const ADMIN_ACTIONS = array(
     SET_REGISTRATION_SCHEDULE => 'You <strong>set</strong> a registration schedule.',
     UPDATE_REGISTRATION_SCHEDULE => 'You <strong>updated</strong> the registration schedule.',
     IMPORT_MEMBER_LIST => 'You <strong>imported</strong> an Excel/CSV file.',
-    ACCESS_FAQ => 'You <strong>accessed</strong> the FAQ configuration.',
     ADD_FAQ => 'You <strong>added</strong> a FAQ item.',
     UPDATE_FAQ => 'You <strong>updated</strong> a FAQ item.',
     DELETE_FAQ => 'You <strong>updated</strong> a FAQ item.'
@@ -126,7 +124,6 @@ const HEAD_ADMIN_ACTIONS = array(
     SET_REGISTRATION_SCHEDULE => 'You <strong>set</strong> a registration schedule.',
     UPDATE_REGISTRATION_SCHEDULE => 'You <strong>updated</strong> the registration schedule.',
     IMPORT_MEMBER_LIST => 'You <strong>imported</strong> an Excel/CSV file.',
-    ACCESS_FAQ => 'You <strong>accessed</strong> the FAQ configuration.',
     ADD_FAQ => 'You <strong>added</strong> a FAQ item.',
     UPDATE_FAQ => 'You <strong>updated</strong> a FAQ item.',
     DELETE_FAQ => 'You <strong>deleted</strong> a FAQ item.',

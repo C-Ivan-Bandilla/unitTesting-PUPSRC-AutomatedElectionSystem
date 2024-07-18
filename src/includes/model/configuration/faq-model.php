@@ -47,9 +47,6 @@ class FaqModel
                 $data[] = $item;
             }
 
-            $logger = new Logger($_SESSION['role'], ACCESS_FAQ);
-            $logger->logActivity();
-
             $stmt->close();
         } else {
             self::$query_message = "Failed to perform requested action: " . self::$connection->error;
