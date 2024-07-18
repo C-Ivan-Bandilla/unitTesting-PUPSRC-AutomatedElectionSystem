@@ -69,6 +69,15 @@ function generatePassword($length = 10) {
 }
 
 function importCSV($filePath, $conn) {
+    $duplicates = checkForDuplicates($filePath, 'csv');
+    if (!empty($duplicates)) {
+        return [
+            'status' => 'error',
+            'message' => "Import failed due to duplicate entries in the file.",
+            'duplicates' => $duplicates
+        ];
+    }
+
     $file = fopen($filePath, 'r');
     $headers = fgetcsv($file);
     
@@ -77,26 +86,26 @@ function importCSV($filePath, $conn) {
         return ['status' => 'error', 'message' => "Invalid headers. Please ensure the headers are in the correct order."];
     }
     
-    $duplicates = [];
     $invalidIds = [];
+    $databaseDuplicates = [];
 
     while (($data = fgetcsv($file)) !== FALSE) {
         $result = validateData($data, $conn);
-        if ($result === 'duplicate') {
-            $duplicates[] = $data[7];
-        } elseif ($result === 'invalid_id') {
+        if ($result === 'invalid_id') {
             $invalidIds[] = $data[0];
+        } elseif ($result === 'duplicate') {
+            $databaseDuplicates[] = $data[0];
         }
     }
 
     fclose($file);
     
-    if (!empty($duplicates) || !empty($invalidIds)) {
+    if (!empty($invalidIds) || !empty($databaseDuplicates)) {
         return [
             'status' => 'error', 
-            'message' => "Import failed due to issues.", 
-            'duplicates' => $duplicates,
-            'invalidIds' => $invalidIds
+            'message' => "Import failed due to invalid or duplicate entries.", 
+            'invalidIds' => $invalidIds,
+            'databaseDuplicates' => $databaseDuplicates
         ];
     }
     
@@ -106,6 +115,15 @@ function importCSV($filePath, $conn) {
 }
 
 function importExcel($filePath, $conn) {
+    $duplicates = checkForDuplicates($filePath, 'excel');
+    if (!empty($duplicates)) {
+        return [
+            'status' => 'error',
+            'message' => "Import failed due to duplicate entries in the file.",
+            'duplicates' => $duplicates
+        ];
+    }
+
     $spreadsheet = IOFactory::load($filePath);
     $worksheet = $spreadsheet->getActiveSheet();
     $rows = $worksheet->toArray();
@@ -116,24 +134,24 @@ function importExcel($filePath, $conn) {
     }
     
     array_shift($rows); // Remove header row
-    $duplicates = [];
     $invalidIds = [];
+    $databaseDuplicates = [];
 
     foreach ($rows as $row) {
         $result = validateData($row, $conn);
-        if ($result === 'duplicate') {
-            $duplicates[] = $row[7];
-        } elseif ($result === 'invalid_id') {
+        if ($result === 'invalid_id') {
             $invalidIds[] = $row[0];
+        } elseif ($result === 'duplicate') {
+            $databaseDuplicates[] = $row[0];
         }
     }
 
-    if (!empty($duplicates) || !empty($invalidIds)) {
+    if (!empty($invalidIds) || !empty($databaseDuplicates)) {
         return [
             'status' => 'error', 
-            'message' => "Import failed due to issues.", 
-            'duplicates' => $duplicates,
-            'invalidIds' => $invalidIds
+            'message' => "Import failed due to invalid or duplicate entries.", 
+            'invalidIds' => $invalidIds,
+            'databaseDuplicates' => $databaseDuplicates
         ];
     }
     
@@ -148,10 +166,17 @@ function validateData($data, $conn) {
         return 'invalid_id';
     }
 
-    // Check if student already exists
-    $checkSql = "SELECT * FROM voter WHERE email = ?";
+    // Extract the "00000" part of the student ID
+    $idPart = substr($data[0], 5, 5);
+
+    // Extract the part of the email before @example.com
+    $emailParts = explode('@', $data[7]);
+    $emailPrefix = $emailParts[0];
+
+    // Check if email prefix already exists
+    $checkSql = "SELECT * FROM voter WHERE SUBSTRING(email, 1, LOCATE('@', email) - 1) = ?";
     $checkStmt = $conn->prepare($checkSql);
-    $checkStmt->bind_param("s", $data[7]); // Email is now at index 7
+    $checkStmt->bind_param("s", $emailPrefix);
     $checkStmt->execute();
     $result = $checkStmt->get_result();
     
@@ -162,6 +187,49 @@ function validateData($data, $conn) {
     $checkStmt->close();
 
     return true;
+}
+
+function checkForDuplicates($filePath, $type = 'csv') {
+    $studentIds = [];
+    $emailPrefixes = [];
+    $duplicates = [];
+
+    if ($type === 'csv') {
+        $file = fopen($filePath, 'r');
+        fgetcsv($file); // Skip header
+        while (($data = fgetcsv($file)) !== FALSE) {
+            $idPart = substr($data[0], 5, 5);
+            $emailParts = explode('@', $data[7]);
+            $emailPrefix = $emailParts[0];
+            
+            if (in_array($idPart, $studentIds) || in_array($emailPrefix, $emailPrefixes)) {
+                $duplicates[] = $data[0];
+            } else {
+                $studentIds[] = $idPart;
+                $emailPrefixes[] = $emailPrefix;
+            }
+        }
+        fclose($file);
+    } else {
+        $spreadsheet = IOFactory::load($filePath);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $rows = $worksheet->toArray();
+        array_shift($rows); // Remove header row
+        foreach ($rows as $row) {
+            $idPart = substr($row[0], 5, 5);
+            $emailParts = explode('@', $row[7]);
+            $emailPrefix = $emailParts[0];
+            
+            if (in_array($idPart, $studentIds) || in_array($emailPrefix, $emailPrefixes)) {
+                $duplicates[] = $row[0];
+            } else {
+                $studentIds[] = $idPart;
+                $emailPrefixes[] = $emailPrefix;
+            }
+        }
+    }
+
+    return $duplicates;
 }
 
 function actualImport($filePath, $conn, $type = 'csv') {

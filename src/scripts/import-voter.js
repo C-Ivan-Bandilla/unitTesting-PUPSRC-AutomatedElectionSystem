@@ -1,24 +1,61 @@
 $(document).ready(function() {
     const maxFileSize = 25 * 1024 * 1024; // 25MB in bytes
+    const allowedExtensions = ['csv', 'xls', 'xlsx'];
+    const $importButton = $('#import-voters');
+    const $fileInput = $('#voters-list');
 
     // Disable the Import Voters button initially
-    $('#import-voters').prop('disabled', true);
+    $importButton.prop('disabled', true);
 
-    $('#voters-list').on('change', function() {
-        if (this.files.length > 0) {
-            if (this.files[0].size > maxFileSize) {
-                console.log("File size exceeds 25MB limit. File rejected.");
-                $(this).val(''); // Clear the file input
-                $('#import-voters').prop('disabled', true);
-            } else {
-                $('#import-voters').prop('disabled', false);
-            }
+    function validateFile(file) {
+        if (!file) {
+            return false;
+        }
+
+        const extension = file.name.split('.').pop().toLowerCase();
+        
+        if (file.size > maxFileSize || !allowedExtensions.includes(extension)) {
+            showInvalidFileFormatModal();
+            return false;
+        }
+        
+        return true;
+    }
+
+    function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (validateFile(file)) {
+            $importButton.prop('disabled', false);
         } else {
-            $('#import-voters').prop('disabled', true);
+            $fileInput.val(''); // Clear the file input
+            $importButton.prop('disabled', true);
+        }
+    }
+
+    $fileInput.on('change', handleFileSelect);
+
+    // Drag and drop handling
+    $fileInput.on('dragover', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    $fileInput.on('drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const file = e.originalEvent.dataTransfer.files[0];
+        if (validateFile(file)) {
+            // Manually set the file to the input
+            $fileInput[0].files = e.originalEvent.dataTransfer.files;
+            $importButton.prop('disabled', false);
+        } else {
+            $fileInput.val(''); // Clear the file input
+            $importButton.prop('disabled', true);
         }
     });
 
-    $('#import-voters').on('click', function() {
+    $importButton.on('click', function() {
         var $button = $(this);
         var originalText = $button.text();
 
@@ -26,7 +63,7 @@ $(document).ready(function() {
         setButtonLoading($button);
 
         var formData = new FormData();
-        formData.append('file', $('#voters-list')[0].files[0]);
+        formData.append('file', $fileInput[0].files[0]);
 
         $.ajax({
             url: 'submission_handlers/import.php',
@@ -41,23 +78,23 @@ $(document).ready(function() {
                     if (result.status === 'success') {
                         $('#importDoneModal').modal('show');
                     } else {
-                        showErrorModal(result.message, result.duplicates, result.invalidIds);
+                        showInvalidContentModal(result.message, result.duplicates, result.invalidIds);
                     }
                 } catch (e) {
                     console.error("Error parsing response:", e);
-                    showErrorModal('An unexpected error occurred during the import process.');
+                    showInvalidContentModal('An unexpected error occurred during the import process.');
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error("AJAX error:", textStatus, errorThrown);
-                showErrorModal('An error occurred while processing your request.');
+                showInvalidContentModal('An error occurred while processing your request.');
             }
         });
     });
 
     function setButtonLoading($button) {
         $button.prop('disabled', true)
-               .text('Import Voters')
+               .text('Importing...')
                .addClass('btn-secondary')
                .removeClass('btn-main-primary');
     }
@@ -69,8 +106,14 @@ $(document).ready(function() {
                .prop('disabled', true);  // Always disable the button
     }
 
-    function showErrorModal(message, duplicates, invalidIds) {
-        $('#dangerTitle').text('Import Failed');
+    function showInvalidFileFormatModal() {
+        $('#dangerTitle').text('Invalid file format!');
+        $('#dangerSubtitle').text('Excel and CSV files are only allowed. Please also ensure the file is no larger than 25 mb and the file headers are correct. Let\'s try that again!');
+        $('#onlyPDFAllowedModal').modal('show');
+    }
+
+    function showInvalidContentModal(message, duplicates, invalidIds) {
+        $('#invalidContentTitle').text('Import Failed');
         let content = `<p>${message}</p>`;
         
         if (duplicates && duplicates.length > 0) {
@@ -89,17 +132,17 @@ $(document).ready(function() {
             content += '</ul>';
         }
         
-        $('#dangerSubtitle').html(content);
+        $('#invalidContentSubtitle').html(content);
         $('#invalidContentModal').modal('show');
     }
 
     // Close button for modals
-    $('#importDoneClose, #invalidContentClose').on('click', function() {
+    $('#importDoneClose, #onlyPDFClose, #invalidContentClose').on('click', function() {
         $(this).closest('.modal').modal('hide');
     });
 
     // Ensure all modals are initialized
-    $('#importDoneModal, #invalidContentModal').modal({
+    $('#importDoneModal, #onlyPDFAllowedModal, #invalidContentModal').modal({
         backdrop: 'static',
         keyboard: false,
         show: false
@@ -107,13 +150,13 @@ $(document).ready(function() {
 
     // Disable button when any modal is shown
     $('.modal').on('show.bs.modal', function () {
-        $('#import-voters').prop('disabled', true);
+        $importButton.prop('disabled', true);
     });
 
     // Reset button state when any modal is closed
     $('.modal').on('hidden.bs.modal', function () {
-        resetButton($('#import-voters'), 'Import Voters');
-        $('#voters-list').val(''); // Clear the file input
-        $('#import-voters').prop('disabled', true); // Ensure the button is disabled
+        resetButton($importButton, 'Import Voters');
+        $fileInput.val(''); // Clear the file input
+        $importButton.prop('disabled', true); // Ensure the button is disabled
     });
 });
