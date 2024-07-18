@@ -15,7 +15,7 @@ class FaqController extends FaqModel
     private $client_error;
     private $maxInt = 16_777_214;
     private $maxTextBytes = 65_535;
-    private $maxTextLength = 500;
+    private $maxTextLength = 1000;
     private $client_error_dictionary = [
         'ERR_INCOMPLETE_DATA' => 'The request data is incomplete.',
         'ERR_INVALID_DATA' => 'The request data is invalid.',

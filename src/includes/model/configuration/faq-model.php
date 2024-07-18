@@ -4,7 +4,7 @@ include_once str_replace('/', DIRECTORY_SEPARATOR,  '../classes/file-utils.php')
 require_once FileUtils::normalizeFilePath('../error-reporting.php');
 require_once FileUtils::normalizeFilePath('../classes/db-config.php');
 require_once FileUtils::normalizeFilePath('../classes/db-connector.php');
-// require_once FileUtils::normalizeFilePath('../classes/logger.php');
+require_once FileUtils::normalizeFilePath('../classes/logger.php');
 
 class FaqModel
 {
@@ -123,6 +123,9 @@ class FaqModel
                 'answer' => $item['answer'],
             ];
 
+            $logger = new Logger($_SESSION['role'], ADD_FAQ);
+            $logger->logActivity();
+
             $stmt->close();
 
             return $inserted_item;
@@ -153,6 +156,9 @@ class FaqModel
 
             $stmt->close();
 
+            $logger = new Logger($_SESSION['role'], UPDATE_FAQ);
+            $logger->logActivity();
+
             return $item;
         } catch (Exception $e) {
 
@@ -178,6 +184,9 @@ class FaqModel
             $stmt->execute();
 
             $stmt->close();
+
+            $logger = new Logger($_SESSION['role'], UPDATE_FAQ);
+            $logger->logActivity();
 
             return $item;
         } catch (Exception $e) {
@@ -205,6 +214,9 @@ class FaqModel
             $stmt->execute();
 
             $stmt->close();
+
+            $logger = new Logger($_SESSION['role'], DELETE_FAQ);
+            $logger->logActivity();
 
             return $item;
         } catch (Exception $e) {
