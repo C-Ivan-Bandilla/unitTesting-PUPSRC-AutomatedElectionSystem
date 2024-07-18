@@ -109,9 +109,13 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                             <div class="input-group mb-3" id="reset-password">
                                                 <input type="password" class="form-control reset-password-password" name="password" placeholder="Enter a strong password" id="password" required>
                                                 <label for="password" class="new-password translate-middle-y <?php echo strtoupper($org_name); ?>-text-color">NEW PASSWORD</label>
-                                                <button class="btn btn-secondary reset-password-password" type="button" id="reset-password-toggle-1">
+                                                <button class="btn d-flex btn-secondary reset-password-password" type="button" id="reset-password-toggle-1">
                                                     <i class="fas fa-eye-slash"></i>
+                                                    <i class="fas fa-check-circle" style="display: none;"></i> <!-- Check icon with margin-left -->
                                                 </button>
+
+                                                <!-- muginoMinato1! -->
+
                                             </div>
                                             <div class="password-requirements">
                                                 <ul id="password-requirements-list">
@@ -131,7 +135,9 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                                 <label for="password_confirmation" class="new-password translate-middle-y <?php echo strtoupper($org_name); ?>-text-color">CONFIRM PASSWORD</label>
                                                 <button class="btn btn-secondary reset-password-password" type="button" id="reset-password-toggle-2">
                                                     <i class="fas fa-eye-slash"></i>
+                                                    <i class="fas fa-check-circle " style="display: none;"></i> <!-- Check icon -->
                                                 </button>
+
                                             </div>
                                             <div id="password-mismatch-error" class="text-center ps-1 text-danger fw-semibold fs-7 mt-2" style="display: none;">PASSWORDS DO NOT MATCH.</div>
                                             <div id="error-message" class="text-center ps-1 text-danger fw-semibold fs-7 mt-2 text-uppercase">
@@ -209,7 +215,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
         <script src="scripts/edit-profile.js"></script>
         <script src="scripts/verify-password.js"></script>
         <script src="scripts/reset-password.js"></script>
-		<script src="scripts/script.js"></script>
+        <script src="scripts/script.js"></script>
 
     </body>
 
