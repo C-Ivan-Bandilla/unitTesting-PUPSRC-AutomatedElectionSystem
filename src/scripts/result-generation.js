@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function () {
     tableBody.innerHTML = "";
 
     feedback_data.forEach((row) => {
-        const truncatedFeedback = truncateText(row.feedback, 50); // Adjust the number to your desired truncation length
+        const truncatedFeedback = truncateText(row.feedback, 20); // Adjust the number to your desired truncation length
 
         // Format the date with specific options
         const dateOptions = {

@@ -98,26 +98,38 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 
                     <div id="election-results"></div>
 
-
-
-                    <div class="dropdown2">
-                        <button class="btn-convert dropdown-button"><i data-feather="download" class="main-color im-cust small-icon"></i> Download results as...</button>
-                        <div class="dropdown-content2">
-                            <a href="#" onclick="downloadPDF()">PDF (.pdf)</a>
-                            <a href="#" onclick="downloadExcel()">Excel (.xsl)</a>
+                    <div class="container-fluid">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-auto">
+                                <div class="dropdown2">
+                                    <button class="btn btn-convert dropdown-button">
+                                        <i data-feather="download" class="main-color im-cust small-icon"></i> Download results as...
+                                    </button>
+                                    <div class="dropdown-content2">
+                                        <a href="#" onclick="downloadPDF()">PDF (.pdf)</a>
+                                        <a href="#" onclick="downloadExcel()">Excel (.xsl)</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-previous">
+                                    <i class="fas fa-chevron-left" id="btn-previous"></i>
+                                    <span class="d-none d-md-inline">Previous</span>
+                                </button>
+                                <button class="btn btn-next">
+                                    <span class="d-none d-md-inline">Next</span>
+                                    <i class="fas fa-chevron-right" id="btn-next"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    <button class="btn-previous"><i class="fas fa-chevron-left" id="btn-previous"></i> Previous</button>
-                    <button class="btn-next">Next <i class="fas fa-chevron-right" id="btn-next"></i></button>
-
                     <br>
                     <br>
 
                     <div class="col-11 col-md-10 col-lg-11 mx-auto">
-                        <div class="card-graph mb-5">
+                        <div class="card-graph mb-5 position-relative">
                             <canvas id="myChart"></canvas>
-                            <div class="form-group">
+                            <div class="form-group custom-form-group">
                                 <select id="positionSelect" class="form-control2 main-bg-color text-truncate">
                                     <!-- Dynamically populate this with PHP -->
                                     <?php
@@ -133,7 +145,6 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                             </div>
                         </div>
                     </div>
-
                     <script>
                         const jsonData = <?php echo json_encode($jsonData); ?>;
                     </script>
@@ -270,7 +281,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
 
                             <div class="col-md-5 col-lg-5 px-0 d-flex flex-column">
                                 <!-- Voters Account Card -->
-                                <div class="card p-1 mt-1 mt-md-0 " style="border-radius: 20px;">
+                                <div class="card p-1 mt-1 mt-md-0 " style="border-radius: 20px; border: none;">
                                     <div class="card-body3 d-flex align-items-center justify-content-between p-3" style="padding-left: 30px;">
                                         <div class="row w-100">
                                             <div class="col-9">
@@ -294,7 +305,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                 <br>
 
                                 <!--Candidate Card-->
-                                <div class="card p-1 mt-1 mt-md-0" style="border-radius: 20px;">
+                                <div class="card p-1 mt-1 mt-md-0" style="border-radius: 20px; border: none;">
                                     <div class="card-body3 d-flex align-items-center justify-content-between p-3" style="padding-left: 30px;">
                                         <div class="row w-100">
                                             <div class="col-9">
@@ -374,7 +385,7 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                     <br>
                     <br>
                     <div class="col-11 col-md-10 col-lg-11 mx-auto">
-                        <div class="card card-header">
+                        <div class="card card-header2">
                             <p class="main-color"><strong>FEEDBACK AND SUGGESTIONS</strong></p>
                         </div>
                         <div class="card-feedback mb-5">
@@ -457,13 +468,15 @@ if (isset($_SESSION['voter_id']) && ($_SESSION['role'] == 'admin' || $_SESSION['
                                             <?php foreach ($emojis as $rating => $emoji_class) {
                                                 $percentage = $ratings_percentage[$rating] ?? 0; // Default to 0% if rating percentage is not set
                                             ?>
-                                                <div class="rating-item <?php if ($rating == $highest_rating) echo 'highest-rating'; ?>">
-                                                    <div>
+                                            <div class="rating-item <?php if ($rating == $highest_rating) echo 'highest-rating'; ?> d-flex align-items-center justify-content-center">
+                                            <div>
                                                         <h1 class="<?php if ($rating == $highest_rating) echo 'main-color'; ?>"><?php echo $percentage; ?>%</h1>
                                                         <h2 class="<?php if ($rating == $highest_rating) echo 'main-color'; ?>"><?php echo $rating; ?></h2>
                                                     </div>
-                                                    <span class="emoji <?php echo $emoji_class; ?>-emoji emoji-class" data-value="<?php echo $rating; ?>"></span>
-                                                </div>
+                                                    
+</div>
+
+                                               
 
                                             <?php } ?>
                                         </div>
