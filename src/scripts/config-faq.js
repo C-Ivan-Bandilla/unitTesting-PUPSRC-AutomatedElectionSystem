@@ -1335,7 +1335,7 @@ ConfigPage.EditorModal = class {
         primaryButton.textContent = 'Save Changes';
 
         if (this.mode === 'add') {
-            primaryButton.textContent = 'Add Rule';
+            primaryButton.textContent = 'Add FAQ';
         }
 
         label.appendChild(primaryButton);
