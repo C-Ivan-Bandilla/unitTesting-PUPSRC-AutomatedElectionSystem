@@ -9,3 +9,9 @@ src/user_data/
 # Store results of unit testing
 .phpunit.cache
 .phpunit.result.cache
+
+# Generated Data by the  system
+src\includes\data
+
+# Testing Email Credentials
+src\includes\mailer-test.php
