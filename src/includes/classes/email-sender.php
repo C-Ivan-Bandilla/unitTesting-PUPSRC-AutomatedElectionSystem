@@ -80,10 +80,10 @@ class EmailSender
         return $this->sendEmail($recipientEmail, $subject, $mailBody);
     }
 
-    public function sendPasswordResetEmail($recipientEmail, $token, $orgName)
+    public function sendPasswordResetEmail($recipientEmail, $token)
     {
         $subject = 'iVOTE Password Reset Request';
-        $resetPasswordLink = $this->app_url . "reset-password?token=" . urlencode($token) . "&orgName=" . urlencode($orgName);
+        $resetPasswordLink = $this->app_url . "reset-password?token=" . urlencode($token) . "&orgName=" . urlencode($this->org_name);
         
         $mailBody = <<<EOT
         <!DOCTYPE html>
