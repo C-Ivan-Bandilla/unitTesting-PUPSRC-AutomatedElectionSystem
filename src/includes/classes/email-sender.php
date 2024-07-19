@@ -3,7 +3,6 @@ include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/file-utils.php');
 require_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-time-zone.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/../components/email-template.php');
-include_once FileUtils::normalizeFilePath(__DIR__ . '/../session-exchange.php');
 
 class EmailSender
 {
@@ -77,10 +76,10 @@ class EmailSender
         return $this->sendEmail($recipientEmail, $subject, $mailBody);
     }
 
-    public function sendPasswordResetEmail($recipientEmail, $token)
+    public function sendPasswordResetEmail($recipientEmail, $token, $org_name)
     {
         $subject = 'iVOTE Password Reset Request';
-        $resetPasswordLink = "http://localhost/PUPSRC-AutomatedElectionSystem/src/reset-password.php?token=$token&orgName=$this->org_name";
+        $resetPasswordLink = "http://localhost/PUPSRC-AutomatedElectionSystem/src/reset-password.php?token=$token&orgName=$org_name";
         $mailBody = <<<EOT
         <!DOCTYPE html>
         <html lang="en">
