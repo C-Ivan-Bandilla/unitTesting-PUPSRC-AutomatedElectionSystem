@@ -289,7 +289,7 @@ hr {
 
 .modal-content#success-modal, .modal-content#max-modal{
   background-color: white;
-  border-radius: 35px;
+  border-radius: 10px;
 }
 
 .warning-icon{
